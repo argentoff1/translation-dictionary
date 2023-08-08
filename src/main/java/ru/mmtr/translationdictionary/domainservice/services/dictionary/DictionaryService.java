@@ -7,10 +7,11 @@ import ru.mmtr.translationdictionary.infrastruction.repositories.dictionary.Dict
 
 import java.util.List;
 
+// Бизнес-логика
 @Service
 public class DictionaryService {
-    @Autowired
-    private DictionaryRepository dictionaryRepository;
+    /*@Autowired
+    private DictionaryRepository dictionaryRepository;*/
 
     public List<DictionaryEntity> getAllDictionaries() {
         return null;

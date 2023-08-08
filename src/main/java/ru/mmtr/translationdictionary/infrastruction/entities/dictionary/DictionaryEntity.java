@@ -28,7 +28,9 @@ public class DictionaryEntity {
     @Column(name = "removedat")
     private Date removedAt;
 
-    public DictionaryEntity() {}
+    public DictionaryEntity() {
+
+    }
 
     public DictionaryEntity(int id, String word, String translation, int from_language, int to_language, Date createdAt, Date removedAt) {
         this.id = id;
