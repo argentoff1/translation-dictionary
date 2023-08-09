@@ -3,14 +3,14 @@ package ru.mmtr.translationdictionary.api.controllers.dictionary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.mmtr.translationdictionary.domainservice.services.dictionary.DictionaryService;
-import ru.mmtr.translationdictionary.infrastruction.entities.dictionary.DictionaryEntity;
+import ru.mmtr.translationdictionary.infrastruction.repositories.dictionary.DictionaryEntity;
 
 import java.util.List;
 
-@RestController
-@RequestMapping(value = "/api")
+/*@RestController
+@RequestMapping(value = "/api")*/
 public class DictionaryController {
-    @Autowired
+    /*@Autowired
     private DictionaryService dictionaryService;
 
     // не выводит
@@ -50,5 +50,5 @@ public class DictionaryController {
         dictionaryService.deleteDictionary(id);
 
         return "Dictionary with ID = " + id + " was deleted";
-    }
+    }*/
 }

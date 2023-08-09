@@ -1,32 +1,36 @@
-package ru.mmtr.translationdictionary.infrastruction.entities.dictionary;
+package ru.mmtr.translationdictionary.infrastruction.repositories.dictionary;
 
 import javax.persistence.*;
 import java.util.Date;
 
-@Entity
-@Table(name = "dictionaries")
+/*@Entity
+@Table(name = "dictionaries")*/
 public class DictionaryEntity {
-    @Id
+    /*@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "dictionary_id")*/
     private int id;
 
-    @Column(name = "word")
+    //@Column(name = "word")
     private String word;
 
-    @Column(name = "translation")
+    //@Column(name = "translation")
     private String translation;
 
-    @Column(name = "from_language")
+    //@Column(name = "from_language")
+    //@ManyToOne
+    //@JoinColumn(name = "language_id")
     private int from_language;
 
-    @Column(name = "to_language")
+    //@Column(name = "to_language")
+    //@ManyToOne
+    //@JoinColumn(name = "language_id")
     private int to_language;
 
-    @Column(name = "createdat")
+    //@Column(name = "createdat")
     private Date createdAt;
 
-    @Column(name = "removedat")
+    //@Column(name = "removedat")
     private Date removedAt;
 
     public DictionaryEntity() {

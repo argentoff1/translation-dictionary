@@ -1,13 +1,10 @@
 package ru.mmtr.translationdictionary.domainservice.services.dictionary;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.mmtr.translationdictionary.infrastruction.entities.dictionary.DictionaryEntity;
-import ru.mmtr.translationdictionary.infrastruction.repositories.dictionary.DictionaryRepository;
+import ru.mmtr.translationdictionary.infrastruction.repositories.dictionary.DictionaryEntity;
 
 import java.util.List;
 
-// Бизнес-логика
 @Service
 public class DictionaryService {
     /*@Autowired

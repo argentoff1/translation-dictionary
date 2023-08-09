@@ -54,7 +54,20 @@
 			<artifactId>liquibase-core</artifactId>
 			<version>4.23.0</version>
 		</dependency>
-
+		<!-- https://mvnrepository.com/artifact/io.ebean/ebean -->
+		<dependency>
+			<groupId>io.ebean</groupId>
+			<artifactId>ebean</artifactId>
+			<version>13.20.1</version>
+			<scope>provided</scope>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.h2database/h2 -->
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<version>2.2.220</version>
+			<scope>test</scope>
+		</dependency>
 
 	</dependencies>
 
@@ -71,6 +84,23 @@
 						</exclude>
 					</excludes>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>io.ebean</groupId>
+				<artifactId>ebean-maven-plugin</artifactId>
+				<version>11.11.2</version>
+				<executions>
+					<execution>
+						<id>main</id>
+						<phase>process-classes</phase>
+						<configuration>
+							<transformArgs>debug=1</transformArgs>
+						</configuration>
+						<goals>
+							<goal>enhance</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
