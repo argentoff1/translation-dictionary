@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="add_tag_create_and_insert_data_into_tables" author="parinos">
+        <tagDatabase tag="create_and_insert_data_into_tables"/>
+    </changeSet>
+
+    <include file="db/changelog/2023/09082023-db.changelog-create-tables-and-foreign-keys.xml"/>
+    <include file="db/changelog/2023/09082023-db.changelog-insert-into-tables.xml"/>
+
+</databaseChangeLog>

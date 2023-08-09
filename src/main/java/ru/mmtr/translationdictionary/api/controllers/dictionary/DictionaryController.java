@@ -13,6 +13,7 @@ public class DictionaryController {
     @Autowired
     private DictionaryService dictionaryService;
 
+    // не выводит
     @GetMapping(value = "/dictionaries")
     public List<DictionaryEntity> showAllDictionaries() {
         List<DictionaryEntity> allDictionaries = dictionaryService.getAllDictionaries();
@@ -20,6 +21,7 @@ public class DictionaryController {
         return allDictionaries;
     }
 
+    // не выводит
     @GetMapping("/dictionaries/{id}")
     public DictionaryEntity showDictionary(@PathVariable int id) {
         DictionaryEntity dictionary = dictionaryService.getDictionary(id);

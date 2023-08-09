@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="insert_into_dictionaries" author="parinos">
+        <preConditions onFail="WARN">
+            <sqlCheck expectedResult="6">select count(*) from languages</sqlCheck>
+        </preConditions>
+        <comment>Проверка на наличие 5 элементов в таблице</comment>
+
+        <insert tableName="dictionaries">
+            <column name="dictionary_id" value="919e0f42-55d3-45b9-bd89-fb345d148d7d"/>
+            <column name="word" value="стекло"/>
+            <column name="translation" value="glass"/>
+            <column name="from_language" value="bb0acf79-1d49-42c7-9eca-ea2652137177"/>
+            <column name="to_language" value="9d652bcc-7e12-4e1e-be8f-4a22ddfa0e31"/>
+        </insert>
+        <insert tableName="dictionaries">
+            <column name="dictionary_id" value="9cf860c7-5cf0-40af-9fe4-b7386d4088b5"/>
+            <column name="word" value="glass"/>
+            <column name="translation" value="стекло"/>
+            <column name="from_language" value="9d652bcc-7e12-4e1e-be8f-4a22ddfa0e31"/>
+            <column name="to_language" value="bb0acf79-1d49-42c7-9eca-ea2652137177"/>
+        </insert>
+        <insert tableName="dictionaries">
+            <column name="dictionary_id" value="797d51a3-ec2f-4444-9542-d0a728d1c9cc"/>
+            <column name="word" value="sand"/>
+            <column name="translation" value="sabbia"/>
+            <column name="from_language" value="9d652bcc-7e12-4e1e-be8f-4a22ddfa0e31"/>
+            <column name="to_language" value="8e03e1e5-abf3-43ec-a07a-31ae14183799"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

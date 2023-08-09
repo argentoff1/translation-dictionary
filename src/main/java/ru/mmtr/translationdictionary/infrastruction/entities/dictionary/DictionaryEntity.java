@@ -4,6 +4,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
+@Table(name = "dictionaries")
 public class DictionaryEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

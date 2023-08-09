@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="create_table_dictionaries" author="parinos">
+        <createTable tableName="dictionaries">
+            <column name="dictionary_id" type="uuid">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="word" type="varchar(100)">
+                <constraints primaryKey="false" nullable="false"/>
+            </column>
+            <column name="translation" type="varchar(100)">
+                <constraints primaryKey="false" nullable="false"/>
+            </column>
+            <column name="from_language" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="to_language" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>
