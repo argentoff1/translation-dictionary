@@ -4,10 +4,16 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-    <changeSet id="add_tag_insert_data_into_tables" author="parinos">
-        <tagDatabase tag="insert_data_into_tables"/>
+    <changeSet id="firstVersionOfDB" author="parinos">
+        <tagDatabase tag="firstVersion"/>
     </changeSet>
+
+    <include file="db/changelog/2023/09082023-create-changeset-languages-table.xml"/>
+    <include file="db/changelog/2023/09082023-create-changeset-dictionaries-table.xml"/>
+    <include file="db/changelog/2023/09082023-add-foreign-keys-changeset.xml"/>
 
     <include file="db/changelog/2023/09082023-insert-changeset-languages-table.xml"/>
     <include file="db/changelog/2023/09082023-insert-changeset-dictionaries-table.xml"/>
+
+    <include file="db/changelog/2023/10082023-rename-changeset-tables-and-columns.xml"/>
 </databaseChangeLog>

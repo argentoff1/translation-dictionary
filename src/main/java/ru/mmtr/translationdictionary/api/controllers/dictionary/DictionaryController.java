@@ -1,12 +1,5 @@
 package ru.mmtr.translationdictionary.api.controllers.dictionary;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-import ru.mmtr.translationdictionary.domainservice.services.dictionary.DictionaryService;
-import ru.mmtr.translationdictionary.infrastruction.repositories.dictionary.DictionaryEntity;
-
-import java.util.List;
-
 /*@RestController
 @RequestMapping(value = "/api")*/
 public class DictionaryController {

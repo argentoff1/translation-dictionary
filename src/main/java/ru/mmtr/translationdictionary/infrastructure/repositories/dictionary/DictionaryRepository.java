@@ -1,6 +1,4 @@
-package ru.mmtr.translationdictionary.infrastruction.repositories.dictionary;
-
-import org.springframework.stereotype.Repository;
+package ru.mmtr.translationdictionary.infrastructure.repositories.dictionary;
 
 import java.util.List;
 

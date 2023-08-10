@@ -1,6 +1,5 @@
-package ru.mmtr.translationdictionary.infrastruction.repositories.dictionary;
+package ru.mmtr.translationdictionary.infrastructure.repositories.dictionary;
 
-import javax.persistence.*;
 import java.util.Date;
 
 /*@Entity

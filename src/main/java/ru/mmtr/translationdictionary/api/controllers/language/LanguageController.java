@@ -2,8 +2,10 @@ package ru.mmtr.translationdictionary.api.controllers.language;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import ru.mmtr.translationdictionary.domain.models.language.LanguageModel;
 import ru.mmtr.translationdictionary.domainservice.services.language.LanguageService;
-import ru.mmtr.translationdictionary.infrastruction.repositories.language.LanguageEntity;
+import ru.mmtr.translationdictionary.infrastructure.repositories.language.LanguageEntity;
+import ru.mmtr.translationdictionary.infrastructure.repositories.language.LanguageRepository;
 
 import java.util.List;
 
@@ -14,19 +16,24 @@ public class LanguageController {
     private LanguageService languageService;
 
     // в сервисе null
+    @GetMapping(value = "/languages/{id}")
+    public LanguageModel showLanguage(@PathVariable int id) {
+        LanguageModel languageModel = languageService.getLanguage(id);
+
+        return languageModel;
+    }
+
+
+
+
+
+
+/*
     @GetMapping(value = "/languages")
     public List<LanguageEntity> showAllLanguages() {
         List<LanguageEntity> allLanguages = languageService.getAllLanguages();
 
         return allLanguages;
-    }
-
-    // в сервисе null
-    @GetMapping(value = "/languages/{id}")
-    public LanguageEntity showLanguage(@PathVariable int id) {
-        LanguageEntity language = languageService.getLanguage(id);
-
-        return language;
     }
 
     @PostMapping(value = "/languages")
@@ -50,5 +57,5 @@ public class LanguageController {
         languageService.deleteLanguage(id);
 
         return "Language with ID = " + id + " was deleted";
-    }
+    }*/
 }

@@ -1,7 +1,7 @@
 package ru.mmtr.translationdictionary.domainservice.services.dictionary;
 
 import org.springframework.stereotype.Service;
-import ru.mmtr.translationdictionary.infrastruction.repositories.dictionary.DictionaryEntity;
+import ru.mmtr.translationdictionary.infrastructure.repositories.dictionary.DictionaryEntity;
 
 import java.util.List;
 

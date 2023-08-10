@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="renameTablesAndColumns" author="parinos">
+        <renameTable oldTableName="languages" newTableName="Languages"/>
+        <renameTable oldTableName="dictionaries" newTableName="Dictionaries"/>
+        <renameColumn tableName="Languages" oldColumnName="language_id" newColumnName="languageId"/>
+        <renameColumn tableName="Languages" oldColumnName="language_name" newColumnName="languageName"/>
+        <renameColumn tableName="Dictionaries" oldColumnName="dictionary_id" newColumnName="dictionaryId"/>
+        <renameColumn tableName="Dictionaries" oldColumnName="from_language" newColumnName="fromLanguage"/>
+        <renameColumn tableName="Dictionaries" oldColumnName="to_language" newColumnName="toLanguage"/>
+    </changeSet>
+</databaseChangeLog>

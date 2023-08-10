@@ -8,7 +8,6 @@
         <tagDatabase tag="create_and_insert_data_into_tables"/>
     </changeSet>
 
-    <include file="db/changelog/2023/09082023-db.changelog-create-tables-and-foreign-keys.xml"/>
-    <include file="db/changelog/2023/09082023-db.changelog-insert-into-tables.xml"/>
+    <include file="db/changelog/2023/10082023-db.changelog-2023.xml"/>
 
 </databaseChangeLog>
