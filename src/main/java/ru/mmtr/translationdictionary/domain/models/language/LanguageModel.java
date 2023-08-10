@@ -3,7 +3,6 @@ package ru.mmtr.translationdictionary.domain.models.language;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import ru.mmtr.translationdictionary.infrastructure.repositories.BaseModel;
 
 import java.util.UUID;
 

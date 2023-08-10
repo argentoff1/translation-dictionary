@@ -1,7 +1,5 @@
 package ru.mmtr.translationdictionary.infrastructure.repositories.language;
 
-import ru.mmtr.translationdictionary.infrastructure.repositories.BaseModel;
-
 import jakarta.persistence.*;
 import java.util.Date;
 import java.util.UUID;
@@ -19,7 +17,7 @@ public class LanguageEntity {
     private UUID languageId;
 
     @Column(name = LANGUAGE_NAME)
-    private String language_name;
+    private String languageName;
 
     private Date createdAt;
 
@@ -28,16 +26,16 @@ public class LanguageEntity {
     /*@OneToOne(cascade = CascadeType.ALL)
     DictionaryEntity dictionary;*/
 
-    public LanguageEntity(UUID languageId, String language_name, Date createdAt, Date modifiedAt) {
+    public LanguageEntity(UUID languageId, String languageName, Date createdAt, Date modifiedAt) {
         this.languageId = languageId;
-        this.language_name = language_name;
+        this.languageName = languageName;
         this.createdAt = createdAt;
         this.modifiedAt = modifiedAt;
     }
 
-    public LanguageEntity(UUID languageId, String language_name) {
+    public LanguageEntity(UUID languageId, String languageName) {
         this.languageId = languageId;
-        this.language_name = language_name;
+        this.languageName = languageName;
     }
 
     public LanguageEntity() {}
@@ -50,12 +48,12 @@ public class LanguageEntity {
         this.languageId = languageId;
     }
 
-    public String getLanguage_name() {
-        return language_name;
+    public String getLanguageName() {
+        return languageName;
     }
 
-    public void setLanguage_name(String language_name) {
-        this.language_name = language_name;
+    public void setLanguageName(String languageName) {
+        this.languageName = languageName;
     }
 
     public Date getCreatedAt() {

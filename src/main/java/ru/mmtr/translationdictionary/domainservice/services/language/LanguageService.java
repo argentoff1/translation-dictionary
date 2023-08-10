@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 import ru.mmtr.translationdictionary.domain.models.language.LanguageModel;
 import ru.mmtr.translationdictionary.infrastructure.repositories.language.LanguageRepository;
 
+import java.util.UUID;
+
 // Бизнес-логика
 @Service
 public class LanguageService {
@@ -18,7 +20,7 @@ public class LanguageService {
         this.languageRepository = languageRepository;
     }
 
-    public LanguageModel getLanguage(int id) {
+    public LanguageModel getLanguage(UUID id) {
 
 
 

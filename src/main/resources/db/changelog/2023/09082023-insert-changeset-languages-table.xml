@@ -5,37 +5,31 @@
                    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
     <changeSet id="insert_into_languages" author="parinos">
-        <comment>1</comment>
         <insert tableName="languages">
             <column name="language_id" value="bb0acf79-1d49-42c7-9eca-ea2652137177"/>
             <column name="language_name" value="Русский"/>
         </insert>
 
-        <comment>2</comment>
         <insert tableName="languages">
             <column name="language_id" value="9d652bcc-7e12-4e1e-be8f-4a22ddfa0e31"/>
             <column name="language_name" value="Английский"/>
         </insert>
 
-        <comment>3</comment>
         <insert tableName="languages">
             <column name="language_id" value="b46a0d8c-0948-4217-87cc-e93240f97eea"/>
             <column name="language_name" value="Немецкий"/>
         </insert>
 
-        <comment>4</comment>
         <insert tableName="languages">
             <column name="language_id" value="8be8993a-c645-48a4-aed9-f607ea58cc0b"/>
             <column name="language_name" value="Французский"/>
         </insert>
 
-        <comment>5</comment>
         <insert tableName="languages">
             <column name="language_id" value="8e03e1e5-abf3-43ec-a07a-31ae14183799"/>
             <column name="language_name" value="Итальянский"/>
         </insert>
 
-        <comment>6</comment>
         <insert tableName="languages">
             <column name="language_id" value="4bbb0371-e5dd-41c6-af2d-0d627da5f1f3"/>
             <column name="language_name" value="Испанский"/>

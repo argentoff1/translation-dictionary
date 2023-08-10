@@ -5,12 +5,15 @@ import io.ebean.Database;
 import org.springframework.stereotype.Repository;
 import ru.mmtr.translationdictionary.domain.models.language.LanguageModel;
 
+import java.util.List;
+import java.util.UUID;
+
 @Repository
 public class LanguageRepository {
     // Объявление БД. Т.к. с репо взаимодействует Entity & Model (?)
 
 
-    public LanguageModel getLanguage(int id) {
+    public LanguageModel getLanguage(UUID id) {
         LanguageEntity foundLanguageEntity = DB.find(LanguageEntity.class)
                 .where()
                 .eq(LanguageEntity.LANGUAGE_ID, id)
@@ -18,52 +21,57 @@ public class LanguageRepository {
 
         var languageModel = new LanguageModel();
         languageModel.setLanguageId(foundLanguageEntity.getLanguageId());
-        languageModel.setLanguageName(foundLanguageEntity.getLanguage_name());
+        languageModel.setLanguageName(foundLanguageEntity.getLanguageName());
 
         return languageModel;
     }
 
+    public LanguageModel createLanguage(String languageName) {
+        LanguageEntity languageEntity = new LanguageEntity();
+        languageEntity.setLanguageName(languageName);
+        languageEntity.setLanguageId(UUID.randomUUID());
+        DB.insert(languageEntity);
+
+        var languageModel = new LanguageModel();
+        languageModel.setLanguageId(languageEntity.getLanguageId());
+        languageModel.setLanguageName(languageEntity.getLanguageName());
+
+        return languageModel;
+    }
+
+    public LanguageModel saveLanguage(UUID id) {
+        LanguageEntity foundLanguageEntity = DB.find(LanguageEntity.class)
+                .where()
+                .eq(LanguageEntity.LANGUAGE_ID, id)
+                .findOne();
+
+        int rows = DB.find(LanguageEntity.class)
+                .where()
+                .eq(LanguageEntity.LANGUAGE_ID, id)
+                .asUpdate()
+                // Заглушка
+                .set(LanguageEntity.LANGUAGE_NAME, "")
+                .update();
 
 
+        var languageModel = new LanguageModel();
+        languageModel.setLanguageId(foundLanguageEntity.getLanguageId());
+        languageModel.setLanguageName(foundLanguageEntity.getLanguageName());
 
+        return languageModel;
+    }
 
+    /*public LanguageModel deleteLanguage(int id) {
+        int foundLanguageEntity = DB.find(LanguageEntity.class)
+                .where()
+                .eq(LanguageEntity.LANGUAGE_ID, id)
+                .delete();
 
+    }
 
+    public List<LanguageModel> getAllLanguages() {
+        List<LanguageEntity> languageEntities = new LanguageEntity().getLanguageId().eq().
 
-
-
-
-
-
-
-
-
-    /*
-    public List<LanguageEntity> getAllLanguages() {
         return null;
-    }
-
-    public LanguageModel createLanguage(LanguageModel language) {
-        Database database = DB.getDefault();
-        // Заполнение полей сущности
-
-
-        database.insert(language);
-
-        return language;
-    }
-
-    public LanguageModel saveLanguage(int id) {
-        LanguageModel foundLanguage = DB.find(LanguageModel.class, id);
-        DB.update(foundLanguage);
-
-        return foundLanguage;
-    }
-
-    public LanguageModel deleteLanguage(int id) {
-        LanguageModel foundLanguage = DB.find(LanguageModel.class, id);
-        DB.delete(foundLanguage);
-
-        return foundLanguage;
     }*/
 }

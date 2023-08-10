@@ -8,6 +8,7 @@ import ru.mmtr.translationdictionary.infrastructure.repositories.language.Langua
 import ru.mmtr.translationdictionary.infrastructure.repositories.language.LanguageRepository;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping(value = "/api")
@@ -15,10 +16,12 @@ public class LanguageController {
     @Autowired
     private LanguageService languageService;
 
-    // в сервисе null
     @GetMapping(value = "/languages/{id}")
-    public LanguageModel showLanguage(@PathVariable int id) {
+    public LanguageModel showLanguage(@PathVariable UUID id) {
         LanguageModel languageModel = languageService.getLanguage(id);
+        /*
+        String aString="JUST_A_TEST_STRING";
+        String result = UUID.nameUUIDFromBytes(aString.getBytes()).toString();*/
 
         return languageModel;
     }
