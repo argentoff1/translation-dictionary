@@ -7,12 +7,11 @@ import java.util.UUID;
 @Entity
 @Table(name = "Languages")
 public class LanguageEntity {
-
     public static final String LANGUAGE_ID = "languageId";
     public static final String LANGUAGE_NAME = "languageName";
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = LANGUAGE_ID)
     private UUID languageId;
 

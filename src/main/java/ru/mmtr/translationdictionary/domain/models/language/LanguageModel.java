@@ -6,13 +6,10 @@ import jakarta.persistence.Table;
 
 import java.util.UUID;
 
-@Entity
-@Table(name = "Languages")
 public class LanguageModel {
     /*@Autowired
     LanguageRepository languageRepository;*/
 
-    @Id
     private UUID languageId;
 
     private String languageName;

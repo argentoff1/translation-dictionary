@@ -11,14 +11,8 @@ import java.util.UUID;
 // Бизнес-логика
 @Service
 public class LanguageService {
-    /*@Autowired
-    Database database;*/
-
-    private final LanguageRepository languageRepository;
-
-    public LanguageService(LanguageRepository languageRepository) {
-        this.languageRepository = languageRepository;
-    }
+    @Autowired
+    private LanguageRepository languageRepository;
 
     public LanguageModel getLanguage(UUID id) {
 
@@ -37,10 +31,9 @@ public class LanguageService {
 
 
 
+        LanguageModel foundLanguageModel = languageRepository.getLanguage(id);
 
-        LanguageModel foundModel = languageRepository.getLanguage(id);
-
-        return foundModel;
+        return foundLanguageModel;
     }
 
     /*

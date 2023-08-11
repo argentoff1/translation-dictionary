@@ -18,12 +18,11 @@ public class LanguageController {
 
     @GetMapping(value = "/languages/{id}")
     public LanguageModel showLanguage(@PathVariable UUID id) {
-        LanguageModel languageModel = languageService.getLanguage(id);
         /*
         String aString="JUST_A_TEST_STRING";
         String result = UUID.nameUUIDFromBytes(aString.getBytes()).toString();*/
 
-        return languageModel;
+        return languageService.getLanguage(id);
     }
 
 

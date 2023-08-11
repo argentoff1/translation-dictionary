@@ -60,8 +60,8 @@ public class LanguageRepository {
 
         return languageModel;
     }
-
-    /*public LanguageModel deleteLanguage(int id) {
+/*
+    public LanguageModel deleteLanguage(int id) {
         int foundLanguageEntity = DB.find(LanguageEntity.class)
                 .where()
                 .eq(LanguageEntity.LANGUAGE_ID, id)
