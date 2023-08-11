@@ -4,33 +4,49 @@ import io.ebean.Database;
 import io.ebean.DatabaseFactory;
 import io.ebean.config.DatabaseConfig;
 import io.ebean.datasource.DataSourceConfig;
+import io.ebeaninternal.server.core.DefaultServer;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import javax.sql.DataSource;
-
 @Configuration
 public class DatabaseConfiguration {
-    @Value("${datasource.db.username}")
+    @Value("${spring.datasource.username}")
     private String username;
 
-    @Value("${datasource.db.password}")
+    @Value("${spring.datasource.password}")
     private String password;
 
-    @Value("${datasource.db.databaseUrl}")
+    @Value("${spring.datasource.url}")
     private String databaseUrl;
 
-    @Value("${datasource.db.databaseDriver}")
+    @Value("${spring.datasource.driver-class-name}")
     private String driverClassName;
     @Bean
-    public DataSource createConnection() {
-        DataSourceBuilder dataSourceBuilder = DataSourceBuilder.create();
-        dataSourceBuilder.driverClassName(driverClassName);
-        dataSourceBuilder.url(databaseUrl);
-        dataSourceBuilder.username(username);
-        dataSourceBuilder.password(password);
-        return dataSourceBuilder.build();
+    public DataSourceConfig getDataSource() {
+        /*DataSourceBuilder dataSourceBuilder = DataSourceBuilder.create();
+        dataSourceBuilder.driverClassName("org.h2.Driver");
+        dataSourceBuilder.url("jdbc:h2:mem:translation_dictionaries");
+        dataSourceBuilder.username("postgres");
+        dataSourceBuilder.password("postgres");
+        return dataSourceBuilder.build();*/
+
+        DataSourceConfig dataSourceConfig = new DataSourceConfig();
+        dataSourceConfig.setUsername(username);
+        dataSourceConfig.setPassword(password);
+        dataSourceConfig.setUrl(databaseUrl);
+        return dataSourceConfig;
+
+//        DatabaseConfig databaseConfig = new DatabaseConfig();
+//        databaseConfig.setDataSourceConfig(dataSourceConfig);
+//        DatabaseFactory.create(databaseConfig);
+        //return null;
+    }
+
+    @Bean
+    public Database database(){
+        DatabaseConfig databaseConfig = new DatabaseConfig();
+        databaseConfig.setDataSourceConfig(getDataSource());
+        return DatabaseFactory.create(databaseConfig);
     }
 }
