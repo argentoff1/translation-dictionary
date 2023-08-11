@@ -29,7 +29,7 @@ public class ApplicationStartup implements ApplicationListener<ContextRefreshedE
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
-        //applyDbMigrations(serverConfig.database().dataSource(), "public", "db/changelog/09082023-db.changelog-master.xml");
+        applyDbMigrations(serverConfig.createDatabase().dataSource(), "public", "db/changelog/09082023-db.changelog-master.xml");
     }
 
     public void applyDbMigrations(DefaultServer server, String liquibaseSchemaName, String springLiquibaseChangeLog) {

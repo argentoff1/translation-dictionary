@@ -7,11 +7,7 @@ import java.util.Date;
 import java.util.UUID;
 
 @Entity
-@Getter
-@Setter
-@Table(name = "Languages")
-@AllArgsConstructor
-@NoArgsConstructor
+@Table(name = "'Languages'")
 public class LanguageEntity {
     public static final String LANGUAGE_ID = "languageId";
     public static final String LANGUAGE_NAME = "languageName";
@@ -23,6 +19,29 @@ public class LanguageEntity {
 
     @Column(name = LANGUAGE_NAME)
     private String languageName;
+
+    public LanguageEntity(UUID languageId, String languageName) {
+        this.languageId = languageId;
+        this.languageName = languageName;
+    }
+
+    public LanguageEntity() {}
+
+    public UUID getLanguageId() {
+        return languageId;
+    }
+
+    public void setLanguageId(UUID languageId) {
+        this.languageId = languageId;
+    }
+
+    public String getLanguageName() {
+        return languageName;
+    }
+
+    public void setLanguageName(String languageName) {
+        this.languageName = languageName;
+    }
 
     /*private Date createdAt;
 
@@ -37,27 +56,5 @@ public class LanguageEntity {
 
 
 
-    /*public void setLanguageId(UUID languageId) {
-        this.languageId = languageId;
-    }
 
-    public void setLanguageName(String languageName) {
-        this.languageName = languageName;
-    }
-
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public void setModifiedAt(Date modifiedAt) {
-        this.modifiedAt = modifiedAt;
-    }*/
-
-    /*public DictionaryEntity getDictionary() {
-        return dictionary;
-    }
-
-    public void setDictionary(DictionaryEntity dictionary) {
-        this.dictionary = dictionary;
-    }*/
 }
