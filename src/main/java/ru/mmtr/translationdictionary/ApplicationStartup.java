@@ -32,8 +32,8 @@ public class ApplicationStartup implements ApplicationListener<ContextRefreshedE
         applyDbMigrations(serverConfig.createDatabase().dataSource(), "public", "db/changelog/09082023-db.changelog-master.xml");
     }
 
-    public void applyDbMigrations(DefaultServer server, String liquibaseSchemaName, String springLiquibaseChangeLog) {
-        ResourceAccessor resourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader());
+    public void applyDbMigrations(DataSource server, String liquibaseSchemaName, String springLiquibaseChangeLog) {
+        /*ResourceAccessor resourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader());
 
         log.info("------------Liquibase changes applying started---------");
 
@@ -60,10 +60,10 @@ public class ApplicationStartup implements ApplicationListener<ContextRefreshedE
             log.error(e.getMessage(), e);
 
             log.info("---------Liquibase changes applying failed");
-        }
+        }*/
 
 
-        /*ResourceAccessor resourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader());
+        ResourceAccessor resourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader());
 
         log.info("------------Liquibase changes applying started---------");
 
@@ -88,7 +88,7 @@ public class ApplicationStartup implements ApplicationListener<ContextRefreshedE
             log.error(e.getMessage(), e);
 
             log.info("---------Liquibase changes applying failed");
-        }*/
+        }
 
     }
 }

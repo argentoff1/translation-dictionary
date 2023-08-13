@@ -4,8 +4,10 @@ import io.ebean.Database;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.mmtr.translationdictionary.domain.models.language.LanguageModel;
+import ru.mmtr.translationdictionary.infrastructure.repositories.language.LanguageEntity;
 import ru.mmtr.translationdictionary.infrastructure.repositories.language.LanguageRepository;
 
+import java.util.List;
 import java.util.UUID;
 
 // Бизнес-логика
@@ -18,39 +20,33 @@ public class LanguageService {
 
 
 
+        LanguageModel languageModel = languageRepository.getLanguage(id);
 
-
-
-
-
-
-
-
-
-
-
-
-
-        LanguageModel foundLanguageModel = languageRepository.getLanguage(id);
-
-        return foundLanguageModel;
+        return languageModel;
     }
 
-    /*
     public List<LanguageEntity> getAllLanguages() {
         return null;
     }
 
-    // МБ надо возвращать Entity
     public LanguageModel createLanguage(LanguageRepository languageRepository) {
-        languageRepository.createLanguage();
+
+
+
+        /*LanguageModel languageModel = languageRepository.createLanguage();
+
+        return languageModel;*/
+        return null;
     }
 
-    public void saveLanguage(LanguageRepository languageRepository) {
-        languageRepository.saveLanguage()
+    public void saveLanguage(UUID id) {
+        //LanguageModel languageModel = languageRepository.saveLanguage(id);
     }
 
-    public void deleteLanguage(int id) {
+    public void deleteLanguage(UUID id) {
 
-    }*/
+
+
+        //LanguageModel languageModel = languageRepository.deleteLanguage(id);
+    }
 }

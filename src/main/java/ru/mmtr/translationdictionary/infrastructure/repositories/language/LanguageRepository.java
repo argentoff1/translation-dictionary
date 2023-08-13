@@ -10,9 +10,6 @@ import java.util.UUID;
 
 @Repository
 public class LanguageRepository {
-    // Объявление БД. Т.к. с репо взаимодействует Entity & Model (?)
-
-
     public LanguageModel getLanguage(UUID id) {
         LanguageEntity foundLanguageEntity = DB.find(LanguageEntity.class)
                 .where()
@@ -26,12 +23,11 @@ public class LanguageRepository {
         return languageModel;
     }
 
+    public List<LanguageModel> getAllLanguages() {
+        //List<LanguageEntity> languageEntities = new LanguageEntity().getLanguageId().eq().
 
-
-
-
-
-
+        return null;
+    }
 
     public LanguageModel createLanguage(String languageName) {
         LanguageEntity languageEntity = new LanguageEntity();
@@ -46,13 +42,9 @@ public class LanguageRepository {
         return languageModel;
     }
 
-    public LanguageModel saveLanguage(UUID id) {
-        LanguageEntity foundLanguageEntity = DB.find(LanguageEntity.class)
-                .where()
-                .eq(LanguageEntity.LANGUAGE_ID, id)
-                .findOne();
-
-        int rows = DB.find(LanguageEntity.class)
+    // МБ надо возвращать int, а в сервисе уже строку с сообщением
+    public String saveLanguage(UUID id) {
+        int savedRows = DB.find(LanguageEntity.class)
                 .where()
                 .eq(LanguageEntity.LANGUAGE_ID, id)
                 .asUpdate()
@@ -60,25 +52,24 @@ public class LanguageRepository {
                 .set(LanguageEntity.LANGUAGE_NAME, "")
                 .update();
 
+        return "Было обновлено " + savedRows + " строк";
+        /*LanguageEntity foundLanguageEntity = DB.find(LanguageEntity.class)
+                .where()
+                .eq(LanguageEntity.LANGUAGE_ID, id)
+                .findOne();*/
 
-        var languageModel = new LanguageModel();
+        /*var languageModel = new LanguageModel();
         languageModel.setLanguageId(foundLanguageEntity.getLanguageId());
-        languageModel.setLanguageName(foundLanguageEntity.getLanguageName());
-
-        return languageModel;
+        languageModel.setLanguageName(foundLanguageEntity.getLanguageName());*/
     }
-/*
-    public LanguageModel deleteLanguage(int id) {
-        int foundLanguageEntity = DB.find(LanguageEntity.class)
+
+    // МБ надо возвращать int, а в сервисе уже строку с сообщением
+    public String deleteLanguage(int id) {
+        int deletedRows = DB.find(LanguageEntity.class)
                 .where()
                 .eq(LanguageEntity.LANGUAGE_ID, id)
                 .delete();
 
+        return "Было удалено " + deletedRows + " строк";
     }
-
-    public List<LanguageModel> getAllLanguages() {
-        List<LanguageEntity> languageEntities = new LanguageEntity().getLanguageId().eq().
-
-        return null;
-    }*/
 }

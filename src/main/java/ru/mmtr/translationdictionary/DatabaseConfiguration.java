@@ -35,10 +35,10 @@ public class DatabaseConfiguration {
         dataSourceConfig.setPassword("postgres");
         dataSourceConfig.setUrl("jdbc:postgresql://localhost:5432/translation_dictionaries");
         dataSourceBuilder.driverClassName("org.h2.Driver");
-        dataSourceBuilder.url("jdbc:h2:mem:translation_dictionaries");
+        /*dataSourceBuilder.url("jdbc:h2:mem:translation_dictionaries");
         dataSourceBuilder.username("postgres");
         dataSourceBuilder.password("postgres");
-        dataSourceBuilder.build();
+        dataSourceBuilder.build();*/
         return dataSourceConfig;
 
 
@@ -58,12 +58,11 @@ public class DatabaseConfiguration {
     @Bean
     public Database createDatabase(){
         DatabaseConfig databaseConfig = new DatabaseConfig();
-        databaseConfig.setName();
         databaseConfig.setDataSourceConfig(getDataSourceBuilder());
         return DatabaseFactory.create(databaseConfig);
     }
 
-    @Bean
+    /*@Bean
     public ServerConfigStartup getDefaultServer() {
         ServerConfigStartup serverConfigStartup = new ServerConfigStartup() {
             @Override
@@ -72,5 +71,5 @@ public class DatabaseConfiguration {
             }
         };
         return serverConfigStartup;
-    }
+    }*/
 }
