@@ -1,6 +1,5 @@
 package ru.mmtr.translationdictionary.domainservice.services.language;
 
-import io.ebean.Database;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.mmtr.translationdictionary.domain.models.language.LanguageModel;

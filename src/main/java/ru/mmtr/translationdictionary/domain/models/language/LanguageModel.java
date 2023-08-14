@@ -7,9 +7,6 @@ import javax.persistence.Table;
 import java.util.UUID;
 
 public class LanguageModel {
-    /*@Autowired
-    LanguageRepository languageRepository;*/
-
     private UUID languageId;
 
     private String languageName;

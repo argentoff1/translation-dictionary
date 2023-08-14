@@ -1,12 +1,20 @@
 package ru.mmtr.translationdictionary.api.controllers.dictionary;
 
-/*@RestController
-@RequestMapping(value = "/api")*/
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import ru.mmtr.translationdictionary.domain.models.dictionary.DictionaryModel;
+import ru.mmtr.translationdictionary.domainservice.services.dictionary.DictionaryService;
+import ru.mmtr.translationdictionary.infrastructure.repositories.dictionary.DictionaryEntity;
+
+import java.util.List;
+import java.util.UUID;
+
+@RestController
+@RequestMapping(value = "/api")
 public class DictionaryController {
-    /*@Autowired
+    @Autowired
     private DictionaryService dictionaryService;
 
-    // не выводит
     @GetMapping(value = "/dictionaries")
     public List<DictionaryEntity> showAllDictionaries() {
         List<DictionaryEntity> allDictionaries = dictionaryService.getAllDictionaries();
@@ -14,12 +22,10 @@ public class DictionaryController {
         return allDictionaries;
     }
 
-    // не выводит
     @GetMapping("/dictionaries/{id}")
-    public DictionaryEntity showDictionary(@PathVariable int id) {
-        DictionaryEntity dictionary = dictionaryService.getDictionary(id);
+    public DictionaryModel showDictionary(@PathVariable UUID id) {
 
-        return dictionary;
+        return dictionaryService.getDictionary(id);
     }
 
     @PostMapping("/dictionaries")
@@ -37,11 +43,9 @@ public class DictionaryController {
     }
 
     @DeleteMapping("/dictionaries/{id}")
-    public String deleteDictionary(@PathVariable int id) {
-        DictionaryEntity dictionary = dictionaryService.getDictionary(id);
+    public String deleteDictionary(@PathVariable UUID id) {
 
-        dictionaryService.deleteDictionary(id);
 
-        return "Dictionary with ID = " + id + " was deleted";
-    }*/
+        return null;
+    }
 }

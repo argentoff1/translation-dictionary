@@ -1,57 +1,64 @@
 package ru.mmtr.translationdictionary.infrastructure.repositories.dictionary;
 
+import javax.persistence.*;
+
+import javax.persistence.Entity;
 import java.util.Date;
+import java.util.UUID;
 
-/*@Entity
-@Table(name = "dictionaries")*/
+@Entity
+@Table(name = "Dictionaries")
 public class DictionaryEntity {
-    /*@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "dictionary_id")*/
-    private int id;
+    public static final String DICTIONARY_ID = "dictionaryId";
+    public static final String WORD = "word";
+    public static final String TRANSLATION = "translation";
+    public static final String FROM_LANGUAGE = "fromLanguage";
+    public static final String TO_LANGUAGE = "toLanguage";
 
-    //@Column(name = "word")
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = DICTIONARY_ID)
+    private UUID dictionaryId;
+
+    @Column(name = WORD)
     private String word;
 
-    //@Column(name = "translation")
+    @Column(name = TRANSLATION)
     private String translation;
 
-    //@Column(name = "from_language")
+    @Column(name = FROM_LANGUAGE)
     //@ManyToOne
     //@JoinColumn(name = "language_id")
-    private int from_language;
+    private UUID fromLanguage;
 
-    //@Column(name = "to_language")
+    @Column(name = TO_LANGUAGE)
     //@ManyToOne
     //@JoinColumn(name = "language_id")
-    private int to_language;
+    private UUID toLanguage;
 
-    //@Column(name = "createdat")
+    /*@Column(name = "createdat")
     private Date createdAt;
 
-    //@Column(name = "removedat")
-    private Date removedAt;
+    @Column(name = "removedat")
+    private Date removedAt;*/
 
     public DictionaryEntity() {
-
     }
 
-    public DictionaryEntity(int id, String word, String translation, int from_language, int to_language, Date createdAt, Date removedAt) {
-        this.id = id;
+    public DictionaryEntity(UUID dictionaryId, String word, String translation, UUID fromLanguage, UUID toLanguage) {
+        this.dictionaryId = dictionaryId;
         this.word = word;
         this.translation = translation;
-        this.from_language = from_language;
-        this.to_language = to_language;
-        this.createdAt = createdAt;
-        this.removedAt = removedAt;
+        this.fromLanguage = fromLanguage;
+        this.toLanguage = toLanguage;
     }
 
-    public int getId() {
-        return id;
+    public UUID getDictionaryId() {
+        return dictionaryId;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setDictionaryId(UUID dictionaryId) {
+        this.dictionaryId = dictionaryId;
     }
 
     public String getWord() {
@@ -70,35 +77,19 @@ public class DictionaryEntity {
         this.translation = translation;
     }
 
-    public int getFrom_language() {
-        return from_language;
+    public UUID getFromLanguage() {
+        return fromLanguage;
     }
 
-    public void setFrom_language(int from_language) {
-        this.from_language = from_language;
+    public void setFromLanguage(UUID fromLanguage) {
+        this.fromLanguage = fromLanguage;
     }
 
-    public int getTo_language() {
-        return to_language;
+    public UUID getToLanguage() {
+        return toLanguage;
     }
 
-    public void setTo_language(int to_language) {
-        this.to_language = to_language;
-    }
-
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public Date getRemovedAt() {
-        return removedAt;
-    }
-
-    public void setRemovedAt(Date removedAt) {
-        this.removedAt = removedAt;
+    public void setToLanguage(UUID toLanguage) {
+        this.toLanguage = toLanguage;
     }
 }
