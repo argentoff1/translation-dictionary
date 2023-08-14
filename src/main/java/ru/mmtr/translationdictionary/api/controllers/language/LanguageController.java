@@ -32,8 +32,19 @@ public class LanguageController {
         return languageService.deleteLanguage(id);
     }
 
+    @PostMapping(value = "/languages")
+    public LanguageModel addNewLanguage(@RequestParam String languageName) {
 
 
+        return languageService.createLanguage(languageName);
+    }
+
+    @PutMapping(value = "/languages")
+    public String updateLanguage(@RequestParam UUID id, @RequestParam String languageName) {
+
+
+        return languageService.saveLanguage(id, languageName);
+    }
 
 /*
     @GetMapping(value = "/languages")
@@ -42,20 +53,5 @@ public class LanguageController {
 
         return allLanguages;
     }
-
-    @PostMapping(value = "/languages")
-    public LanguageEntity addNewLanguage(@RequestBody LanguageEntity language) {
-        languageService.saveLanguage(language);
-
-        return language;
-    }
-
-    @PutMapping(value = "/languages")
-    public LanguageEntity updateLanguage(@RequestBody LanguageEntity language) {
-        languageService.saveLanguage(language);
-
-        return language;
-    }
-
    */
 }

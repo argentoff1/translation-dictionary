@@ -31,8 +31,8 @@ public class LanguageRepository {
 
     public LanguageModel createLanguage(String languageName) {
         LanguageEntity languageEntity = new LanguageEntity();
-        languageEntity.setLanguageName(languageName);
         languageEntity.setLanguageId(UUID.randomUUID());
+        languageEntity.setLanguageName(languageName);
         DB.insert(languageEntity);
 
         var languageModel = new LanguageModel();
@@ -43,16 +43,16 @@ public class LanguageRepository {
     }
 
     // МБ надо возвращать int, а в сервисе уже строку с сообщением
-    public String saveLanguage(UUID id) {
+    public int saveLanguage(UUID id, String languageName) {
         int savedRows = DB.find(LanguageEntity.class)
                 .where()
                 .eq(LanguageEntity.LANGUAGE_ID, id)
                 .asUpdate()
                 // Заглушка
-                .set(LanguageEntity.LANGUAGE_NAME, "")
+                .set(LanguageEntity.LANGUAGE_NAME, languageName)
                 .update();
 
-        return "Было обновлено " + savedRows + " строк";
+        return savedRows;
         /*LanguageEntity foundLanguageEntity = DB.find(LanguageEntity.class)
                 .where()
                 .eq(LanguageEntity.LANGUAGE_ID, id)

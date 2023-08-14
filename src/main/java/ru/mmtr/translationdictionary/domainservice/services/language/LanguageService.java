@@ -28,24 +28,26 @@ public class LanguageService {
         return null;
     }
 
-    public LanguageModel createLanguage(LanguageRepository languageRepository) {
+    public LanguageModel createLanguage(String languageName) {
 
 
 
-        /*LanguageModel languageModel = languageRepository.createLanguage();
+        LanguageModel languageModel = languageRepository.createLanguage(languageName);
 
-        return languageModel;*/
-        return null;
+        return languageModel;
     }
 
-    public void saveLanguage(UUID id) {
+    public String saveLanguage(UUID id, String languageName) {
         //LanguageModel languageModel = languageRepository.saveLanguage(id);
 
 
+        int savedRows = languageRepository.saveLanguage(id, languageName);
 
+        return "Было обновлено " + savedRows + " строк";
     }
 
     public String deleteLanguage(UUID id) {
+
 
 
 
