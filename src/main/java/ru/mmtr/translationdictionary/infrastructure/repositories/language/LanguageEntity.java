@@ -8,8 +8,8 @@ import java.util.UUID;
 @Entity
 @Table(name = "'Languages'")
 public class LanguageEntity {
-    public static final String LANGUAGE_ID = "languageId";
-    public static final String LANGUAGE_NAME = "languageName";
+    public static final String LANGUAGE_ID = "language_id";
+    public static final String LANGUAGE_NAME = "language_name";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -18,4 +18,6 @@
     <include file="db/changelog/2023/10082023-rename-changeset-tables-and-columns.xml"/>
 
     <include file="db/changelog/2023/11082023-update-changeset-changelog.xml"/>
+
+    <include file="db/changelog/2023/14082023-rename-changeset-tables.xml"/>
 </databaseChangeLog>
