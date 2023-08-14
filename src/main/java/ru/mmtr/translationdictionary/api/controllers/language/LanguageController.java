@@ -25,7 +25,12 @@ public class LanguageController {
         return languageService.getLanguage(id);
     }
 
+    @DeleteMapping(value = "/languages/{id}")
+    public String deleteLanguage(@PathVariable UUID id) {
 
+
+        return languageService.deleteLanguage(id);
+    }
 
 
 
@@ -52,12 +57,5 @@ public class LanguageController {
         return language;
     }
 
-    @DeleteMapping(value = "/languages/{id}")
-    public String deleteLanguage(@PathVariable int id) {
-        LanguageEntity language = languageService.getLanguage(id);
-
-        languageService.deleteLanguage(id);
-
-        return "Language with ID = " + id + " was deleted";
-    }*/
+   */
 }

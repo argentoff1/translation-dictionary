@@ -1,6 +1,6 @@
 package ru.mmtr.translationdictionary.infrastructure.repositories.language;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 
 import java.util.Date;
 import java.util.UUID;
@@ -12,7 +12,7 @@ public class LanguageEntity {
     public static final String LANGUAGE_NAME = "languageName";
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = LANGUAGE_ID)
     private UUID languageId;
 
@@ -48,12 +48,4 @@ public class LanguageEntity {
 
     /*@OneToOne(cascade = CascadeType.ALL)
     DictionaryEntity dictionary;*/
-
-
-
-
-
-
-
-
 }

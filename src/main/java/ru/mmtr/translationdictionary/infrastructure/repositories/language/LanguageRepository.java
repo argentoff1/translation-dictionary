@@ -64,12 +64,12 @@ public class LanguageRepository {
     }
 
     // МБ надо возвращать int, а в сервисе уже строку с сообщением
-    public String deleteLanguage(int id) {
+    public int deleteLanguage(UUID id) {
         int deletedRows = DB.find(LanguageEntity.class)
                 .where()
                 .eq(LanguageEntity.LANGUAGE_ID, id)
                 .delete();
 
-        return "Было удалено " + deletedRows + " строк";
+        return deletedRows;
     }
 }

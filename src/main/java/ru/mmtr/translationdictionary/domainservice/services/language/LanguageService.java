@@ -41,12 +41,17 @@ public class LanguageService {
 
     public void saveLanguage(UUID id) {
         //LanguageModel languageModel = languageRepository.saveLanguage(id);
+
+
+
     }
 
-    public void deleteLanguage(UUID id) {
+    public String deleteLanguage(UUID id) {
 
 
 
-        //LanguageModel languageModel = languageRepository.deleteLanguage(id);
+        int deletedRows = languageRepository.deleteLanguage(id);
+
+        return "Было удалено " + deletedRows + " строк";
     }
 }

@@ -14,6 +14,7 @@ import liquibase.exception.LiquibaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
 import liquibase.resource.ResourceAccessor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -25,7 +26,12 @@ import java.sql.SQLException;
 @Component
 @Slf4j
 public class ApplicationStartup implements ApplicationListener<ContextRefreshedEvent> {
-    DatabaseConfiguration serverConfig = new DatabaseConfiguration();
+    private DatabaseConfiguration serverConfig;
+
+    @Autowired
+    public ApplicationStartup(DatabaseConfiguration serverConfig) {
+        this.serverConfig = serverConfig;
+    }
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
