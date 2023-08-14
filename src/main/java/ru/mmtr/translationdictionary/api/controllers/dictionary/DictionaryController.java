@@ -17,9 +17,9 @@ public class DictionaryController {
 
     @GetMapping(value = "/dictionaries")
     public List<DictionaryEntity> showAllDictionaries() {
-        List<DictionaryEntity> allDictionaries = dictionaryService.getAllDictionaries();
+        //List<DictionaryEntity> allDictionaries = dictionaryService.getAllDictionaries();
 
-        return allDictionaries;
+        return dictionaryService.getAllDictionaries();
     }
 
     @GetMapping("/dictionaries/{id}")
@@ -29,23 +29,24 @@ public class DictionaryController {
     }
 
     @PostMapping("/dictionaries")
-    public DictionaryEntity addNewDictionary(@RequestBody DictionaryEntity dictionary) {
-        dictionaryService.saveDictionary(dictionary);
+    public DictionaryModel addNewDictionary(@RequestParam String word, @RequestParam String translation,
+                                            @RequestParam UUID fromLanguage, @RequestParam UUID toLanguage) {
 
-        return dictionary;
+
+        return dictionaryService.createDictionary(word, translation, fromLanguage, toLanguage);
     }
 
-    @PutMapping("/dictionaries")
-    public DictionaryEntity updateDictionary(@RequestBody DictionaryEntity dictionary) {
-        dictionaryService.saveDictionary(dictionary);
+    @PutMapping("/dictionaries/{id}")
+    public String updateDictionary(@PathVariable UUID id, @RequestParam String word, @RequestParam String translation) {
 
-        return dictionary;
+
+        return dictionaryService.saveDictionary(id, word, translation);
     }
 
     @DeleteMapping("/dictionaries/{id}")
     public String deleteDictionary(@PathVariable UUID id) {
 
 
-        return null;
+        return dictionaryService.deleteDictionary(id);
     }
 }

@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.mmtr.translationdictionary.domain.models.language.LanguageModel;
 import ru.mmtr.translationdictionary.domainservice.services.language.LanguageService;
 import ru.mmtr.translationdictionary.infrastructure.repositories.language.LanguageEntity;
-import ru.mmtr.translationdictionary.infrastructure.repositories.language.LanguageRepository;
 
 import java.util.List;
 import java.util.UUID;
@@ -46,12 +45,11 @@ public class LanguageController {
         return languageService.saveLanguage(id, languageName);
     }
 
-/*
     @GetMapping(value = "/languages")
     public List<LanguageEntity> showAllLanguages() {
-        List<LanguageEntity> allLanguages = languageService.getAllLanguages();
+        //List<LanguageEntity> allLanguages = languageService.getAllLanguages();
 
-        return allLanguages;
+        return languageService.getAllLanguages();
     }
-   */
+
 }

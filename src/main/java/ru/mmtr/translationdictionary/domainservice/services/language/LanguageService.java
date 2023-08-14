@@ -25,7 +25,13 @@ public class LanguageService {
     }
 
     public List<LanguageEntity> getAllLanguages() {
-        return null;
+
+
+
+
+        List<LanguageEntity> languageEntities = languageRepository.getAllLanguages();
+
+        return languageEntities;
     }
 
     public LanguageModel createLanguage(String languageName) {
@@ -38,7 +44,8 @@ public class LanguageService {
     }
 
     public String saveLanguage(UUID id, String languageName) {
-        //LanguageModel languageModel = languageRepository.saveLanguage(id);
+
+
 
 
         int savedRows = languageRepository.saveLanguage(id, languageName);

@@ -15,10 +15,16 @@ public class DictionaryService {
     private DictionaryRepository dictionaryRepository;
 
     public List<DictionaryEntity> getAllDictionaries() {
-        return null;
+
+
+        List<DictionaryEntity> dictionaryEntities = dictionaryRepository.getAllDictionaries();
+
+        return dictionaryEntities;
     }
 
     public DictionaryModel getDictionary(UUID id) {
+
+
 
 
         DictionaryModel dictionaryModel = dictionaryRepository.getDictionary(id);
@@ -26,11 +32,30 @@ public class DictionaryService {
         return dictionaryModel;
     }
 
-    public void saveDictionary(DictionaryEntity dictionary) {
+    public DictionaryModel createDictionary(String word, String translation, UUID fromLanguage, UUID toLanguage) {
 
+
+
+        DictionaryModel dictionaryModel = dictionaryRepository.createDictionary(word, translation, fromLanguage, toLanguage);
+
+        return dictionaryModel;
     }
 
-    public void deleteDictionary(UUID id) {
+    public String saveDictionary(UUID id, String word, String translation) {
 
+
+
+        int savedRows = dictionaryRepository.saveDictionary(id, word, translation);
+
+        return "Было обновлено " + savedRows + " строк";
+    }
+
+    public String deleteDictionary(UUID id) {
+
+
+
+        int deletedRows = dictionaryRepository.deleteDictionary(id);
+
+        return "Было удалено " + deletedRows + " строк";
     }
 }

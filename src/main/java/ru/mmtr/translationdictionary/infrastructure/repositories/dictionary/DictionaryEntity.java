@@ -7,13 +7,13 @@ import java.util.Date;
 import java.util.UUID;
 
 @Entity
-@Table(name = "Dictionaries")
+@Table(name = "'Dictionaries'")
 public class DictionaryEntity {
-    public static final String DICTIONARY_ID = "dictionaryId";
+    public static final String DICTIONARY_ID = "dictionary_id";
     public static final String WORD = "word";
     public static final String TRANSLATION = "translation";
-    public static final String FROM_LANGUAGE = "fromLanguage";
-    public static final String TO_LANGUAGE = "toLanguage";
+    public static final String FROM_LANGUAGE = "from_language";
+    public static final String TO_LANGUAGE = "to_language";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,9 +1,5 @@
 package ru.mmtr.translationdictionary.domain.models.language;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
 import java.util.UUID;
 
 public class LanguageModel {
