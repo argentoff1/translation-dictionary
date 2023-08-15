@@ -24,7 +24,8 @@ public class LanguageEntity {
         this.languageName = languageName;
     }
 
-    public LanguageEntity() {}
+    public LanguageEntity() {
+    }
 
     public UUID getLanguageId() {
         return languageId;

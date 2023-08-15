@@ -1,10 +1,9 @@
-package ru.mmtr.translationdictionary.domainservice.services.language;
+package ru.mmtr.translationdictionary.domainservice.language;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.mmtr.translationdictionary.domain.models.language.LanguageModel;
-import ru.mmtr.translationdictionary.domainservice.services.EntityNotFoundException;
+import ru.mmtr.translationdictionary.domain.language.LanguageModel;
 import ru.mmtr.translationdictionary.infrastructure.repositories.language.LanguageRepository;
 
 import javax.persistence.PersistenceException;
@@ -14,16 +13,18 @@ import java.util.UUID;
 @Slf4j
 @Service
 public class LanguageService {
-    @Autowired
-    private LanguageRepository languageRepository;
+    private final LanguageRepository languageRepository;
 
-    public LanguageModel getLanguage(UUID id) {
+    public LanguageService(LanguageRepository languageRepository) {
+        this.languageRepository = languageRepository;
+    }
+
+    public LanguageModel getById(UUID id) {
         LanguageModel languageModel;
         try {
             log.info("------Получение языка----------");
 
-            languageModel = languageRepository.getLanguage(id);
-
+            languageModel = languageRepository.getById(id);
             log.info("-----Язык получен успешно---------");
         } catch (NullPointerException e) {
             throw new NullPointerException("Словарь или язык не найден");
@@ -31,22 +32,20 @@ public class LanguageService {
         return languageModel;
     }
 
-    public List<LanguageModel> getAllLanguages() {
+    public List<LanguageModel> showAll() {
 
 
-
-
-        List<LanguageModel> languageModels = languageRepository.getAllLanguages();
+        List<LanguageModel> languageModels = languageRepository.showAll();
 
         return languageModels;
     }
 
-    public LanguageModel createLanguage(String languageName) {
+    public LanguageModel save(String languageName) {
         LanguageModel languageModel = new LanguageModel();
         try {
             log.info("------Создание языка----------");
 
-            languageModel = languageRepository.createLanguage(languageName);
+            languageModel = languageRepository.save(languageName);
 
             if (languageName == null) {
                 throw new NullPointerException("Название должно быть заполнено");
@@ -57,12 +56,7 @@ public class LanguageService {
             }
 
             log.info("-----Язык создан успешно---------");
-        }
-
-
-
-
-        catch (NullPointerException e) {
+        } catch (NullPointerException e) {
 
         }
         // На пустоту, но почему-то Exception не выбрасывается
@@ -72,22 +66,20 @@ public class LanguageService {
         return languageModel;
     }
 
-    public String saveLanguage(UUID id, String languageName) {
+    public String update(UUID id, String languageName) {
 
 
-
-
-        int savedRows = languageRepository.saveLanguage(id, languageName);
+        int savedRows = languageRepository.update(id, languageName);
 
         return "Было обновлено " + savedRows + " строк";
     }
 
-    public String deleteLanguage(UUID id) {
+    public String delete(UUID id) {
         int deletedRows = 0;
         try {
             log.info("------Получение языка----------");
 
-            deletedRows = languageRepository.deleteLanguage(id);
+            deletedRows = languageRepository.delete(id);
 
             log.info("-----Язык получен успешно---------");
         } catch (NullPointerException e) {

@@ -33,7 +33,7 @@ public class DatabaseConfiguration {
     }
 
     @Bean
-    public Database createDatabase(){
+    public Database createDatabase() {
         DatabaseConfig databaseConfig = new DatabaseConfig();
         databaseConfig.setDataSourceConfig(getDataSourceConfig());
         return DatabaseFactory.create(databaseConfig);

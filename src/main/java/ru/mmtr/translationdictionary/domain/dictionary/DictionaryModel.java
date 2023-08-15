@@ -1,4 +1,4 @@
-package ru.mmtr.translationdictionary.domain.models.dictionary;
+package ru.mmtr.translationdictionary.domain.dictionary;
 
 import java.util.UUID;
 
@@ -13,7 +13,8 @@ public class DictionaryModel {
 
     private UUID toLanguage;
 
-    public DictionaryModel() {}
+    public DictionaryModel() {
+    }
 
     public DictionaryModel(UUID dictionaryId, String word, String translation, UUID fromLanguage, UUID toLanguage) {
         this.dictionaryId = dictionaryId;

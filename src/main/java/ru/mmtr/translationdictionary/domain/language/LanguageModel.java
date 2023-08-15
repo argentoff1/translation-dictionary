@@ -1,4 +1,4 @@
-package ru.mmtr.translationdictionary.domain.models.language;
+package ru.mmtr.translationdictionary.domain.language;
 
 import java.util.UUID;
 
@@ -7,7 +7,8 @@ public class LanguageModel {
 
     private String languageName;
 
-    public LanguageModel() {}
+    public LanguageModel() {
+    }
 
     public LanguageModel(UUID languageId, String languageName) {
         this.languageId = languageId;
