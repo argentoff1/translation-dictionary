@@ -24,14 +24,14 @@ public class LanguageService {
         return languageModel;
     }
 
-    public List<LanguageEntity> getAllLanguages() {
+    public List<LanguageModel> getAllLanguages() {
 
 
 
 
-        List<LanguageEntity> languageEntities = languageRepository.getAllLanguages();
+        List<LanguageModel> languageModels = languageRepository.getAllLanguages();
 
-        return languageEntities;
+        return languageModels;
     }
 
     public LanguageModel createLanguage(String languageName) {

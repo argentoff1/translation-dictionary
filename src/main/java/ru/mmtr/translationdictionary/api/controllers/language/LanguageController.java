@@ -46,7 +46,7 @@ public class LanguageController {
     }
 
     @GetMapping(value = "/languages")
-    public List<LanguageEntity> showAllLanguages() {
+    public List<LanguageModel> showAllLanguages() {
         //List<LanguageEntity> allLanguages = languageService.getAllLanguages();
 
         return languageService.getAllLanguages();

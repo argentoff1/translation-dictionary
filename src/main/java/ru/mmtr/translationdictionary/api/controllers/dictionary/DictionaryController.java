@@ -16,7 +16,7 @@ public class DictionaryController {
     private DictionaryService dictionaryService;
 
     @GetMapping(value = "/dictionaries")
-    public List<DictionaryEntity> showAllDictionaries() {
+    public List<DictionaryModel> showAllDictionaries() {
         //List<DictionaryEntity> allDictionaries = dictionaryService.getAllDictionaries();
 
         return dictionaryService.getAllDictionaries();

@@ -4,6 +4,7 @@ import io.ebean.DB;
 import org.springframework.stereotype.Repository;
 import ru.mmtr.translationdictionary.domain.models.language.LanguageModel;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,13 +23,22 @@ public class LanguageRepository {
         return languageModel;
     }
 
-    public List<LanguageEntity> getAllLanguages() {
-        List<LanguageEntity> languageEntities = DB.find(LanguageEntity.class)
+    public List<LanguageModel> getAllLanguages() {
+        List<LanguageEntity> languageEntities = DB
+                .find(LanguageEntity.class)
                 .findList();
 
+        List<LanguageModel> languageModels = new ArrayList<>();
 
+        languageEntities.forEach((languageEntity) -> {
+            var languageModel = new LanguageModel();
+            languageModel.setLanguageId(languageEntity.getLanguageId());
+            languageModel.setLanguageName(languageEntity.getLanguageName());
 
-        return languageEntities;
+            languageModels.add(languageModel);
+        });
+
+        return languageModels;
     }
 
     public LanguageModel createLanguage(String languageName) {

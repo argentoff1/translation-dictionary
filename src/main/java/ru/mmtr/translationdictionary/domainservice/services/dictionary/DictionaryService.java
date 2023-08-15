@@ -14,12 +14,12 @@ public class DictionaryService {
     @Autowired
     private DictionaryRepository dictionaryRepository;
 
-    public List<DictionaryEntity> getAllDictionaries() {
+    public List<DictionaryModel> getAllDictionaries() {
 
 
-        List<DictionaryEntity> dictionaryEntities = dictionaryRepository.getAllDictionaries();
+        List<DictionaryModel> dictionaryModels = dictionaryRepository.getAllDictionaries();
 
-        return dictionaryEntities;
+        return dictionaryModels;
     }
 
     public DictionaryModel getDictionary(UUID id) {

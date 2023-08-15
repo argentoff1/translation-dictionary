@@ -4,19 +4,31 @@ import io.ebean.DB;
 import org.springframework.stereotype.Repository;
 import ru.mmtr.translationdictionary.domain.models.dictionary.DictionaryModel;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 @Repository
 public class DictionaryRepository {
-    public List<DictionaryEntity> getAllDictionaries() {
+    public List<DictionaryModel> getAllDictionaries() {
         List<DictionaryEntity> dictionaryEntities = DB
                 .find(DictionaryEntity.class)
                 .findList();
 
+        List<DictionaryModel> dictionaryModels = new ArrayList<>();
 
+        dictionaryEntities.forEach((dictionaryEntity) -> {
+            var dictionaryModel = new DictionaryModel();
+            dictionaryModel.setDictionaryId(dictionaryEntity.getDictionaryId());
+            dictionaryModel.setWord(dictionaryEntity.getWord());
+            dictionaryModel.setTranslation(dictionaryEntity.getTranslation());
+            dictionaryModel.setFromLanguage(dictionaryEntity.getFromLanguage());
+            dictionaryModel.setToLanguage(dictionaryEntity.getToLanguage());
 
-        return dictionaryEntities;
+            dictionaryModels.add(dictionaryModel);
+        });
+
+        return dictionaryModels;
     }
 
     public DictionaryModel getDictionary(UUID id) {
