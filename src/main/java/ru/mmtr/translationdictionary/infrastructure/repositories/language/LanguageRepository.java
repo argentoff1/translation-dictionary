@@ -6,6 +6,7 @@ import ru.mmtr.translationdictionary.domain.models.language.LanguageModel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Repository
@@ -72,5 +73,13 @@ public class LanguageRepository {
                 .delete();
 
         return deletedRows;
+    }
+
+    public LanguageModel convertToModel(LanguageEntity languageEntity) {
+        var languageModel = new LanguageModel();
+        languageModel.setLanguageId(languageEntity.getLanguageId());
+        languageModel.setLanguageName(languageEntity.getLanguageName());
+
+        return languageModel;
     }
 }

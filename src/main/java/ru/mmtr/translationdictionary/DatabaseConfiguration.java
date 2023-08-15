@@ -27,7 +27,6 @@ public class DatabaseConfiguration {
         dataSourceConfig.setDriver("org.postgresql.Driver");
         dataSourceConfig.setUsername("postgres");
         dataSourceConfig.setPassword("postgres");
-        dataSourceConfig.setSchema("public");
         dataSourceConfig.setUrl("jdbc:postgresql://localhost:5432/translation_dictionaries");
 
         return dataSourceConfig;
