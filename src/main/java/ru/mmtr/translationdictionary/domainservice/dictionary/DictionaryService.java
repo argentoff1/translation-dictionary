@@ -1,6 +1,5 @@
 package ru.mmtr.translationdictionary.domainservice.dictionary;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.mmtr.translationdictionary.domain.dictionary.DictionaryModel;
 import ru.mmtr.translationdictionary.infrastructure.repositories.dictionary.DictionaryRepository;
@@ -34,22 +33,23 @@ public class DictionaryService {
         if (Objects.isNull(result)) {
 
         }
-
+        return result;
     }
 
-    public String update(UUID id, String word, String translation) {
+    public DictionaryModel update(UUID id, String word, String translation) {
 
-
-        int savedRows = dictionaryRepository.update(id, word, translation);
-
-        return "Было обновлено " + savedRows + " строк";
+        return dictionaryRepository.update(id, word, translation);
     }
 
-    public String delete(UUID id) {
+    public boolean delete(UUID id) {
+        boolean isDeleted;
 
 
-        int deletedRows = dictionaryRepository.delete(id);
 
-        return "Было удалено " + deletedRows + " строк";
+        isDeleted = dictionaryRepository.delete(id);
+
+
+
+        return isDeleted;
     }
 }

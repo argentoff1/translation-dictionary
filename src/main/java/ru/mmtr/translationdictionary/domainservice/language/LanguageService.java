@@ -66,27 +66,27 @@ public class LanguageService {
         return languageModel;
     }
 
-    public String update(UUID id, String languageName) {
+    public LanguageModel update(UUID id, String languageName) {
 
 
-        int savedRows = languageRepository.update(id, languageName);
-
-        return "Было обновлено " + savedRows + " строк";
+        return languageRepository.update(id, languageName);
     }
 
-    public String delete(UUID id) {
-        int deletedRows = 0;
+    public boolean delete(UUID id) {
+        boolean isDeleted;
+
         try {
             log.info("------Получение языка----------");
 
-            deletedRows = languageRepository.delete(id);
+            isDeleted = languageRepository.delete(id);
 
             log.info("-----Язык получен успешно---------");
+            // В Кэтч уже есть отлов искл, не нужен throw new
         } catch (NullPointerException e) {
             throw new NullPointerException("Словарь или язык не найден");
         }
 
-        return "Было удалено " + deletedRows + " строк";
+        return isDeleted;
     }
 
     public static int countChars(String str) {

@@ -43,8 +43,8 @@ public class DictionaryRepository {
         return getModel(entity);
     }
 
-    public int update(UUID id, String word, String translation) {
-        int savedRows = DB.find(DictionaryEntity.class)
+    public DictionaryModel update(UUID id, String word, String translation) {
+        DB.find(DictionaryEntity.class)
                 .where()
                 .eq(DictionaryEntity.DICTIONARY_ID, id)
                 .asUpdate()
@@ -52,16 +52,23 @@ public class DictionaryRepository {
                 .set(DictionaryEntity.TRANSLATION, translation)
                 .update();
 
-        return savedRows;
+        DictionaryEntity entity = new DictionaryEntity();
+        entity.setDictionaryId(UUID.randomUUID());
+        entity.setWord(word);
+        entity.setTranslation(translation);
+        entity.setFromLanguage(entity.getFromLanguage());
+        entity.setToLanguage(entity.getToLanguage());
+
+        return getModel(entity);
     }
 
-    public int delete(UUID id) {
-        int deletedRows = DB.find(DictionaryEntity.class)
+    public boolean delete(UUID id) {
+        DB.find(DictionaryEntity.class)
                 .where()
                 .eq(DictionaryEntity.DICTIONARY_ID, id)
                 .delete();
 
-        return deletedRows;
+        return true;
     }
 
     private DictionaryModel getModel(DictionaryEntity entity) {

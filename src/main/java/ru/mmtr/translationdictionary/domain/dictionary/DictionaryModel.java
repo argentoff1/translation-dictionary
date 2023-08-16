@@ -1,16 +1,23 @@
 package ru.mmtr.translationdictionary.domain.dictionary;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.util.UUID;
 
 public class DictionaryModel {
+    @Schema(description = "Идентификатор", accessMode = Schema.AccessMode.READ_ONLY)
     private UUID dictionaryId;
 
+    @Schema(description = "Слово для перевода", example = "Окно")
     private String word;
 
+    @Schema(description = "Перевод слова", example = "Window")
     private String translation;
 
+    @Schema(description = "Идентификатор языка исходного слова", accessMode = Schema.AccessMode.READ_ONLY)
     private UUID fromLanguage;
 
+    @Schema(description = "Идентификатор языка переведенного слова", accessMode = Schema.AccessMode.READ_ONLY)
     private UUID toLanguage;
 
     public DictionaryModel() {

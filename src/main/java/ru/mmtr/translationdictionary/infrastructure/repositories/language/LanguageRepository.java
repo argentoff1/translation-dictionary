@@ -39,24 +39,32 @@ public class LanguageRepository {
         return getModel(languageEntity);
     }
 
-    public int update(UUID id, String languageName) {
-        int savedRows = DB.find(LanguageEntity.class)
+    public LanguageModel update(UUID id, String languageName) {
+        DB.find(LanguageEntity.class)
                 .where()
                 .eq(LanguageEntity.LANGUAGE_ID, id)
                 .asUpdate()
                 .set(LanguageEntity.LANGUAGE_NAME, languageName)
                 .update();
 
-        return savedRows;
+        LanguageEntity entity = new LanguageEntity();
+        entity.setLanguageId(id);
+        entity.setLanguageName(languageName);
+        entity = DB.find(LanguageEntity.class)
+                .where()
+                .eq(LanguageEntity.LANGUAGE_ID, id)
+                .findOne();
+
+        return getModel(entity);
     }
 
-    public int delete(UUID id) {
-        int deletedRows = DB.find(LanguageEntity.class)
+    public boolean delete(UUID id) {
+        DB.find(LanguageEntity.class)
                 .where()
                 .eq(LanguageEntity.LANGUAGE_ID, id)
                 .delete();
 
-        return deletedRows;
+        return true;
     }
 
     private LanguageModel getModel(LanguageEntity entity) {
