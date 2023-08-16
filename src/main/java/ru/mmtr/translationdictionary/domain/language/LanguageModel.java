@@ -10,11 +10,10 @@ public class LanguageModel {
     private UUID languageId;
 
     @Schema(description = "Язык", example = "Русский")
-    @NotBlank
+    @NotBlank(message = "Язык не должен быть пустым или содержать пробелы")
     private String languageName;
 
-    public LanguageModel() {
-    }
+    public LanguageModel() {}
 
     public LanguageModel(UUID languageId, String languageName) {
         this.languageId = languageId;
