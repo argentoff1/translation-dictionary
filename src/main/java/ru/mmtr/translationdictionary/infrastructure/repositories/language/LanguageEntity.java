@@ -46,7 +46,4 @@ public class LanguageEntity {
     /*private Date createdAt;
 
     private Date modifiedAt;*/
-
-    /*@OneToOne(cascade = CascadeType.ALL)
-    DictionaryEntity dictionary;*/
 }

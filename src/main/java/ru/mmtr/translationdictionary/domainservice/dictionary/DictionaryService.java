@@ -1,8 +1,8 @@
 package ru.mmtr.translationdictionary.domainservice.dictionary;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import ru.mmtr.translationdictionary.domain.common.PageModel;
+import ru.mmtr.translationdictionary.domain.common.PageResultModel;
 import ru.mmtr.translationdictionary.domain.common.SuccessResultModel;
 import ru.mmtr.translationdictionary.domain.dictionary.DictionaryModel;
 import ru.mmtr.translationdictionary.infrastructure.repositories.dictionary.DictionaryRepository;
@@ -21,54 +21,87 @@ public class DictionaryService {
 
     public List<DictionaryModel> showAll() {
 
-
         return dictionaryRepository.showAll();
     }
 
-    public Page<DictionaryModel> showAllWithPagination(Pageable pageable) {
+    public PageResultModel<DictionaryModel> showAllWithPagination(PageModel model) {
 
-
-
-        return dictionaryRepository.showAllWithPagination(pageable);
+        return dictionaryRepository.showAllWithPagination(model);
     }
 
     public DictionaryModel getById(UUID id) {
+
         return dictionaryRepository.getById(id);
     }
 
-    public SuccessResultModel getTranslatedWord(String word, UUID fromLanguage, UUID toLanguage) {
-        SuccessResultModel result = dictionaryRepository.getTranslatedWord(word, fromLanguage, toLanguage);
-        if (result == null) {
-            return new SuccessResultModel("TRANSLATION_NOT_FOUND", "Не удалось найти перевод данного слова");
-        }
+    public DictionaryModel getTranslatedWord(String word, UUID fromLanguage, UUID toLanguage) {
+        var result = dictionaryRepository.getTranslatedWord(word, fromLanguage, toLanguage);
 
-        return new SuccessResultModel(true);
-    }
-
-    public DictionaryModel save(String word, String translation, UUID fromLanguage, UUID toLanguage) {
-
-
-        var result = dictionaryRepository.save(word, translation, fromLanguage, toLanguage);
         if (Objects.isNull(result)) {
-
+            new SuccessResultModel("TRANSLATION_NOT_FOUND", "Не удалось найти перевод данного слова");
         }
+
         return result;
     }
 
-    public DictionaryModel update(UUID id, String word, String translation) {
+    public SuccessResultModel save(String word, String translation, UUID fromLanguage, UUID toLanguage) {
+        checkIsEmpty(word);
+        checkForSpaces(word);
+        if (countChars(word) > 15) {
+            return new SuccessResultModel("FIELD_VALUE_OUT_OF_BOUNDS", "Поле не должно быть больше 15 символов");
+        }
 
-        return dictionaryRepository.update(id, word, translation);
+        checkIsEmpty(translation);
+        checkForSpaces(translation);
+        if (countChars(translation) > 15) {
+            return new SuccessResultModel("FIELD_VALUE_OUT_OF_BOUNDS", "Поле не должно быть больше 15 символов");
+        }
+
+        var result = dictionaryRepository.save(word, translation, fromLanguage, toLanguage);
+
+        if (Objects.isNull(result)) {
+            new SuccessResultModel("CAN_NOT_SAVE", "Не удалось сохранить пару слов");
+        }
+
+        return result;
     }
 
-    public boolean delete(UUID id) {
-        boolean isDeleted;
+    public SuccessResultModel update(UUID id, String word, String translation) {
+        var result = dictionaryRepository.update(id, word, translation);
 
+        if (Objects.isNull(result)) {
+            new SuccessResultModel("FIELD_MUST_BE_FILLED", "Поле должно быть заполнено");
+        }
 
+        return result;
+    }
 
-        isDeleted = dictionaryRepository.delete(id);
+    public SuccessResultModel delete(UUID id) {
 
+        return dictionaryRepository.delete(id);
+    }
 
+    public static void checkIsEmpty(String str) {
+        if (str.isEmpty()) {
+            new SuccessResultModel("FIELD_MUST_BE_FILLED", "Поле должно быть заполнено");
+            return;
+        }
+        new SuccessResultModel(true);
+    }
 
-        return isDeleted;
+    public static void checkForSpaces(String str) {
+        if (str.contains(" ")) {
+            new SuccessResultModel("FIELD_MUST_NOT_CONTAIN_SPACES", "Поле не должно содержать пробелов");
+            return;
+        }
+        new SuccessResultModel(true);
+    }
+
+    public static int countChars(String str) {
+        int count = 0;
+        for (char element : str.toCharArray()) {
+            count++;
+        }
+        return count;
     }
 }

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="add_date_columns_for_tables" author="parinos">
+        <addColumn tableName="Languages" schemaName="public">
+            <column name="created_at" type="timestamp">
+                <constraints primaryKey="false" nullable="false" unique="false"/>
+            </column>
+            <column name="modified_at" type="timestamp">
+                <constraints primaryKey="false" nullable="true" unique="false"/>
+            </column>
+        </addColumn>
+
+        <addColumn tableName="Dictionaries" schemaName="public">
+            <column name="created_at" type="timestamp">
+                <constraints primaryKey="false" nullable="false" unique="false"/>
+            </column>
+            <column name="modified_at" type="timestamp">
+                <constraints primaryKey="false" nullable="true" unique="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

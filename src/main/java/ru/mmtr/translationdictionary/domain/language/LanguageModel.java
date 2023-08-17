@@ -10,7 +10,6 @@ public class LanguageModel {
     private UUID languageId;
 
     @Schema(description = "Язык", example = "Русский")
-    @NotBlank(message = "Язык не должен быть пустым или содержать пробелы")
     private String languageName;
 
     public LanguageModel() {}

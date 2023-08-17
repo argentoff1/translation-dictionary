@@ -3,15 +3,10 @@ package ru.mmtr.translationdictionary.api.language;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.mmtr.translationdictionary.domain.common.PageModel;
 import ru.mmtr.translationdictionary.domain.common.PageResultModel;
+import ru.mmtr.translationdictionary.domain.common.SuccessResultModel;
 import ru.mmtr.translationdictionary.domain.language.LanguageModel;
 import ru.mmtr.translationdictionary.domainservice.language.LanguageService;
 
@@ -72,7 +67,7 @@ public class LanguageController {
             summary = "Удаление языка",
             description = "Позволяет удалить один язык"
     )
-    public boolean delete(@PathVariable @Parameter(description = "Идентификатор языка") UUID id) {
+    public SuccessResultModel delete(@PathVariable @Parameter(description = "Идентификатор языка") UUID id) {
         return languageService.delete(id);
     }
 
@@ -81,9 +76,8 @@ public class LanguageController {
             summary = "Сохранение языка",
             description = "Позволяет сохранить один язык"
     )
-    public LanguageModel save(@RequestBody @Parameter(description = "Язык") String languageName) {
-        //return languageService.save(languageName);
-        return null;
+    public SuccessResultModel save(@RequestBody @Parameter(description = "Язык") String languageName) {
+        return languageService.save(languageName);
     }
 
     @PutMapping(value = "/update/{id}")
@@ -91,7 +85,7 @@ public class LanguageController {
             summary = "Обновление языка",
             description = "Позволяет обновить один язык"
     )
-    public LanguageModel update(@PathVariable @Parameter(description = "Идентификатор языка") UUID id,
+    public SuccessResultModel update(@PathVariable @Parameter(description = "Идентификатор языка") UUID id,
                                 @RequestBody @Parameter(description = "Язык") String languageName) {
         return languageService.update(id, languageName);
     }

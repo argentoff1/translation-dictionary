@@ -4,6 +4,7 @@ import io.ebean.DB;
 import org.springframework.stereotype.Repository;
 import ru.mmtr.translationdictionary.domain.common.PageModel;
 import ru.mmtr.translationdictionary.domain.common.PageResultModel;
+import ru.mmtr.translationdictionary.domain.common.SuccessResultModel;
 import ru.mmtr.translationdictionary.domain.language.LanguageModel;
 
 import java.util.List;
@@ -20,7 +21,6 @@ public class LanguageRepository {
         return entities.stream().map(this::getModel).collect(Collectors.toList());
     }
 
-    // totalCount, Collection<T>
     public PageResultModel<LanguageModel> showAllWithPagination(PageModel model) {
         var page = DB
                 .find(LanguageEntity.class)
@@ -52,16 +52,16 @@ public class LanguageRepository {
         return getModel(foundEntity);
     }
 
-    public LanguageModel save(String languageName) {
+    public SuccessResultModel save(String languageName) {
         LanguageEntity languageEntity = new LanguageEntity();
         languageEntity.setLanguageId(UUID.randomUUID());
         languageEntity.setLanguageName(languageName);
         DB.insert(languageEntity);
 
-        return getModel(languageEntity);
+        return new SuccessResultModel(true);
     }
 
-    public LanguageModel update(UUID id, String languageName) {
+    public SuccessResultModel update(UUID id, String languageName) {
         DB.find(LanguageEntity.class)
                 .where()
                 .eq(LanguageEntity.LANGUAGE_ID, id)
@@ -69,27 +69,26 @@ public class LanguageRepository {
                 .set(LanguageEntity.LANGUAGE_NAME, languageName)
                 .update();
 
-        LanguageEntity entity = new LanguageEntity();
+        /*LanguageEntity entity = new LanguageEntity();
         entity.setLanguageId(id);
         entity.setLanguageName(languageName);
         entity = DB.find(LanguageEntity.class)
                 .where()
                 .eq(LanguageEntity.LANGUAGE_ID, id)
-                .findOne();
+                .findOne();*/
 
-        return getModel(entity);
+        return new SuccessResultModel(true);
     }
 
-    public boolean delete(UUID id) {
+    public SuccessResultModel delete(UUID id) {
         DB.find(LanguageEntity.class)
                 .where()
                 .eq(LanguageEntity.LANGUAGE_ID, id)
                 .delete();
 
-        return true;
+        return new SuccessResultModel(true);
     }
 
-    // Проверка на null
     private LanguageModel getModel(LanguageEntity entity) {
         if (entity == null) {
             return null;

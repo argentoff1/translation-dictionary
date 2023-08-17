@@ -27,13 +27,9 @@ public class DictionaryEntity {
     private String translation;
 
     @Column(name = FROM_LANGUAGE)
-    //@ManyToOne
-    //@JoinColumn(name = "language_id")
     private UUID fromLanguage;
 
     @Column(name = TO_LANGUAGE)
-    //@ManyToOne
-    //@JoinColumn(name = "language_id")
     private UUID toLanguage;
 
     /*@Column(name = "createdat")

@@ -3,9 +3,9 @@ package ru.mmtr.translationdictionary.api.dictionary;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
+import ru.mmtr.translationdictionary.domain.common.PageModel;
+import ru.mmtr.translationdictionary.domain.common.PageResultModel;
 import ru.mmtr.translationdictionary.domain.common.SuccessResultModel;
 import ru.mmtr.translationdictionary.domain.dictionary.DictionaryModel;
 import ru.mmtr.translationdictionary.domainservice.dictionary.DictionaryService;
@@ -13,7 +13,6 @@ import ru.mmtr.translationdictionary.domainservice.dictionary.DictionaryService;
 import java.util.List;
 import java.util.UUID;
 
-// Слово, с какого языка на какой, возвращает перевод
 @RestController
 @RequestMapping(value = "/api/dictionaries/")
 @Tag(name = "Словарь", description = "Позволяет взаимодействовать со словарями")
@@ -38,9 +37,9 @@ public class DictionaryController {
             summary = "Отображение всех словарей постранично",
             description = "Позволяет отобразить все словари постранично"
     )
-    public Page<DictionaryModel> showAllWithPagination(Pageable pageable) {
+    public PageResultModel<DictionaryModel> showAllWithPagination(PageModel model) {
 
-        return dictionaryService.showAllWithPagination(pageable);
+        return dictionaryService.showAllWithPagination(model);
     }
 
     @GetMapping("/getById/{id}")
@@ -52,13 +51,12 @@ public class DictionaryController {
         return dictionaryService.getById(id);
     }
 
-    // Поменять UUID на String
     @GetMapping("/getTranslatedWord")
     @Operation(
             summary = "Получение переведенного слова",
             description = "Позволяет получить переведенное слово с помощью исходного слова, языка искомого слова, и языка переводимого слова"
     )
-    public SuccessResultModel getTranslatedWord(@RequestParam @Parameter(description = "Слово для перевода", required = true) String word,
+    public DictionaryModel getTranslatedWord(@RequestParam @Parameter(description = "Слово для перевода", required = true) String word,
                                                 @RequestParam @Parameter(description = "Идентификатор языка исходного слова", required = true) UUID fromLanguage,
                                                 @RequestParam @Parameter(description = "Идентификатор языка переведенного слова", required = true) UUID toLanguage) {
 
@@ -70,10 +68,10 @@ public class DictionaryController {
             summary = "Сохранение словаря",
             description = "Позволяет сохранить один словарь"
     )
-    public DictionaryModel save(@RequestBody @Parameter(description = "Слово для перевода", required = true) String word,
-                                @RequestBody @Parameter(description = "Перевод слова", required = true) String translation,
-                                @RequestBody @Parameter(description = "Идентификатор языка исходного слова", required = true) UUID fromLanguage,
-                                @RequestBody @Parameter(description = "Идентификатор языка переведенного слова", required = true) UUID toLanguage) {
+    public SuccessResultModel save(@RequestParam @Parameter(description = "Слово для перевода", required = true) String word,
+                                @RequestParam @Parameter(description = "Перевод слова", required = true) String translation,
+                                @RequestParam @Parameter(description = "Идентификатор языка исходного слова", required = true) UUID fromLanguage,
+                                @RequestParam @Parameter(description = "Идентификатор языка переведенного слова", required = true) UUID toLanguage) {
         return dictionaryService.save(word, translation, fromLanguage, toLanguage);
     }
 
@@ -82,9 +80,9 @@ public class DictionaryController {
             summary = "Обновление словаря",
             description = "Позволяет обновить один словарь"
     )
-    public DictionaryModel update(@PathVariable @Parameter(description = "Идентификатор словаря", required = true) UUID id,
-                                  @RequestBody @Parameter(description = "Слово для перевода", required = true) String word,
-                                  @RequestBody @Parameter(description = "Перевод слова", required = true) String translation) {
+    public SuccessResultModel update(@PathVariable @Parameter(description = "Идентификатор словаря", required = true) UUID id,
+                                  @RequestParam @Parameter(description = "Слово для перевода", required = true) String word,
+                                  @RequestParam @Parameter(description = "Перевод слова", required = true) String translation) {
         return dictionaryService.update(id, word, translation);
     }
 
@@ -93,7 +91,7 @@ public class DictionaryController {
             summary = "Удаление словаря",
             description = "Позволяет удалить один словарь"
     )
-    public boolean delete(@PathVariable @Parameter(description = "Идентификатор словаря", required = true) UUID id) {
+    public SuccessResultModel delete(@PathVariable @Parameter(description = "Идентификатор словаря", required = true) UUID id) {
         return dictionaryService.delete(id);
     }
 }

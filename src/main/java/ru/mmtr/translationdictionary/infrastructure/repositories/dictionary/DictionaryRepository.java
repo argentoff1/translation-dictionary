@@ -1,13 +1,11 @@
 package ru.mmtr.translationdictionary.infrastructure.repositories.dictionary;
 
 import io.ebean.DB;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
+import ru.mmtr.translationdictionary.domain.common.PageModel;
+import ru.mmtr.translationdictionary.domain.common.PageResultModel;
 import ru.mmtr.translationdictionary.domain.common.SuccessResultModel;
 import ru.mmtr.translationdictionary.domain.dictionary.DictionaryModel;
-import ru.mmtr.translationdictionary.infrastructure.repositories.language.LanguageEntity;
 
 import java.util.List;
 import java.util.UUID;
@@ -22,17 +20,17 @@ public class DictionaryRepository {
         return dictionaryEntities.stream().map(this::getModel).collect(Collectors.toList());
     }
 
-    public Page<DictionaryModel> showAllWithPagination(Pageable pageable) {
-        List<DictionaryEntity> entities = DB
+    public PageResultModel<DictionaryModel> showAllWithPagination(PageModel model) {
+        var page = DB
                 .find(DictionaryEntity.class)
-                .findList();
+                .setMaxRows(model.getPageSize())
+                .setFirstRow((model.getPageNum() - 1) * model.getPageSize())
+                .findPagedList();
 
-        List<DictionaryModel> models = entities.stream().map(this::getModel).collect(Collectors.toList());
-
-        int start = (int) pageable.getOffset();
-        int end = Math.min((start + pageable.getPageSize()), models.size());
-
-        return new PageImpl<>(models.subList(start, end), pageable, models.size());
+        return new PageResultModel<>(
+                page.getTotalCount(),
+                page.getList().stream().map(this::getModel).collect(Collectors.toList())
+        );
     }
 
     public DictionaryModel getById(UUID id) {
@@ -45,36 +43,36 @@ public class DictionaryRepository {
         return getModel(foundDictionaryEntity);
     }
 
-    public SuccessResultModel getTranslatedWord(String word, UUID fromLanguage, UUID toLanguage) {
-        DB.
+    public DictionaryModel getTranslatedWord(String word, UUID fromLanguage, UUID toLanguage) {
+        DictionaryEntity foundTranslation = DB.
                 find(DictionaryEntity.class).
-                where().eq(DictionaryEntity.WORD, word).
+                where().
+                ilike(DictionaryEntity.WORD, "%" + word + "%").
                 eq(DictionaryEntity.FROM_LANGUAGE, fromLanguage).
                 eq(DictionaryEntity.TO_LANGUAGE, toLanguage).
                 findOne();
 
-        //return getModel(foundDictionaryEntity);
-        return new SuccessResultModel(true);
+        return getTranslation(foundTranslation);
     }
 
-    public DictionaryModel save(String word, String translation,
-                                            UUID fromLanguage, UUID toLanguage) {
+    public SuccessResultModel save(String word, String translation,
+                                UUID fromLanguage, UUID toLanguage) {
 
         DictionaryEntity dictionaryEntity = new DictionaryEntity();
         dictionaryEntity.setDictionaryId(UUID.randomUUID());
         dictionaryEntity.setWord(word);
         dictionaryEntity.setTranslation(translation);
-
         dictionaryEntity.setFromLanguage(fromLanguage);
         dictionaryEntity.setToLanguage(toLanguage);
-        dictionaryEntity.setFromLanguage(dictionaryEntity.getFromLanguage());
-        dictionaryEntity.setToLanguage(dictionaryEntity.getToLanguage());
+
+        /*dictionaryEntity.setFromLanguage(dictionaryEntity.getFromLanguage());
+        dictionaryEntity.setToLanguage(dictionaryEntity.getToLanguage());*/
         DB.insert(dictionaryEntity);
 
-        return getModel(dictionaryEntity);
+        return new SuccessResultModel(true);
     }
 
-    public DictionaryModel update(UUID id, String word, String translation) {
+    public SuccessResultModel update(UUID id, String word, String translation) {
         DB.find(DictionaryEntity.class)
                 .where()
                 .eq(DictionaryEntity.DICTIONARY_ID, id)
@@ -83,23 +81,23 @@ public class DictionaryRepository {
                 .set(DictionaryEntity.TRANSLATION, translation)
                 .update();
 
-        DictionaryEntity entity = new DictionaryEntity();
+        /*DictionaryEntity entity = new DictionaryEntity();
         entity.setDictionaryId(UUID.randomUUID());
         entity.setWord(word);
         entity.setTranslation(translation);
         entity.setFromLanguage(entity.getFromLanguage());
-        entity.setToLanguage(entity.getToLanguage());
+        entity.setToLanguage(entity.getToLanguage());*/
 
-        return getModel(entity);
+        return new SuccessResultModel(true);
     }
 
-    public boolean delete(UUID id) {
+    public SuccessResultModel delete(UUID id) {
         DB.find(DictionaryEntity.class)
                 .where()
                 .eq(DictionaryEntity.DICTIONARY_ID, id)
                 .delete();
 
-        return true;
+        return new SuccessResultModel(true);
     }
 
     private DictionaryModel getModel(DictionaryEntity entity) {
@@ -113,6 +111,16 @@ public class DictionaryRepository {
         model.setTranslation(entity.getTranslation());
         model.setFromLanguage(entity.getFromLanguage());
         model.setToLanguage(entity.getToLanguage());
+        return model;
+    }
+
+    private DictionaryModel getTranslation(DictionaryEntity entity) {
+        if (entity == null) {
+            return null;
+        }
+
+        var model = new DictionaryModel();
+        model.setTranslation(entity.getTranslation());
         return model;
     }
 }

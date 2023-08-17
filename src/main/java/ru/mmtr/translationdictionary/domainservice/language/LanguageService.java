@@ -10,7 +10,6 @@ import ru.mmtr.translationdictionary.domain.common.SuccessResultModel;
 import ru.mmtr.translationdictionary.domain.language.LanguageModel;
 import ru.mmtr.translationdictionary.infrastructure.repositories.language.LanguageRepository;
 
-import javax.persistence.PersistenceException;
 import java.util.List;
 import java.util.UUID;
 
@@ -43,14 +42,8 @@ public class LanguageService {
     }
 
     public List<LanguageModel> showAll() {
-        //Pageable pageable = PageRequest.of(page, size);
 
-        //Page<LanguageModel> modelPage = languageRepository.showAll(pageable);
-
-        List<LanguageModel> languageModels = languageRepository.showAll();
-
-        return languageModels;
-        //return modelPage.getContent();
+        return languageRepository.showAll();
     }
 
     public PageResultModel<LanguageModel> showAllWithPagination(PageModel model) {
@@ -60,60 +53,39 @@ public class LanguageService {
     }
 
     public SuccessResultModel save(String languageName) {
+        checkIsEmpty(languageName);
+
+        checkForSpaces(languageName);
+
+        if (countChars(languageName) > 15) {
+            return new SuccessResultModel("FIELD_VALUE_OUT_OF_BOUNDS", "Поле не должно быть больше 15 символов");
+        }
+
+        return languageRepository.save(languageName);
         // 400 Bad request
         // 405 HttpRequestMethodNotSupportedException
-        // 500 javax.persistence.PersistenceException при введении пустоты и большого кол-ва символов
-        // Дает вставлять пробелы
-        LanguageModel languageModel = new LanguageModel();
-        try {
-            //log.info("------Создание языка----------");
-
-            languageModel = languageRepository.save(languageName);
-
-            if (languageName == null) {
-                //return new SuccessResultModel();
-            }
-
-            if (countChars(languageName) > 15) {
-                throw new PersistenceException("Длина языка должна быть менее 15 символов");
-            }
-
-            //log.info("-----Язык создан успешно---------");
-        } catch (NullPointerException e) {
-
-        }
         // На пустоту, но почему-то Exception не выбрасывается
         // DuplicateKeyException
-        // На пробелы, мб нужно кастомное исключение
-        // PersistenceException Длина введенного языка
-        //return languageModel;
-        return null;
     }
 
-    public LanguageModel update(UUID id, String languageName) {
+    public SuccessResultModel update(UUID id, String languageName) {
         // 500 NullPointerException при введении несуществующего UUID
+        checkIsEmpty(languageName);
+
+        checkForSpaces(languageName);
+
+        if (countChars(languageName) > 15) {
+            return new SuccessResultModel("FIELD_VALUE_OUT_OF_BOUNDS", "Поле не должно быть больше 15 символов");
+        }
 
         return languageRepository.update(id, languageName);
     }
 
-    public boolean delete(UUID id) {
-        boolean isDeleted = false;
+    public SuccessResultModel delete(UUID id) {
 
-        try {
-            //log.info("------Получение языка----------");
 
-            // Всегда true
-            if (languageRepository.delete(id)) {
-                isDeleted = true;
-            }
 
-            //log.info("-----Язык получен успешно---------");
-            // В catch уже есть отлов искл, не нужен throw new
-        } catch (NullPointerException e) {
-            //return new
-        }
-
-        return isDeleted;
+        return languageRepository.delete(id);
     }
 
     public static int countChars(String str) {
@@ -122,5 +94,21 @@ public class LanguageService {
             count++;
         }
         return count;
+    }
+
+    public static void checkIsEmpty(String languageName) {
+        if (languageName.isEmpty()) {
+            new SuccessResultModel("FIELD_MUST_BE_FILLED", "Поле должно быть заполнено");
+            return;
+        }
+        new SuccessResultModel(true);
+    }
+
+    public static void checkForSpaces(String languageName) {
+        if (languageName.contains(" ")) {
+            new SuccessResultModel("FIELD_MUST_NOT_CONTAIN_SPACES", "Поле не должно содержать пробелов");
+            return;
+        }
+        new SuccessResultModel(true);
     }
 }
