@@ -1,16 +1,16 @@
 package ru.mmtr.translationdictionary.domainservice.language;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
-import ru.mmtr.translationdictionary.domain.common.PageModel;
+import ru.mmtr.translationdictionary.domain.common.CollectionResultModel;
 import ru.mmtr.translationdictionary.domain.common.PageResultModel;
 import ru.mmtr.translationdictionary.domain.common.SuccessResultModel;
 import ru.mmtr.translationdictionary.domain.language.LanguageModel;
+import ru.mmtr.translationdictionary.domain.language.LanguagePageRequestModel;
 import ru.mmtr.translationdictionary.infrastructure.repositories.language.LanguageRepository;
 
-import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Slf4j
@@ -23,89 +23,80 @@ public class LanguageService {
         this.languageRepository = languageRepository;
     }
 
-    public LanguageModel getById(UUID id) {
-        LanguageModel languageModel;
-
-        languageModel = languageRepository.getById(id);
-
-        return languageModel;
-    }
-
-    public LanguageModel getByName(String languageName) {
-        checkIsEmpty(languageName);
-        checkForSpaces(languageName);
-
-        return languageRepository.getByName(languageName);
-    }
-
-    public List<LanguageModel> showAll() {
+    public CollectionResultModel<LanguageModel> showAll() {
 
         return languageRepository.showAll();
     }
 
-    public PageResultModel<LanguageModel> getPage(PageModel model) {
+    public PageResultModel<LanguageModel> getPage(LanguagePageRequestModel criteria) {
 
 
-        return languageRepository.getPage(model);
+        return languageRepository.getPage(criteria);
+    }
+
+    public LanguageModel getById(UUID id) {
+        if (id == null) {
+            return null;
+        }
+
+        return languageRepository.getById(id);
+    }
+
+    public LanguageModel getByName(String languageName) {
+        stringValidation(languageName);
+
+        return languageRepository.getByName(languageName);
     }
 
     public SuccessResultModel save(String languageName) {
-        checkIsEmpty(languageName);
+        stringValidation(languageName);
 
-        checkForSpaces(languageName);
+        var result = languageRepository.save(languageName);
 
-        if (countChars(languageName) > 15) {
-            return new SuccessResultModel("FIELD_VALUE_OUT_OF_BOUNDS", "Поле не должно быть больше 15 символов");
+        if (Objects.isNull(result)) {
+            return new SuccessResultModel("CAN_NOT_SAVE", "Не удалось сохранить данные. Поля должны быть заполненными");
         }
 
-        return languageRepository.save(languageName);
-        // 400 Bad request
-        // 405 HttpRequestMethodNotSupportedException
-        // На пустоту, но почему-то Exception не выбрасывается
-        // DuplicateKeyException
+        return result;
     }
 
     public SuccessResultModel update(UUID id, String languageName) {
-        // 500 NullPointerException при введении несуществующего UUID
-        checkIsEmpty(languageName);
+        Integer repositoryResult = languageRepository.update(id, languageName);
 
-        checkForSpaces(languageName);
-
-        if (countChars(languageName) > 15) {
-            return new SuccessResultModel("FIELD_VALUE_OUT_OF_BOUNDS", "Поле не должно быть больше 15 символов");
+        if (Objects.isNull(repositoryResult)) {
+            return new SuccessResultModel("CAN_NOT_UPDATE", "Не удалось сохранить данные. Поля должны быть заполненными");
         }
 
-        return languageRepository.update(id, languageName);
+        return new SuccessResultModel(true);
     }
 
     public SuccessResultModel delete(UUID id) {
+        Integer repositoryResult = languageRepository.delete(id);
 
+        if (Objects.isNull(repositoryResult)) {
+            return new SuccessResultModel("CAN_NOT_DELETE", "Не удалось удалить данные. Поля должны быть заполненными");
+        }
 
-
-        return languageRepository.delete(id);
+        return new SuccessResultModel(true);
     }
 
-    public static int countChars(String str) {
+    private SuccessResultModel stringValidation(String str) {
+        if (str.isEmpty()) {
+            return new SuccessResultModel("FIELD_MUST_BE_FILLED", "Поле должно быть заполнено");
+        }
+
+        if (str.contains(" ")) {
+            return new SuccessResultModel("FIELD_MUST_NOT_CONTAIN_SPACES", "Поле не должно содержать пробелов");
+        }
+
         int count = 0;
         for (char element : str.toCharArray()) {
             count++;
         }
-        return count;
-    }
-
-    public static void checkIsEmpty(String languageName) {
-        if (languageName.isEmpty()) {
-            new SuccessResultModel("FIELD_MUST_BE_FILLED", "Поле должно быть заполнено");
-            return;
+        if (count > 15) {
+            return new SuccessResultModel("FIELD_VALUE_OUT_OF_BOUNDS", "Поле не должно быть больше 15 символов");
         }
-        new SuccessResultModel(true);
-    }
 
-    public static void checkForSpaces(String languageName) {
-        if (languageName.contains(" ")) {
-            new SuccessResultModel("FIELD_MUST_NOT_CONTAIN_SPACES", "Поле не должно содержать пробелов");
-            return;
-        }
-        new SuccessResultModel(true);
+        return new SuccessResultModel(true);
     }
 }

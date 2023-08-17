@@ -55,9 +55,9 @@ public class DictionaryController {
             summary = "Получение переведенного слова",
             description = "Позволяет получить переведенное слово с помощью исходного слова, языка искомого слова, и языка переводимого слова"
     )
-    public StringResultModel getTranslatedWord(@RequestParam @Parameter(description = "Слово для перевода") String word,
-                                               @RequestParam @Parameter(description = "Идентификатор языка исходного слова") UUID fromLanguage,
-                                               @RequestParam @Parameter(description = "Идентификатор языка переведенного слова") UUID toLanguage) {
+    public StringResultModel getTranslatedWord(@RequestBody @Parameter(description = "Слово для перевода") String word,
+                                               @RequestBody @Parameter(description = "Идентификатор языка исходного слова") UUID fromLanguage,
+                                               @RequestBody @Parameter(description = "Идентификатор языка переведенного слова") UUID toLanguage) {
 
         return dictionaryService.getTranslatedWord(word, fromLanguage, toLanguage);
     }
@@ -67,10 +67,11 @@ public class DictionaryController {
             summary = "Сохранение словаря",
             description = "Позволяет сохранить один словарь"
     )
-    public SuccessResultModel save(@RequestParam @Parameter(description = "Слово для перевода") String word,
-                                @RequestParam @Parameter(description = "Перевод слова") String translation,
-                                @RequestParam @Parameter(description = "Идентификатор языка исходного слова") UUID fromLanguage,
-                                @RequestParam @Parameter(description = "Идентификатор языка переведенного слова") UUID toLanguage) {
+    public SuccessResultModel save(@RequestBody @Parameter(description = "Слово для перевода") String word,
+                                @RequestBody @Parameter(description = "Перевод слова") String translation,
+                                @RequestBody @Parameter(description = "Идентификатор языка исходного слова") UUID fromLanguage,
+                                @RequestBody @Parameter(description = "Идентификатор языка переведенного слова") UUID toLanguage) {
+
         return dictionaryService.save(word, translation, fromLanguage, toLanguage);
     }
 
@@ -80,8 +81,8 @@ public class DictionaryController {
             description = "Позволяет обновить один словарь"
     )
     public SuccessResultModel update(@PathVariable @Parameter(description = "Идентификатор словаря") UUID id,
-                                  @RequestParam @Parameter(description = "Слово для перевода") String word,
-                                  @RequestParam @Parameter(description = "Перевод слова") String translation) {
+                                  @RequestBody @Parameter(description = "Слово для перевода") String word,
+                                  @RequestBody @Parameter(description = "Перевод слова") String translation) {
         return dictionaryService.update(id, word, translation);
     }
 

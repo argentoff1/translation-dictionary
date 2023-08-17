@@ -4,13 +4,13 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
-import ru.mmtr.translationdictionary.domain.common.PageModel;
+import ru.mmtr.translationdictionary.domain.common.CollectionResultModel;
 import ru.mmtr.translationdictionary.domain.common.PageResultModel;
 import ru.mmtr.translationdictionary.domain.common.SuccessResultModel;
 import ru.mmtr.translationdictionary.domain.language.LanguageModel;
+import ru.mmtr.translationdictionary.domain.language.LanguagePageRequestModel;
 import ru.mmtr.translationdictionary.domainservice.language.LanguageService;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -23,25 +23,24 @@ public class LanguageController {
         this.languageService = languageService;
     }
 
-    @GetMapping(value = "/showAllWithPagination")
-    @Operation(
-            summary = "Отображение всех языков постранично",
-            description = "Позволяет отобразить все языки постранично"
-    )
-    // Поменять на критерии после добавления фильтров
-    public PageResultModel<LanguageModel> getPage(PageModel model) {
-
-        return languageService.getPage(model);
-    }
-
     @GetMapping(value = "/showAll")
     @Operation(
             summary = "Отображение всех языков",
             description = "Позволяет отобразить все языки"
     )
-    public List<LanguageModel> showAll() {
+    public CollectionResultModel<LanguageModel> showAll() {
 
         return languageService.showAll();
+    }
+
+    @GetMapping(value = "/getPage")
+    @Operation(
+            summary = "Отображение всех языков постранично",
+            description = "Позволяет отобразить все языки постранично"
+    )
+    public PageResultModel<LanguageModel> getPage(LanguagePageRequestModel criteria) {
+
+        return languageService.getPage(criteria);
     }
 
     @GetMapping(value = "/getById/{id}")
@@ -64,16 +63,6 @@ public class LanguageController {
         return languageService.getByName(name);
     }
 
-    @DeleteMapping(value = "/delete/{id}")
-    @Operation(
-            summary = "Удаление языка",
-            description = "Позволяет удалить один язык"
-    )
-    public SuccessResultModel delete(@PathVariable @Parameter(description = "Идентификатор языка") UUID id) {
-
-        return languageService.delete(id);
-    }
-
     @PostMapping(value = "/save")
     @Operation(
             summary = "Сохранение языка",
@@ -90,8 +79,18 @@ public class LanguageController {
             description = "Позволяет обновить один язык"
     )
     public SuccessResultModel update(@PathVariable @Parameter(description = "Идентификатор языка") UUID id,
-                                @RequestBody @Parameter(description = "Язык") String languageName) {
+                                     @RequestBody @Parameter(description = "Язык") String languageName) {
 
         return languageService.update(id, languageName);
+    }
+
+    @DeleteMapping(value = "/delete/{id}")
+    @Operation(
+            summary = "Удаление языка",
+            description = "Позволяет удалить один язык"
+    )
+    public SuccessResultModel delete(@PathVariable @Parameter(description = "Идентификатор языка") UUID id) {
+
+        return languageService.delete(id);
     }
 }

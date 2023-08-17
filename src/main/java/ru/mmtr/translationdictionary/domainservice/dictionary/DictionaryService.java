@@ -63,7 +63,7 @@ public class DictionaryService {
         Integer repositoryResult = dictionaryRepository.update(id, word, translation);
 
         if (Objects.isNull(repositoryResult)) {
-            return new SuccessResultModel("CAN_NOT_SAVE", "Не удалось сохранить данные. Поля должны быть заполненными");
+            return new SuccessResultModel("CAN_NOT_UPDATE", "Не удалось сохранить данные. Поля должны быть заполненными");
         }
 
         return new SuccessResultModel(true);
@@ -72,14 +72,14 @@ public class DictionaryService {
     public SuccessResultModel delete(UUID id) {
         Integer repositoryResult = dictionaryRepository.delete(id);
 
-        if (Objects.isNull(repositoryResult)){
+        if (Objects.isNull(repositoryResult)) {
             return new SuccessResultModel("CAN_NOT_DELETE", "Не удалось удалить данные. Поля должны быть заполненными");
         }
 
         return new SuccessResultModel(true);
     }
 
-    public SuccessResultModel stringValidation(String str) {
+    private SuccessResultModel stringValidation(String str) {
         if (str.isEmpty()) {
             return new SuccessResultModel("FIELD_MUST_BE_FILLED", "Поле должно быть заполнено");
         }

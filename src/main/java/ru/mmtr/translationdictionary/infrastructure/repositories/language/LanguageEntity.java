@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Getter
@@ -29,10 +29,10 @@ public class LanguageEntity {
     private String languageName;
 
     @Column(name = LANGUAGE_CREATED_AT)
-    private Timestamp createdAt;
+    private LocalDateTime createdAt;
 
     @Column(name = LANGUAGE_MODIFIED_AT)
-    private Timestamp modifiedAt;
+    private LocalDateTime modifiedAt;
 
     public void setLanguageId(UUID languageId) {
         this.languageId = languageId;
@@ -42,11 +42,11 @@ public class LanguageEntity {
         this.languageName = languageName;
     }
 
-    public void setCreatedAt(Timestamp createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
-    public void setModifiedAt(Timestamp modifiedAt) {
+    public void setModifiedAt(LocalDateTime modifiedAt) {
         this.modifiedAt = modifiedAt;
     }
 }

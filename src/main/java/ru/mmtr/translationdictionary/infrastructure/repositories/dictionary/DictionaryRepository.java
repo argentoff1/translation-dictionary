@@ -57,13 +57,13 @@ public class DictionaryRepository {
     }
 
     public DictionaryModel getById(UUID id) {
-        DictionaryEntity foundDictionaryEntity = DB
+        DictionaryEntity foundEntity = DB
                 .find(DictionaryEntity.class)
                 .where()
                 .eq(DictionaryEntity.DICTIONARY_ID, id)
                 .findOne();
 
-        return getModel(foundDictionaryEntity);
+        return getModel(foundEntity);
     }
 
     public StringResultModel getTranslatedWord(String word, UUID fromLanguage, UUID toLanguage) {
