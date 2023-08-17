@@ -4,11 +4,13 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class DictionaryModel {
@@ -28,10 +30,10 @@ public class DictionaryModel {
     private UUID toLanguage;
 
     @Schema(description = "Дата создания", example = "2023-08-17 11:55:24.979")
-    private Timestamp createdAt;
+    private LocalDateTime createdAt;
 
     @Schema(description = "Дата изменения", example = "2023-08-17 23:00:00.000")
-    private Timestamp modifiedAt;
+    private LocalDateTime modifiedAt;
 
     public void setDictionaryId(UUID dictionaryId) {
         this.dictionaryId = dictionaryId;
@@ -53,11 +55,11 @@ public class DictionaryModel {
         this.toLanguage = toLanguage;
     }
 
-    public void setCreatedAt(Timestamp createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
-    public void setModifiedAt(Timestamp modifiedAt) {
+    public void setModifiedAt(LocalDateTime modifiedAt) {
         this.modifiedAt = modifiedAt;
     }
 }

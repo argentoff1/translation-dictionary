@@ -39,7 +39,7 @@ public class DictionaryService {
         var result = dictionaryRepository.getTranslatedWord(word, fromLanguage, toLanguage);
 
         if (Objects.isNull(result)) {
-            new StringResultModel("TRANSLATION_NOT_FOUND", "Не удалось найти перевод данного слова");
+            return new StringResultModel("TRANSLATION_NOT_FOUND", "Не удалось найти перевод данного слова");
         }
 
         return result;
@@ -53,25 +53,30 @@ public class DictionaryService {
         var result = dictionaryRepository.save(word, translation, fromLanguage, toLanguage);
 
         if (Objects.isNull(result)) {
-            new SuccessResultModel("CAN_NOT_SAVE", "Не удалось сохранить данные. Поля должны бть заполненными");
+            return new SuccessResultModel("CAN_NOT_SAVE", "Не удалось сохранить данные. Поля должны быть заполненными");
         }
 
         return result;
     }
 
     public SuccessResultModel update(UUID id, String word, String translation) {
-        var result = dictionaryRepository.update(id, word, translation);
+        Integer repositoryResult = dictionaryRepository.update(id, word, translation);
 
-        if (Objects.isNull(result)) {
-            new SuccessResultModel("CAN_NOT_SAVE", "Не удалось сохранить данные. Поля должны бть заполненными");
+        if (Objects.isNull(repositoryResult)) {
+            return new SuccessResultModel("CAN_NOT_SAVE", "Не удалось сохранить данные. Поля должны быть заполненными");
         }
 
-        return result;
+        return new SuccessResultModel(true);
     }
 
     public SuccessResultModel delete(UUID id) {
+        Integer repositoryResult = dictionaryRepository.delete(id);
 
-        return dictionaryRepository.delete(id);
+        if (Objects.isNull(repositoryResult)){
+            return new SuccessResultModel("CAN_NOT_DELETE", "Не удалось удалить данные. Поля должны быть заполненными");
+        }
+
+        return new SuccessResultModel(true);
     }
 
     public SuccessResultModel stringValidation(String str) {

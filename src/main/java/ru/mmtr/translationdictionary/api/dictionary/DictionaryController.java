@@ -31,7 +31,7 @@ public class DictionaryController {
         return dictionaryService.showAll();
     }
 
-    @GetMapping(value = "showAllWithPagination")
+    @GetMapping(value = "getPage")
     @Operation(
             summary = "Отображение всех словарей постранично",
             description = "Позволяет отобразить все словари постранично"

@@ -7,7 +7,6 @@ import ru.mmtr.translationdictionary.domain.common.*;
 import ru.mmtr.translationdictionary.domain.dictionary.DictionaryModel;
 import ru.mmtr.translationdictionary.domain.dictionary.DictionaryPageRequestModel;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -25,6 +24,11 @@ public class DictionaryRepository {
                 dictionaryEntities.stream().map(this::getModel).collect(Collectors.toList())
         );
     }
+
+    // Доделать!!!!!!!
+    /*public CollectionResultModel<> getAllByIds() {
+
+    }*/
 
     public PageResultModel<DictionaryModel> getPage (DictionaryPageRequestModel criteria) {
         var expression = DB
@@ -52,7 +56,6 @@ public class DictionaryRepository {
         return expression;
     }
 
-    // Либо null, либо errorCode отправлять
     public DictionaryModel getById(UUID id) {
         DictionaryEntity foundDictionaryEntity = DB
                 .find(DictionaryEntity.class)
@@ -84,10 +87,7 @@ public class DictionaryRepository {
         dictionaryEntity.setTranslation(translation);
         dictionaryEntity.setFromLanguage(fromLanguage);
         dictionaryEntity.setToLanguage(toLanguage);
-
-        // Через LocalDateTime.now
-        Timestamp date = new Timestamp(System.currentTimeMillis());
-        dictionaryEntity.setCreatedAt(date);
+        dictionaryEntity.setCreatedAt(LocalDateTime.now());
 
         /*dictionaryEntity.setFromLanguage(dictionaryEntity.getFromLanguage());
         dictionaryEntity.setToLanguage(dictionaryEntity.getToLanguage());*/
@@ -96,15 +96,7 @@ public class DictionaryRepository {
         return new SuccessResultModel(true);
     }
     // Можно тут int, а сервис уже Success
-    public SuccessResultModel update(UUID id, String word, String translation) {
-        int updatedRows = DB.find(DictionaryEntity.class)
-                .where()
-                .eq(DictionaryEntity.DICTIONARY_ID, id)
-                .asUpdate()
-                .set(DictionaryEntity.WORD, word)
-                .set(DictionaryEntity.TRANSLATION, translation)
-                .set(DictionaryEntity.DICTIONARY_MODIFIED_AT, LocalDateTime.now())
-                .update();
+    public Integer update(UUID id, String word, String translation) {
 
         /*DictionaryEntity entity = new DictionaryEntity();
         entity.setDictionaryId(UUID.randomUUID());
@@ -113,16 +105,21 @@ public class DictionaryRepository {
         entity.setFromLanguage(entity.getFromLanguage());
         entity.setToLanguage(entity.getToLanguage());*/
 
-        return new SuccessResultModel(true);
+        return DB.find(DictionaryEntity.class)
+                .where()
+                .eq(DictionaryEntity.DICTIONARY_ID, id)
+                .asUpdate()
+                .set(DictionaryEntity.WORD, word)
+                .set(DictionaryEntity.TRANSLATION, translation)
+                .set(DictionaryEntity.DICTIONARY_MODIFIED_AT, LocalDateTime.now())
+                .update();
     }
 
-    public SuccessResultModel delete(UUID id) {
-        DB.find(DictionaryEntity.class)
+    public Integer delete(UUID id) {
+        return DB.find(DictionaryEntity.class)
                 .where()
                 .eq(DictionaryEntity.DICTIONARY_ID, id)
                 .delete();
-
-        return new SuccessResultModel(true);
     }
 
     private DictionaryModel getModel(DictionaryEntity entity) {
@@ -138,14 +135,4 @@ public class DictionaryRepository {
         model.setToLanguage(entity.getToLanguage());
         return model;
     }
-
-    /*private DictionaryModel getTranslation(DictionaryEntity entity) {
-        if (entity == null) {
-            return null;
-        }
-
-        var model = new DictionaryModel();
-        model.setTranslation(entity.getTranslation());
-        return model;
-    }*/
 }

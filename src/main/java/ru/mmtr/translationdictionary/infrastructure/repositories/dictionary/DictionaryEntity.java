@@ -3,14 +3,16 @@ package ru.mmtr.translationdictionary.infrastructure.repositories.dictionary;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 
 import javax.persistence.Entity;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Getter
+@Setter
 @Entity
 @Table(name = "'Dictionaries'")
 @NoArgsConstructor
@@ -42,10 +44,10 @@ public class DictionaryEntity {
     private UUID toLanguage;
 
     @Column(name = DICTIONARY_CREATED_AT)
-    private Timestamp createdAt;
+    private LocalDateTime createdAt;
 
     @Column(name = DICTIONARY_MODIFIED_AT)
-    private Timestamp modifiedAt;
+    private LocalDateTime modifiedAt;
 
     public void setDictionaryId(UUID dictionaryId) {
         this.dictionaryId = dictionaryId;
@@ -67,11 +69,11 @@ public class DictionaryEntity {
         this.toLanguage = toLanguage;
     }
 
-    public void setCreatedAt(Timestamp createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
-    public void setModifiedAt(Timestamp modifiedAt) {
+    public void setModifiedAt(LocalDateTime modifiedAt) {
         this.modifiedAt = modifiedAt;
     }
 }
