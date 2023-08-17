@@ -1,10 +1,16 @@
 package ru.mmtr.translationdictionary.domain.language;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+import java.sql.Timestamp;
 import java.util.UUID;
 
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class LanguageModel {
     @Schema(description = "Идентификатор", accessMode = Schema.AccessMode.READ_ONLY)
     private UUID languageId;
@@ -12,26 +18,25 @@ public class LanguageModel {
     @Schema(description = "Язык", example = "Русский")
     private String languageName;
 
-    public LanguageModel() {}
+    @Schema(description = "Дата создания", example = "2023-08-17 11:55:24.979")
+    private Timestamp createdAt;
 
-    public LanguageModel(UUID languageId, String languageName) {
-        this.languageId = languageId;
-        this.languageName = languageName;
-    }
-
-    public UUID getLanguageId() {
-        return languageId;
-    }
+    @Schema(description = "Дата изменения", example = "2023-08-17 23:00:00.000")
+    private Timestamp modifiedAt;
 
     public void setLanguageId(UUID languageId) {
         this.languageId = languageId;
     }
 
-    public String getLanguageName() {
-        return languageName;
-    }
-
     public void setLanguageName(String languageName) {
         this.languageName = languageName;
+    }
+
+    public void setCreatedAt(Timestamp createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public void setModifiedAt(Timestamp modifiedAt) {
+        this.modifiedAt = modifiedAt;
     }
 }

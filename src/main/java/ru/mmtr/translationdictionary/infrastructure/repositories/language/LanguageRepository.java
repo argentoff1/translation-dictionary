@@ -7,6 +7,7 @@ import ru.mmtr.translationdictionary.domain.common.PageResultModel;
 import ru.mmtr.translationdictionary.domain.common.SuccessResultModel;
 import ru.mmtr.translationdictionary.domain.language.LanguageModel;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -56,18 +57,35 @@ public class LanguageRepository {
         LanguageEntity languageEntity = new LanguageEntity();
         languageEntity.setLanguageId(UUID.randomUUID());
         languageEntity.setLanguageName(languageName);
+
+        Timestamp date = new Timestamp(System.currentTimeMillis());
+        languageEntity.setCreatedAt(date);
+
         DB.insert(languageEntity);
 
         return new SuccessResultModel(true);
     }
 
     public SuccessResultModel update(UUID id, String languageName) {
-        DB.find(LanguageEntity.class)
+        int updatedRows = DB.find(LanguageEntity.class)
                 .where()
                 .eq(LanguageEntity.LANGUAGE_ID, id)
                 .asUpdate()
                 .set(LanguageEntity.LANGUAGE_NAME, languageName)
                 .update();
+
+        // Не робит
+        if (updatedRows > 0) {
+            LanguageEntity foundEntity = DB.find(LanguageEntity.class)
+                    .where()
+                    .eq(LanguageEntity.LANGUAGE_ID, id)
+                    .findOne();
+
+            if (foundEntity != null) {
+                Timestamp date = new Timestamp(System.currentTimeMillis());
+                foundEntity.setModifiedAt(date);
+            }
+        }
 
         /*LanguageEntity entity = new LanguageEntity();
         entity.setLanguageId(id);
@@ -97,6 +115,7 @@ public class LanguageRepository {
         var model = new LanguageModel();
         model.setLanguageId(entity.getLanguageId());
         model.setLanguageName(entity.getLanguageName());
+        model.setCreatedAt(entity.getCreatedAt());
 
         return model;
     }

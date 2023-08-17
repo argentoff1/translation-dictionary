@@ -50,6 +50,7 @@ public class LanguageController {
             description = "Позволяет получить язык по его идентификатору"
     )
     public LanguageModel getById(@PathVariable @Parameter(description = "Идентификатор языка") UUID id) {
+
         return languageService.getById(id);
     }
 
@@ -59,6 +60,7 @@ public class LanguageController {
             description = "Позволяет получить язык по его названию"
     )
     public LanguageModel getByName(@PathVariable @Parameter(description = "Название") String name) {
+
         return languageService.getByName(name);
     }
 
@@ -68,6 +70,7 @@ public class LanguageController {
             description = "Позволяет удалить один язык"
     )
     public SuccessResultModel delete(@PathVariable @Parameter(description = "Идентификатор языка") UUID id) {
+
         return languageService.delete(id);
     }
 
@@ -77,6 +80,7 @@ public class LanguageController {
             description = "Позволяет сохранить один язык"
     )
     public SuccessResultModel save(@RequestBody @Parameter(description = "Язык") String languageName) {
+
         return languageService.save(languageName);
     }
 
@@ -87,6 +91,7 @@ public class LanguageController {
     )
     public SuccessResultModel update(@PathVariable @Parameter(description = "Идентификатор языка") UUID id,
                                 @RequestBody @Parameter(description = "Язык") String languageName) {
+
         return languageService.update(id, languageName);
     }
 }

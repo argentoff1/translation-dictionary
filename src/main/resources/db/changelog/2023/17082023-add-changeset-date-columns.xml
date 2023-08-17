@@ -7,7 +7,7 @@
     <changeSet id="add_date_columns_for_tables" author="parinos">
         <addColumn tableName="Languages" schemaName="public">
             <column name="created_at" type="timestamp">
-                <constraints primaryKey="false" nullable="false" unique="false"/>
+                <constraints primaryKey="false" nullable="true" unique="false"/>
             </column>
             <column name="modified_at" type="timestamp">
                 <constraints primaryKey="false" nullable="true" unique="false"/>
@@ -16,7 +16,7 @@
 
         <addColumn tableName="Dictionaries" schemaName="public">
             <column name="created_at" type="timestamp">
-                <constraints primaryKey="false" nullable="false" unique="false"/>
+                <constraints primaryKey="false" nullable="true" unique="false"/>
             </column>
             <column name="modified_at" type="timestamp">
                 <constraints primaryKey="false" nullable="true" unique="false"/>

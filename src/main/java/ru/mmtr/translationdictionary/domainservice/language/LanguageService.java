@@ -32,11 +32,8 @@ public class LanguageService {
     }
 
     public LanguageModel getByName(String languageName) {
-        // 500 NullPointerException при ошибке поиска
-        if (StringUtils.isBlank(languageName)) {
-            // Либо модель с Errorcode, errormessage
-            return null;
-        }
+        checkIsEmpty(languageName);
+        checkForSpaces(languageName);
 
         return languageRepository.getByName(languageName);
     }

@@ -6,7 +6,9 @@ import ru.mmtr.translationdictionary.domain.common.PageModel;
 import ru.mmtr.translationdictionary.domain.common.PageResultModel;
 import ru.mmtr.translationdictionary.domain.common.SuccessResultModel;
 import ru.mmtr.translationdictionary.domain.dictionary.DictionaryModel;
+import ru.mmtr.translationdictionary.infrastructure.repositories.language.LanguageEntity;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -65,6 +67,9 @@ public class DictionaryRepository {
         dictionaryEntity.setFromLanguage(fromLanguage);
         dictionaryEntity.setToLanguage(toLanguage);
 
+        Timestamp date = new Timestamp(System.currentTimeMillis());
+        dictionaryEntity.setCreatedAt(date);
+
         /*dictionaryEntity.setFromLanguage(dictionaryEntity.getFromLanguage());
         dictionaryEntity.setToLanguage(dictionaryEntity.getToLanguage());*/
         DB.insert(dictionaryEntity);
@@ -73,13 +78,26 @@ public class DictionaryRepository {
     }
 
     public SuccessResultModel update(UUID id, String word, String translation) {
-        DB.find(DictionaryEntity.class)
+        int updatedRows = DB.find(DictionaryEntity.class)
                 .where()
                 .eq(DictionaryEntity.DICTIONARY_ID, id)
                 .asUpdate()
                 .set(DictionaryEntity.WORD, word)
                 .set(DictionaryEntity.TRANSLATION, translation)
                 .update();
+
+        // Не робит
+        if (updatedRows > 0) {
+            LanguageEntity foundEntity = DB.find(LanguageEntity.class)
+                    .where()
+                    .eq(LanguageEntity.LANGUAGE_ID, id)
+                    .findOne();
+
+            if (foundEntity != null) {
+                Timestamp date = new Timestamp(System.currentTimeMillis());
+                foundEntity.setModifiedAt(date);
+            }
+        }
 
         /*DictionaryEntity entity = new DictionaryEntity();
         entity.setDictionaryId(UUID.randomUUID());

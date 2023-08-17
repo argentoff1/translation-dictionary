@@ -1,9 +1,16 @@
 package ru.mmtr.translationdictionary.domain.dictionary;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+import java.sql.Timestamp;
 import java.util.UUID;
 
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class DictionaryModel {
     @Schema(description = "Идентификатор", accessMode = Schema.AccessMode.READ_ONLY)
     private UUID dictionaryId;
@@ -20,54 +27,37 @@ public class DictionaryModel {
     @Schema(description = "Идентификатор языка переведенного слова", accessMode = Schema.AccessMode.READ_ONLY)
     private UUID toLanguage;
 
-    public DictionaryModel() {
-    }
+    @Schema(description = "Дата создания", example = "2023-08-17 11:55:24.979")
+    private Timestamp createdAt;
 
-    public DictionaryModel(UUID dictionaryId, String word, String translation, UUID fromLanguage, UUID toLanguage) {
-        this.dictionaryId = dictionaryId;
-        this.word = word;
-        this.translation = translation;
-        this.fromLanguage = fromLanguage;
-        this.toLanguage = toLanguage;
-    }
-
-    public UUID getDictionaryId() {
-        return dictionaryId;
-    }
+    @Schema(description = "Дата изменения", example = "2023-08-17 23:00:00.000")
+    private Timestamp modifiedAt;
 
     public void setDictionaryId(UUID dictionaryId) {
         this.dictionaryId = dictionaryId;
-    }
-
-    public String getWord() {
-        return word;
     }
 
     public void setWord(String word) {
         this.word = word;
     }
 
-    public String getTranslation() {
-        return translation;
-    }
-
     public void setTranslation(String translation) {
         this.translation = translation;
-    }
-
-    public UUID getFromLanguage() {
-        return fromLanguage;
     }
 
     public void setFromLanguage(UUID fromLanguage) {
         this.fromLanguage = fromLanguage;
     }
 
-    public UUID getToLanguage() {
-        return toLanguage;
-    }
-
     public void setToLanguage(UUID toLanguage) {
         this.toLanguage = toLanguage;
+    }
+
+    public void setCreatedAt(Timestamp createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public void setModifiedAt(Timestamp modifiedAt) {
+        this.modifiedAt = modifiedAt;
     }
 }

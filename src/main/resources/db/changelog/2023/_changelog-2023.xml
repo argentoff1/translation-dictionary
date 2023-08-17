@@ -20,4 +20,6 @@
     <include file="db/changelog/2023/11082023-update-changeset-changelog.xml"/>
 
     <include file="db/changelog/2023/14082023-rename-changeset-tables.xml"/>
+
+    <include file="db/changelog/2023/17082023-add-changeset-date-columns.xml"/>
 </databaseChangeLog>

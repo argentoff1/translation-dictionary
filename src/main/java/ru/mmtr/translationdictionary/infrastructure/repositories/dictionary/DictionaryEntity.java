@@ -1,19 +1,28 @@
 package ru.mmtr.translationdictionary.infrastructure.repositories.dictionary;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 
 import javax.persistence.Entity;
-import java.util.Date;
+import java.sql.Timestamp;
 import java.util.UUID;
 
+@Getter
 @Entity
 @Table(name = "'Dictionaries'")
+@NoArgsConstructor
+@AllArgsConstructor
 public class DictionaryEntity {
     public static final String DICTIONARY_ID = "dictionary_id";
     public static final String WORD = "word";
     public static final String TRANSLATION = "translation";
     public static final String FROM_LANGUAGE = "from_language";
     public static final String TO_LANGUAGE = "to_language";
+    public static final String DICTIONARY_CREATED_AT = "created_at";
+    public static final String DICTIONARY_MODIFIED_AT = "modified_at";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,60 +41,37 @@ public class DictionaryEntity {
     @Column(name = TO_LANGUAGE)
     private UUID toLanguage;
 
-    /*@Column(name = "createdat")
-    private Date createdAt;
+    @Column(name = DICTIONARY_CREATED_AT)
+    private Timestamp createdAt;
 
-    @Column(name = "removedat")
-    private Date removedAt;*/
-
-    public DictionaryEntity() {
-    }
-
-    public DictionaryEntity(UUID dictionaryId, String word, String translation, UUID fromLanguage, UUID toLanguage) {
-        this.dictionaryId = dictionaryId;
-        this.word = word;
-        this.translation = translation;
-        this.fromLanguage = fromLanguage;
-        this.toLanguage = toLanguage;
-    }
-
-    public UUID getDictionaryId() {
-        return dictionaryId;
-    }
+    @Column(name = DICTIONARY_MODIFIED_AT)
+    private Timestamp modifiedAt;
 
     public void setDictionaryId(UUID dictionaryId) {
         this.dictionaryId = dictionaryId;
-    }
-
-    public String getWord() {
-        return word;
     }
 
     public void setWord(String word) {
         this.word = word;
     }
 
-    public String getTranslation() {
-        return translation;
-    }
-
     public void setTranslation(String translation) {
         this.translation = translation;
-    }
-
-    public UUID getFromLanguage() {
-        return fromLanguage;
     }
 
     public void setFromLanguage(UUID fromLanguage) {
         this.fromLanguage = fromLanguage;
     }
 
-    public UUID getToLanguage() {
-        return toLanguage;
-    }
-
     public void setToLanguage(UUID toLanguage) {
         this.toLanguage = toLanguage;
+    }
+
+    public void setCreatedAt(Timestamp createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public void setModifiedAt(Timestamp modifiedAt) {
+        this.modifiedAt = modifiedAt;
     }
 }

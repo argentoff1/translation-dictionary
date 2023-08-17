@@ -1,15 +1,24 @@
 package ru.mmtr.translationdictionary.infrastructure.repositories.language;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 
-import java.util.Date;
+import java.sql.Timestamp;
 import java.util.UUID;
 
+@Getter
 @Entity
 @Table(name = "'Languages'")
+@NoArgsConstructor
+@AllArgsConstructor
 public class LanguageEntity {
     public static final String LANGUAGE_ID = "language_id";
     public static final String LANGUAGE_NAME = "language_name";
+    public static final String LANGUAGE_CREATED_AT = "created_at";
+    public static final String LANGUAGE_MODIFIED_AT = "modified_at";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,31 +28,25 @@ public class LanguageEntity {
     @Column(name = LANGUAGE_NAME)
     private String languageName;
 
-    public LanguageEntity(UUID languageId, String languageName) {
-        this.languageId = languageId;
-        this.languageName = languageName;
-    }
+    @Column(name = LANGUAGE_CREATED_AT)
+    private Timestamp createdAt;
 
-    public LanguageEntity() {
-    }
-
-    public UUID getLanguageId() {
-        return languageId;
-    }
+    @Column(name = LANGUAGE_MODIFIED_AT)
+    private Timestamp modifiedAt;
 
     public void setLanguageId(UUID languageId) {
         this.languageId = languageId;
-    }
-
-    public String getLanguageName() {
-        return languageName;
     }
 
     public void setLanguageName(String languageName) {
         this.languageName = languageName;
     }
 
-    /*private Date createdAt;
+    public void setCreatedAt(Timestamp createdAt) {
+        this.createdAt = createdAt;
+    }
 
-    private Date modifiedAt;*/
+    public void setModifiedAt(Timestamp modifiedAt) {
+        this.modifiedAt = modifiedAt;
+    }
 }
