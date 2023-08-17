@@ -1,33 +1,41 @@
 package ru.mmtr.translationdictionary.infrastructure.repositories.dictionary;
 
 import io.ebean.DB;
+import io.ebean.ExpressionList;
 import org.springframework.stereotype.Repository;
-import ru.mmtr.translationdictionary.domain.common.PageModel;
-import ru.mmtr.translationdictionary.domain.common.PageResultModel;
-import ru.mmtr.translationdictionary.domain.common.SuccessResultModel;
+import ru.mmtr.translationdictionary.domain.common.*;
 import ru.mmtr.translationdictionary.domain.dictionary.DictionaryModel;
-import ru.mmtr.translationdictionary.infrastructure.repositories.language.LanguageEntity;
+import ru.mmtr.translationdictionary.domain.dictionary.DictionaryPageRequestModel;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+// Получение коллекции ID's, возвращает коллекцию слов
 @Repository
 public class DictionaryRepository {
-    public List<DictionaryModel> showAll() {
+    public CollectionResultModel<DictionaryModel> showAll() {
         List<DictionaryEntity> dictionaryEntities = DB
                 .find(DictionaryEntity.class)
                 .findList();
-        return dictionaryEntities.stream().map(this::getModel).collect(Collectors.toList());
+
+        return new CollectionResultModel<>(
+                dictionaryEntities.stream().map(this::getModel).collect(Collectors.toList())
+        );
     }
 
-    public PageResultModel<DictionaryModel> showAllWithPagination(PageModel model) {
-        var page = DB
+    public PageResultModel<DictionaryModel> getPage (DictionaryPageRequestModel criteria) {
+        var expression = DB
                 .find(DictionaryEntity.class)
-                .setMaxRows(model.getPageSize())
-                .setFirstRow((model.getPageNum() - 1) * model.getPageSize())
-                .findPagedList();
+                .setMaxRows(criteria.getPageSize())
+                .setFirstRow((criteria.getPageNum() - 1) * criteria.getPageSize())
+                .where();
+
+        expression = applyFilters(expression, criteria);
+
+        var page = expression.findPagedList();
 
         return new PageResultModel<>(
                 page.getTotalCount(),
@@ -35,6 +43,16 @@ public class DictionaryRepository {
         );
     }
 
+    private ExpressionList<DictionaryEntity> applyFilters(ExpressionList<DictionaryEntity> expression,
+                                                          DictionaryPageRequestModel criteria) {
+        if (criteria.getCreateDateFromFilter() != null) {
+            expression = expression.ge(DictionaryEntity.DICTIONARY_CREATED_AT, criteria.getCreateDateFromFilter());
+        }
+
+        return expression;
+    }
+
+    // Либо null, либо errorCode отправлять
     public DictionaryModel getById(UUID id) {
         DictionaryEntity foundDictionaryEntity = DB
                 .find(DictionaryEntity.class)
@@ -45,7 +63,7 @@ public class DictionaryRepository {
         return getModel(foundDictionaryEntity);
     }
 
-    public DictionaryModel getTranslatedWord(String word, UUID fromLanguage, UUID toLanguage) {
+    public StringResultModel getTranslatedWord(String word, UUID fromLanguage, UUID toLanguage) {
         DictionaryEntity foundTranslation = DB.
                 find(DictionaryEntity.class).
                 where().
@@ -54,7 +72,7 @@ public class DictionaryRepository {
                 eq(DictionaryEntity.TO_LANGUAGE, toLanguage).
                 findOne();
 
-        return getTranslation(foundTranslation);
+        return new StringResultModel(foundTranslation.getTranslation());
     }
 
     public SuccessResultModel save(String word, String translation,
@@ -67,6 +85,7 @@ public class DictionaryRepository {
         dictionaryEntity.setFromLanguage(fromLanguage);
         dictionaryEntity.setToLanguage(toLanguage);
 
+        // Через LocalDateTime.now
         Timestamp date = new Timestamp(System.currentTimeMillis());
         dictionaryEntity.setCreatedAt(date);
 
@@ -76,7 +95,7 @@ public class DictionaryRepository {
 
         return new SuccessResultModel(true);
     }
-
+    // Можно тут int, а сервис уже Success
     public SuccessResultModel update(UUID id, String word, String translation) {
         int updatedRows = DB.find(DictionaryEntity.class)
                 .where()
@@ -84,20 +103,8 @@ public class DictionaryRepository {
                 .asUpdate()
                 .set(DictionaryEntity.WORD, word)
                 .set(DictionaryEntity.TRANSLATION, translation)
+                .set(DictionaryEntity.DICTIONARY_MODIFIED_AT, LocalDateTime.now())
                 .update();
-
-        // Не робит
-        if (updatedRows > 0) {
-            LanguageEntity foundEntity = DB.find(LanguageEntity.class)
-                    .where()
-                    .eq(LanguageEntity.LANGUAGE_ID, id)
-                    .findOne();
-
-            if (foundEntity != null) {
-                Timestamp date = new Timestamp(System.currentTimeMillis());
-                foundEntity.setModifiedAt(date);
-            }
-        }
 
         /*DictionaryEntity entity = new DictionaryEntity();
         entity.setDictionaryId(UUID.randomUUID());
@@ -132,7 +139,7 @@ public class DictionaryRepository {
         return model;
     }
 
-    private DictionaryModel getTranslation(DictionaryEntity entity) {
+    /*private DictionaryModel getTranslation(DictionaryEntity entity) {
         if (entity == null) {
             return null;
         }
@@ -140,5 +147,5 @@ public class DictionaryRepository {
         var model = new DictionaryModel();
         model.setTranslation(entity.getTranslation());
         return model;
-    }
+    }*/
 }

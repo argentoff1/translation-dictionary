@@ -43,10 +43,10 @@ public class LanguageService {
         return languageRepository.showAll();
     }
 
-    public PageResultModel<LanguageModel> showAllWithPagination(PageModel model) {
+    public PageResultModel<LanguageModel> getPage(PageModel model) {
 
 
-        return languageRepository.showAllWithPagination(model);
+        return languageRepository.getPage(model);
     }
 
     public SuccessResultModel save(String languageName) {

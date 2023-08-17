@@ -29,9 +29,9 @@ public class LanguageController {
             description = "Позволяет отобразить все языки постранично"
     )
     // Поменять на критерии после добавления фильтров
-    public PageResultModel<LanguageModel> showAllWithPagination(PageModel model) {
+    public PageResultModel<LanguageModel> getPage(PageModel model) {
 
-        return languageService.showAllWithPagination(model);
+        return languageService.getPage(model);
     }
 
     @GetMapping(value = "/showAll")

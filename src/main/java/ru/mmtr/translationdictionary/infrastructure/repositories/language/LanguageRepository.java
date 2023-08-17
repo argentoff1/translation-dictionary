@@ -22,7 +22,7 @@ public class LanguageRepository {
         return entities.stream().map(this::getModel).collect(Collectors.toList());
     }
 
-    public PageResultModel<LanguageModel> showAllWithPagination(PageModel model) {
+    public PageResultModel<LanguageModel> getPage(PageModel model) {
         var page = DB
                 .find(LanguageEntity.class)
                 .setMaxRows(model.getPageSize())
