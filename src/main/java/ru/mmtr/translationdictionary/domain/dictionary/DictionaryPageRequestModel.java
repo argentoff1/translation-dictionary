@@ -16,4 +16,8 @@ public class DictionaryPageRequestModel extends PageModel {
     private LocalDateTime createDateFromFilter;
 
     private LocalDateTime createDateToFilter;
+
+    private LocalDateTime modifyDateFromFilter;
+
+    private LocalDateTime modifyDateToFilter;
 }

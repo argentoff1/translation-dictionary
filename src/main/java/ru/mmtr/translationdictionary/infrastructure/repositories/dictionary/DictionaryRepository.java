@@ -4,10 +4,10 @@ import io.ebean.DB;
 import io.ebean.ExpressionList;
 import org.springframework.stereotype.Repository;
 import ru.mmtr.translationdictionary.domain.common.*;
-import ru.mmtr.translationdictionary.domain.dictionary.DictionaryModel;
-import ru.mmtr.translationdictionary.domain.dictionary.DictionaryPageRequestModel;
+import ru.mmtr.translationdictionary.domain.dictionary.*;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -16,19 +16,27 @@ import java.util.stream.Collectors;
 @Repository
 public class DictionaryRepository {
     public CollectionResultModel<DictionaryModel> showAll() {
-        List<DictionaryEntity> dictionaryEntities = DB
+        List<DictionaryEntity> entities = DB
                 .find(DictionaryEntity.class)
                 .findList();
 
         return new CollectionResultModel<>(
-                dictionaryEntities.stream().map(this::getModel).collect(Collectors.toList())
+                entities.stream().map(this::getModel).collect(Collectors.toList())
         );
     }
 
-    // Доделать!!!!!!!
-    /*public CollectionResultModel<> getAllByIds() {
+    public CollectionResultModel<String> getAllByIds(DictionaryIdsCollectionModel<UUID> model) {
+        List<DictionaryEntity> wordAndTranslation = DB
+                .find(DictionaryEntity.class)
+                .where()
+                .eq(DictionaryEntity.DICTIONARY_ID, model.getCollectionIds())
+                .findList();
 
-    }*/
+        return null;
+        /*return new CollectionResultModel<>(
+                wordAndTranslation.stream().map(this::).collect(Collectors.toList())
+        );*/
+    }
 
     public PageResultModel<DictionaryModel> getPage (DictionaryPageRequestModel criteria) {
         var expression = DB
@@ -49,8 +57,28 @@ public class DictionaryRepository {
 
     private ExpressionList<DictionaryEntity> applyFilters(ExpressionList<DictionaryEntity> expression,
                                                           DictionaryPageRequestModel criteria) {
+        if (criteria.getWordFilter() != null) {
+            expression = expression.ilike(DictionaryEntity.WORD, "%" + criteria.getWordFilter() + "%");
+        }
+
+        if (criteria.getTranslationFilter() != null) {
+            expression = expression.ilike(DictionaryEntity.TRANSLATION, "%" + criteria.getTranslationFilter() + "%");
+        }
+
         if (criteria.getCreateDateFromFilter() != null) {
             expression = expression.ge(DictionaryEntity.DICTIONARY_CREATED_AT, criteria.getCreateDateFromFilter());
+        }
+
+        if (criteria.getCreateDateToFilter() != null) {
+            expression = expression.le(DictionaryEntity.DICTIONARY_CREATED_AT, criteria.getCreateDateToFilter());
+        }
+
+        if (criteria.getModifyDateFromFilter() != null) {
+            expression = expression.ge(DictionaryEntity.DICTIONARY_CREATED_AT, criteria.getModifyDateFromFilter());
+        }
+
+        if (criteria.getModifyDateToFilter() != null) {
+            expression = expression.le(DictionaryEntity.DICTIONARY_CREATED_AT, criteria.getModifyDateToFilter());
         }
 
         return expression;
@@ -66,51 +94,38 @@ public class DictionaryRepository {
         return getModel(foundEntity);
     }
 
-    public StringResultModel getTranslatedWord(String word, UUID fromLanguage, UUID toLanguage) {
+    public StringResultModel getTranslatedWord(DictionaryTranslateModel model) {
         DictionaryEntity foundTranslation = DB.
                 find(DictionaryEntity.class).
                 where().
-                ilike(DictionaryEntity.WORD, "%" + word + "%").
-                eq(DictionaryEntity.FROM_LANGUAGE, fromLanguage).
-                eq(DictionaryEntity.TO_LANGUAGE, toLanguage).
+                ilike(DictionaryEntity.WORD, "%" + model.getWord() + "%").
+                eq(DictionaryEntity.FROM_LANGUAGE, model.getFromLanguage()).
+                eq(DictionaryEntity.TO_LANGUAGE, model.getToLanguage()).
                 findOne();
 
         return new StringResultModel(foundTranslation.getTranslation());
     }
 
-    public SuccessResultModel save(String word, String translation,
-                                UUID fromLanguage, UUID toLanguage) {
-
+    public SuccessResultModel save(DictionarySaveModel model) {
         DictionaryEntity dictionaryEntity = new DictionaryEntity();
         dictionaryEntity.setDictionaryId(UUID.randomUUID());
-        dictionaryEntity.setWord(word);
-        dictionaryEntity.setTranslation(translation);
-        dictionaryEntity.setFromLanguage(fromLanguage);
-        dictionaryEntity.setToLanguage(toLanguage);
+        dictionaryEntity.setWord(model.getWord());
+        dictionaryEntity.setTranslation(model.getTranslation());
+        dictionaryEntity.setFromLanguage(model.getFromLanguage());
+        dictionaryEntity.setToLanguage(model.getToLanguage());
         dictionaryEntity.setCreatedAt(LocalDateTime.now());
-
-        /*dictionaryEntity.setFromLanguage(dictionaryEntity.getFromLanguage());
-        dictionaryEntity.setToLanguage(dictionaryEntity.getToLanguage());*/
         DB.insert(dictionaryEntity);
 
         return new SuccessResultModel(true);
     }
-    // Можно тут int, а сервис уже Success
-    public Integer update(UUID id, String word, String translation) {
 
-        /*DictionaryEntity entity = new DictionaryEntity();
-        entity.setDictionaryId(UUID.randomUUID());
-        entity.setWord(word);
-        entity.setTranslation(translation);
-        entity.setFromLanguage(entity.getFromLanguage());
-        entity.setToLanguage(entity.getToLanguage());*/
-
+    public Integer update(DictionaryUpdateModel model) {
         return DB.find(DictionaryEntity.class)
                 .where()
-                .eq(DictionaryEntity.DICTIONARY_ID, id)
+                .eq(DictionaryEntity.DICTIONARY_ID, model.getId())
                 .asUpdate()
-                .set(DictionaryEntity.WORD, word)
-                .set(DictionaryEntity.TRANSLATION, translation)
+                .set(DictionaryEntity.WORD, model.getWord())
+                .set(DictionaryEntity.TRANSLATION, model.getTranslation())
                 .set(DictionaryEntity.DICTIONARY_MODIFIED_AT, LocalDateTime.now())
                 .update();
     }

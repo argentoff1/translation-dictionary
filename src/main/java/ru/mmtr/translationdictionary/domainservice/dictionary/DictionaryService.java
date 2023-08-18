@@ -2,8 +2,7 @@ package ru.mmtr.translationdictionary.domainservice.dictionary;
 
 import org.springframework.stereotype.Service;
 import ru.mmtr.translationdictionary.domain.common.*;
-import ru.mmtr.translationdictionary.domain.dictionary.DictionaryModel;
-import ru.mmtr.translationdictionary.domain.dictionary.DictionaryPageRequestModel;
+import ru.mmtr.translationdictionary.domain.dictionary.*;
 import ru.mmtr.translationdictionary.infrastructure.repositories.dictionary.DictionaryRepository;
 
 import java.util.Objects;
@@ -35,34 +34,34 @@ public class DictionaryService {
         return dictionaryRepository.getById(id);
     }
 
-    public StringResultModel getTranslatedWord(String word, UUID fromLanguage, UUID toLanguage) {
-        var result = dictionaryRepository.getTranslatedWord(word, fromLanguage, toLanguage);
+    public StringResultModel getTranslatedWord(DictionaryTranslateModel model) {
+        var result = dictionaryRepository.getTranslatedWord(model);
 
-        if (Objects.isNull(result)) {
+        if (result == null) {
             return new StringResultModel("TRANSLATION_NOT_FOUND", "Не удалось найти перевод данного слова");
         }
 
         return result;
     }
 
-    public SuccessResultModel save(String word, String translation, UUID fromLanguage, UUID toLanguage) {
-        stringValidation(word);
+    public SuccessResultModel save(DictionarySaveModel model) {
+        stringValidation(model.getWord());
 
-        stringValidation(translation);
+        stringValidation(model.getTranslation());
 
-        var result = dictionaryRepository.save(word, translation, fromLanguage, toLanguage);
+        var result = dictionaryRepository.save(model);
 
-        if (Objects.isNull(result)) {
+        if (result == null) {
             return new SuccessResultModel("CAN_NOT_SAVE", "Не удалось сохранить данные. Поля должны быть заполненными");
         }
 
         return result;
     }
 
-    public SuccessResultModel update(UUID id, String word, String translation) {
-        Integer repositoryResult = dictionaryRepository.update(id, word, translation);
+    public SuccessResultModel update(DictionaryUpdateModel model) {
+        Integer repositoryResult = dictionaryRepository.update(model);
 
-        if (Objects.isNull(repositoryResult)) {
+        if (repositoryResult == null) {
             return new SuccessResultModel("CAN_NOT_UPDATE", "Не удалось сохранить данные. Поля должны быть заполненными");
         }
 
@@ -72,7 +71,7 @@ public class DictionaryService {
     public SuccessResultModel delete(UUID id) {
         Integer repositoryResult = dictionaryRepository.delete(id);
 
-        if (Objects.isNull(repositoryResult)) {
+        if (repositoryResult == null) {
             return new SuccessResultModel("CAN_NOT_DELETE", "Не удалось удалить данные. Поля должны быть заполненными");
         }
 

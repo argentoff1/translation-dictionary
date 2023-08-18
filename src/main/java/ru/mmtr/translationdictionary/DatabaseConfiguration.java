@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class DatabaseConfiguration {
-    /*@Value("${spring.datasource.username}")
+    @Value("${spring.datasource.username}")
     private String username;
 
     @Value("${spring.datasource.password}")
@@ -19,8 +19,8 @@ public class DatabaseConfiguration {
     @Value("${spring.datasource.url}")
     private String databaseUrl;
 
-    @Value("${spring.datasource.driver-class-name}")
-    private String driverClassName;*/
+    @Value("${postgres.sql.driver}")
+    private String driverClassName;
 
     public DataSourceConfig getDataSourceConfig() {
         DataSourceConfig dataSourceConfig = new DataSourceConfig();

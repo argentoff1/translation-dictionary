@@ -4,11 +4,13 @@ import io.ebean.DB;
 import io.ebean.ExpressionList;
 import org.springframework.stereotype.Repository;
 import ru.mmtr.translationdictionary.domain.common.CollectionResultModel;
+import ru.mmtr.translationdictionary.domain.common.DateTimeResultModel;
 import ru.mmtr.translationdictionary.domain.common.PageResultModel;
 import ru.mmtr.translationdictionary.domain.common.SuccessResultModel;
 import ru.mmtr.translationdictionary.domain.language.LanguageModel;
 import ru.mmtr.translationdictionary.domain.language.LanguagePageRequestModel;
-import ru.mmtr.translationdictionary.infrastructure.repositories.dictionary.DictionaryEntity;
+import ru.mmtr.translationdictionary.domain.language.LanguageSaveModel;
+import ru.mmtr.translationdictionary.domain.language.LanguageUpdateModel;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -46,8 +48,24 @@ public class LanguageRepository {
 
     private ExpressionList<LanguageEntity> applyFilters(ExpressionList<LanguageEntity> expression,
                                                           LanguagePageRequestModel criteria) {
+        if (criteria.getLanguageFilter() != null) {
+            expression = expression.ilike(LanguageEntity.LANGUAGE_NAME, "%" + criteria + "%");
+        }
+
         if (criteria.getCreateDateFromFilter() != null) {
-            expression = expression.ge(DictionaryEntity.DICTIONARY_CREATED_AT, criteria.getCreateDateFromFilter());
+            expression = expression.ge(LanguageEntity.LANGUAGE_CREATED_AT, criteria.getCreateDateFromFilter());
+        }
+
+        if (criteria.getCreateDateToFilter() != null) {
+            expression = expression.le(LanguageEntity.LANGUAGE_CREATED_AT, criteria.getCreateDateToFilter());
+        }
+
+        if (criteria.getModifyDateFromFilter() != null) {
+            expression = expression.ge(LanguageEntity.LANGUAGE_MODIFIED_AT, criteria.getModifyDateFromFilter());
+        }
+
+        if (criteria.getModifyDateToFilter() != null) {
+            expression = expression.le(LanguageEntity.LANGUAGE_MODIFIED_AT, criteria.getModifyDateToFilter());
         }
 
         return expression;
@@ -63,40 +81,32 @@ public class LanguageRepository {
         return getModel(foundEntity);
     }
 
-    public LanguageModel getByName(String languageName) {
+    public DateTimeResultModel getByName(String languageName) {
         LanguageEntity foundEntity = DB
                 .find(LanguageEntity.class)
                 .where()
                 .ilike(LanguageEntity.LANGUAGE_NAME, "%" + languageName + "%")
                 .findOne();
 
-        return getModel(foundEntity);
+        return new DateTimeResultModel(foundEntity.getCreatedAt(), foundEntity.getModifiedAt());
     }
 
-    public SuccessResultModel save(String languageName) {
+    public SuccessResultModel save(LanguageSaveModel model) {
         LanguageEntity languageEntity = new LanguageEntity();
         languageEntity.setLanguageId(UUID.randomUUID());
-        languageEntity.setLanguageName(languageName);
+        languageEntity.setLanguageName(model.getLanguageName());
         languageEntity.setCreatedAt(LocalDateTime.now());
         DB.insert(languageEntity);
 
         return new SuccessResultModel(true);
     }
 
-    public Integer update(UUID id, String languageName) {
-        /*LanguageEntity entity = new LanguageEntity();
-        entity.setLanguageId(id);
-        entity.setLanguageName(languageName);
-        entity = DB.find(LanguageEntity.class)
-                .where()
-                .eq(LanguageEntity.LANGUAGE_ID, id)
-                .findOne();*/
-
+    public Integer update(LanguageUpdateModel model) {
         return DB.find(LanguageEntity.class)
                 .where()
-                .eq(LanguageEntity.LANGUAGE_ID, id)
+                .eq(LanguageEntity.LANGUAGE_ID, model.getId())
                 .asUpdate()
-                .set(LanguageEntity.LANGUAGE_NAME, languageName)
+                .set(LanguageEntity.LANGUAGE_NAME, model.getLanguageName())
                 .set(LanguageEntity.LANGUAGE_MODIFIED_AT, LocalDateTime.now())
                 .update();
     }

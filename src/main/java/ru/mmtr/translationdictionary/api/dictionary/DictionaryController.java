@@ -5,14 +5,13 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 import ru.mmtr.translationdictionary.domain.common.*;
-import ru.mmtr.translationdictionary.domain.dictionary.DictionaryModel;
-import ru.mmtr.translationdictionary.domain.dictionary.DictionaryPageRequestModel;
+import ru.mmtr.translationdictionary.domain.dictionary.*;
 import ru.mmtr.translationdictionary.domainservice.dictionary.DictionaryService;
 
 import java.util.UUID;
 
 @RestController
-@RequestMapping(value = "/api/dictionaries/")
+@RequestMapping(value = "/api/dictionaries")
 @Tag(name = "Словарь", description = "Позволяет взаимодействовать со словарями")
 public class DictionaryController {
     private final DictionaryService dictionaryService;
@@ -31,12 +30,12 @@ public class DictionaryController {
         return dictionaryService.showAll();
     }
 
-    @GetMapping(value = "getPage")
+    @PostMapping(value = "/getPage")
     @Operation(
             summary = "Отображение всех словарей постранично",
             description = "Позволяет отобразить все словари постранично"
     )
-    public PageResultModel<DictionaryModel> getPage(DictionaryPageRequestModel criteria) {
+    public PageResultModel<DictionaryModel> getPage(@RequestBody DictionaryPageRequestModel criteria) {
 
         return dictionaryService.getPage(criteria);
     }
@@ -49,47 +48,40 @@ public class DictionaryController {
     public DictionaryModel getById(@PathVariable @Parameter(description = "Идентификатор словаря") UUID id) {
         return dictionaryService.getById(id);
     }
-    // В Body
-    @GetMapping("/getTranslatedWord")
+
+    @PostMapping("/getTranslatedWord")
     @Operation(
             summary = "Получение переведенного слова",
             description = "Позволяет получить переведенное слово с помощью исходного слова, языка искомого слова, и языка переводимого слова"
     )
-    public StringResultModel getTranslatedWord(@RequestBody @Parameter(description = "Слово для перевода") String word,
-                                               @RequestBody @Parameter(description = "Идентификатор языка исходного слова") UUID fromLanguage,
-                                               @RequestBody @Parameter(description = "Идентификатор языка переведенного слова") UUID toLanguage) {
+    public StringResultModel getTranslatedWord(@RequestBody DictionaryTranslateModel model) {
 
-        return dictionaryService.getTranslatedWord(word, fromLanguage, toLanguage);
+        return dictionaryService.getTranslatedWord(model);
     }
 
     @PostMapping("/save")
     @Operation(
             summary = "Сохранение словаря",
-            description = "Позволяет сохранить один словарь"
+            description = "Позволяет сохранить одну запись в словаре"
     )
-    public SuccessResultModel save(@RequestBody @Parameter(description = "Слово для перевода") String word,
-                                @RequestBody @Parameter(description = "Перевод слова") String translation,
-                                @RequestBody @Parameter(description = "Идентификатор языка исходного слова") UUID fromLanguage,
-                                @RequestBody @Parameter(description = "Идентификатор языка переведенного слова") UUID toLanguage) {
+    public SuccessResultModel save(@RequestBody DictionarySaveModel model) {
 
-        return dictionaryService.save(word, translation, fromLanguage, toLanguage);
+        return dictionaryService.save(model);
     }
 
-    @PutMapping("/update/{id}")
+    @PutMapping("/update")
     @Operation(
             summary = "Обновление словаря",
-            description = "Позволяет обновить один словарь"
+            description = "Позволяет обновить одну запись в словаре"
     )
-    public SuccessResultModel update(@PathVariable @Parameter(description = "Идентификатор словаря") UUID id,
-                                  @RequestBody @Parameter(description = "Слово для перевода") String word,
-                                  @RequestBody @Parameter(description = "Перевод слова") String translation) {
-        return dictionaryService.update(id, word, translation);
+    public SuccessResultModel update(@RequestBody DictionaryUpdateModel model) {
+        return dictionaryService.update(model);
     }
 
     @DeleteMapping("/delete/{id}")
     @Operation(
             summary = "Удаление словаря",
-            description = "Позволяет удалить один словарь"
+            description = "Позволяет удалить одну запись в словаре"
     )
     public SuccessResultModel delete(@PathVariable @Parameter(description = "Идентификатор словаря") UUID id) {
         return dictionaryService.delete(id);

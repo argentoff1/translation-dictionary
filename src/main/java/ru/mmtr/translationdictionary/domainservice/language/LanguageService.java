@@ -4,13 +4,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import ru.mmtr.translationdictionary.domain.common.CollectionResultModel;
+import ru.mmtr.translationdictionary.domain.common.DateTimeResultModel;
 import ru.mmtr.translationdictionary.domain.common.PageResultModel;
 import ru.mmtr.translationdictionary.domain.common.SuccessResultModel;
 import ru.mmtr.translationdictionary.domain.language.LanguageModel;
 import ru.mmtr.translationdictionary.domain.language.LanguagePageRequestModel;
+import ru.mmtr.translationdictionary.domain.language.LanguageSaveModel;
+import ru.mmtr.translationdictionary.domain.language.LanguageUpdateModel;
 import ru.mmtr.translationdictionary.infrastructure.repositories.language.LanguageRepository;
 
-import java.util.Objects;
 import java.util.UUID;
 
 @Slf4j
@@ -22,7 +24,7 @@ public class LanguageService {
     public LanguageService(LanguageRepository languageRepository) {
         this.languageRepository = languageRepository;
     }
-
+    // +
     public CollectionResultModel<LanguageModel> showAll() {
 
         return languageRepository.showAll();
@@ -33,7 +35,7 @@ public class LanguageService {
 
         return languageRepository.getPage(criteria);
     }
-
+    // +
     public LanguageModel getById(UUID id) {
         if (id == null) {
             return null;
@@ -42,28 +44,34 @@ public class LanguageService {
         return languageRepository.getById(id);
     }
 
-    public LanguageModel getByName(String languageName) {
+    public DateTimeResultModel getByName(String languageName) {
         stringValidation(languageName);
 
-        return languageRepository.getByName(languageName);
+        var result = languageRepository.getByName(languageName);
+
+        if (result == null) {
+            return new DateTimeResultModel("LANGUAGE_NOT_FOUND", "Не удалось найти данные по введенному языку");
+        }
+
+        return new DateTimeResultModel(result.getCreatedAt(), result.getModifiedAt());
     }
+    // +
+    public SuccessResultModel save(LanguageSaveModel model) {
+        stringValidation(model.getLanguageName());
 
-    public SuccessResultModel save(String languageName) {
-        stringValidation(languageName);
+        var result = languageRepository.save(model);
 
-        var result = languageRepository.save(languageName);
-
-        if (Objects.isNull(result)) {
+        if (result == null) {
             return new SuccessResultModel("CAN_NOT_SAVE", "Не удалось сохранить данные. Поля должны быть заполненными");
         }
 
         return result;
     }
+    // +
+    public SuccessResultModel update(LanguageUpdateModel model) {
+        Integer repositoryResult = languageRepository.update(model);
 
-    public SuccessResultModel update(UUID id, String languageName) {
-        Integer repositoryResult = languageRepository.update(id, languageName);
-
-        if (Objects.isNull(repositoryResult)) {
+        if (repositoryResult == null) {
             return new SuccessResultModel("CAN_NOT_UPDATE", "Не удалось сохранить данные. Поля должны быть заполненными");
         }
 
@@ -73,7 +81,7 @@ public class LanguageService {
     public SuccessResultModel delete(UUID id) {
         Integer repositoryResult = languageRepository.delete(id);
 
-        if (Objects.isNull(repositoryResult)) {
+        if (repositoryResult == null) {
             return new SuccessResultModel("CAN_NOT_DELETE", "Не удалось удалить данные. Поля должны быть заполненными");
         }
 
