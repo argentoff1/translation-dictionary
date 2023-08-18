@@ -10,13 +10,13 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class DatabaseConfiguration {
-    @Value("${spring.datasource.username}")
+    @Value("${postgres.sql.db-username}")
     private String username;
 
-    @Value("${spring.datasource.password}")
+    @Value("${postgres.sql.db-password}")
     private String password;
 
-    @Value("${spring.datasource.url}")
+    @Value("${postgres.sql.db-url}")
     private String databaseUrl;
 
     @Value("${postgres.sql.driver}")
@@ -24,10 +24,10 @@ public class DatabaseConfiguration {
 
     public DataSourceConfig getDataSourceConfig() {
         DataSourceConfig dataSourceConfig = new DataSourceConfig();
-        dataSourceConfig.setDriver("org.postgresql.Driver");
-        dataSourceConfig.setUsername("postgres");
-        dataSourceConfig.setPassword("postgres");
-        dataSourceConfig.setUrl("jdbc:postgresql://localhost:5432/translation_dictionaries");
+        dataSourceConfig.setDriver(driverClassName);
+        dataSourceConfig.setUsername(username);
+        dataSourceConfig.setPassword(password);
+        dataSourceConfig.setUrl(databaseUrl);
 
         return dataSourceConfig;
     }

@@ -22,11 +22,11 @@ import java.sql.SQLException;
 @Component
 @Slf4j
 public class ApplicationStartup implements ApplicationListener<ContextRefreshedEvent> {
-    /*@Value("${spring.liquibase.change-log}")
-    private static String LIQUIBASE_CHANGE_LOG;
+    @Value("${liquibase.change-log}")
+    private String liquibaseChangeLog;
 
-    @Value("${spring.liquibase.liquibase-schema}")
-    private static String LIQUIBASE_SCHEMA_NAME;*/
+    @Value("${liquibase.schema-name}")
+    private String liquibaseSchemaName;
 
     private DatabaseConfiguration serverConfig;
 
@@ -37,14 +37,13 @@ public class ApplicationStartup implements ApplicationListener<ContextRefreshedE
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
-        applyDbMigrations(serverConfig.createDatabase().dataSource(), "public",
-                "db/changelog/09082023-db.changelog-master.xml");
+        applyDbMigrations(serverConfig.createDatabase().dataSource(), liquibaseSchemaName, liquibaseChangeLog);
     }
 
     public void applyDbMigrations(DataSource server, String liquibaseSchemaName, String springLiquibaseChangeLog) {
         ResourceAccessor resourceAccessor = new ClassLoaderResourceAccessor(getClass().getClassLoader());
 
-        log.info("------------Liquibase changes applying started---------");
+        log.info("Liquibase changes applying started");
 
         try (var connection = server.getConnection()) {
             try {
@@ -57,16 +56,16 @@ public class ApplicationStartup implements ApplicationListener<ContextRefreshedE
                 Liquibase liquibase = new Liquibase(springLiquibaseChangeLog, resourceAccessor, database);
                 liquibase.update(new Contexts(), new LabelExpression());
 
-                log.info("------------Liquibase changes applying completed successfully---------");
+                log.info("Liquibase changes applying completed successfully");
             } catch (LiquibaseException ex) {
                 log.error(ex.getMessage(), ex);
 
-                log.info("---------Liquibase changes applying failed");
+                log.info("Liquibase changes applying failed");
             }
         } catch (SQLException e) {
             log.error(e.getMessage(), e);
 
-            log.info("---------Liquibase changes applying failed");
+            log.info("Liquibase changes applying failed");
         }
     }
 }
