@@ -13,7 +13,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity
-@Table(name = "'Languages'")
+@Table(name = "Languages")
 @NoArgsConstructor
 @AllArgsConstructor
 public class LanguageEntity {
