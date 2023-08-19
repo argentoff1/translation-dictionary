@@ -35,20 +35,4 @@ public class LanguageEntity {
 
     @Column(name = LANGUAGE_MODIFIED_AT)
     private LocalDateTime modifiedAt;
-
-    public void setLanguageId(UUID languageId) {
-        this.languageId = languageId;
-    }
-
-    public void setLanguageName(String languageName) {
-        this.languageName = languageName;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public void setModifiedAt(LocalDateTime modifiedAt) {
-        this.modifiedAt = modifiedAt;
-    }
 }

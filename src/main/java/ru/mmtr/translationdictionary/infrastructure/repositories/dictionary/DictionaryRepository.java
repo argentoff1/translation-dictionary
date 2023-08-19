@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-// Получение коллекции ID's, возвращает коллекцию слов
 @Repository
 public class DictionaryRepository {
     public CollectionResultModel<DictionaryModel> showAll() {
@@ -25,17 +24,16 @@ public class DictionaryRepository {
         );
     }
 
-    public CollectionResultModel<String> getAllByIds(DictionaryIdsCollectionModel<UUID> model) {
+    public CollectionResultModel<DictionaryWordAndTranslationModel> getAllByIds(DictionaryIdsCollectionModel<UUID> model) {
         List<DictionaryEntity> wordAndTranslation = DB
                 .find(DictionaryEntity.class)
                 .where()
                 .eq(DictionaryEntity.DICTIONARY_ID, model.getCollectionIds())
                 .findList();
 
-        return null;
-        /*return new CollectionResultModel<>(
-                wordAndTranslation.stream().map(this::).collect(Collectors.toList())
-        );*/
+        return new CollectionResultModel<>(
+                wordAndTranslation.stream().map(this::getWordAndTranslationModel).collect(Collectors.toList())
+        );
     }
 
     public PageResultModel<DictionaryModel> getPage (DictionaryPageRequestModel criteria) {
@@ -148,6 +146,19 @@ public class DictionaryRepository {
         model.setTranslation(entity.getTranslation());
         model.setFromLanguage(entity.getFromLanguage());
         model.setToLanguage(entity.getToLanguage());
+
+        return model;
+    }
+
+    private DictionaryWordAndTranslationModel getWordAndTranslationModel(DictionaryEntity entity) {
+        if (entity == null) {
+            return null;
+        }
+
+        var model = new DictionaryWordAndTranslationModel();
+        model.setWord(entity.getWord());
+        model.setTranslation(entity.getTranslation());
+
         return model;
     }
 }

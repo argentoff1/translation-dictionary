@@ -16,16 +16,4 @@ public class DictionaryTranslateModel {
     private UUID fromLanguage;
     @Parameter(description = "Идентификатор языка переведенного слова")
     private UUID toLanguage;
-
-    public void setWord(String word) {
-        this.word = word;
-    }
-
-    public void setFromLanguage(UUID fromLanguage) {
-        this.fromLanguage = fromLanguage;
-    }
-
-    public void setToLanguage(UUID toLanguage) {
-        this.toLanguage = toLanguage;
-    }
 }

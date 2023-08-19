@@ -21,6 +21,11 @@ public class DictionaryService {
         return dictionaryRepository.showAll();
     }
 
+    public CollectionResultModel<DictionaryWordAndTranslationModel> getAllByIds(DictionaryIdsCollectionModel<UUID> model) {
+
+        return dictionaryRepository.getAllByIds(model);
+    }
+
     public PageResultModel<DictionaryModel> getPage(DictionaryPageRequestModel criteria) {
 
         return dictionaryRepository.getPage(criteria);

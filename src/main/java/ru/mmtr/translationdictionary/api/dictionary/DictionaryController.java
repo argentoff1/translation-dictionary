@@ -30,6 +30,16 @@ public class DictionaryController {
         return dictionaryService.showAll();
     }
 
+    @PostMapping(value = "/getAllByIds")
+    @Operation(
+            summary = "Отображение слов и переводов",
+            description = "Позволяет отобразить слова и переводы"
+    )
+    public CollectionResultModel<DictionaryWordAndTranslationModel> getAllByIds(DictionaryIdsCollectionModel<UUID> model) {
+
+        return dictionaryService.getAllByIds(model);
+    }
+
     @PostMapping(value = "/getPage")
     @Operation(
             summary = "Отображение всех словарей постранично",

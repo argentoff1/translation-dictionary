@@ -48,32 +48,4 @@ public class DictionaryEntity {
 
     @Column(name = DICTIONARY_MODIFIED_AT)
     private LocalDateTime modifiedAt;
-
-    public void setDictionaryId(UUID dictionaryId) {
-        this.dictionaryId = dictionaryId;
-    }
-
-    public void setWord(String word) {
-        this.word = word;
-    }
-
-    public void setTranslation(String translation) {
-        this.translation = translation;
-    }
-
-    public void setFromLanguage(UUID fromLanguage) {
-        this.fromLanguage = fromLanguage;
-    }
-
-    public void setToLanguage(UUID toLanguage) {
-        this.toLanguage = toLanguage;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public void setModifiedAt(LocalDateTime modifiedAt) {
-        this.modifiedAt = modifiedAt;
-    }
 }
