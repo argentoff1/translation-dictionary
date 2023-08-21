@@ -105,14 +105,14 @@ public class DictionaryRepository {
     }
 
     public SuccessResultModel save(DictionarySaveModel model) {
-        DictionaryEntity dictionaryEntity = new DictionaryEntity();
-        dictionaryEntity.setDictionaryId(UUID.randomUUID());
-        dictionaryEntity.setWord(model.getWord());
-        dictionaryEntity.setTranslation(model.getTranslation());
-        dictionaryEntity.setFromLanguage(model.getFromLanguage());
-        dictionaryEntity.setToLanguage(model.getToLanguage());
-        dictionaryEntity.setCreatedAt(LocalDateTime.now());
-        DB.insert(dictionaryEntity);
+        DictionaryEntity entity = new DictionaryEntity();
+        entity.setDictionaryId(UUID.randomUUID());
+        entity.setWord(model.getWord());
+        entity.setTranslation(model.getTranslation());
+        entity.setFromLanguage(model.getFromLanguage());
+        entity.setToLanguage(model.getToLanguage());
+        entity.setCreatedAt(LocalDateTime.now());
+        DB.insert(entity);
 
         return new SuccessResultModel(true);
     }

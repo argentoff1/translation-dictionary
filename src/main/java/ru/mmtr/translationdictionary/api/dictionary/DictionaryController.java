@@ -50,7 +50,7 @@ public class DictionaryController {
         return dictionaryService.getPage(criteria);
     }
 
-    @GetMapping("/getById/{id}")
+    @GetMapping(value = "/getById/{id}")
     @Operation(
             summary = "Получение словаря",
             description = "Позволяет получить один словарь"
@@ -59,7 +59,7 @@ public class DictionaryController {
         return dictionaryService.getById(id);
     }
 
-    @PostMapping("/getTranslatedWord")
+    @PostMapping(value = "/getTranslatedWord")
     @Operation(
             summary = "Получение переведенного слова",
             description = "Позволяет получить переведенное слово с помощью исходного слова, языка искомого слова, и языка переводимого слова"
@@ -69,9 +69,9 @@ public class DictionaryController {
         return dictionaryService.getTranslatedWord(model);
     }
 
-    @PostMapping("/save")
+    @PostMapping(value = "/save")
     @Operation(
-            summary = "Сохранение словаря",
+            summary = "Сохранение",
             description = "Позволяет сохранить одну запись в словаре"
     )
     public SuccessResultModel save(@RequestBody DictionarySaveModel model) {
@@ -79,18 +79,18 @@ public class DictionaryController {
         return dictionaryService.save(model);
     }
 
-    @PutMapping("/update")
+    @PutMapping(value = "/update")
     @Operation(
-            summary = "Обновление словаря",
+            summary = "Обновление",
             description = "Позволяет обновить одну запись в словаре"
     )
     public SuccessResultModel update(@RequestBody DictionaryUpdateModel model) {
         return dictionaryService.update(model);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping(value = "/delete/{id}")
     @Operation(
-            summary = "Удаление словаря",
+            summary = "Удаление",
             description = "Позволяет удалить одну запись в словаре"
     )
     public SuccessResultModel delete(@PathVariable @Parameter(description = "Идентификатор словаря") UUID id) {

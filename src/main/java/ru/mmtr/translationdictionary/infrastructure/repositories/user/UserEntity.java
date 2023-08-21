@@ -9,36 +9,44 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-/*@Entity
-@Table(name = "Users")
+@Entity
+@Table(name = "'Users'")
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor*/
+@AllArgsConstructor
 public class UserEntity {
-    /*public static final String USER_ID = "user_id";
-    public static final String USERNAME = "username";
+    public static final String USER_ID = "user_id";
+    public static final String LOGIN = "login";
     public static final String PASSWORD = "password";
-    public static final String FULL_NAME = "full_name";
+    public static final String LAST_NAME = "last_name";
+    public static final String FIRST_NAME = "first_name";
+    public static final String FATHER_NAME = "father_name";
     public static final String EMAIL = "email";
     public static final String PHONE_NUMBER = "phone_number";
     public static final String USER_CREATED_AT = "created_at";
     public static final String USER_MODIFIED_AT = "modified_at";
-    public static final String ROLE_ID = "role_id";
+    public static final String ARCHIVE_DATE = "archive_date";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = USER_ID)
     private UUID userId;
 
-    @Column(name = USERNAME)
-    private String username;
+    @Column(name = LOGIN)
+    private String login;
 
     @Column(name = PASSWORD)
     private String password;
 
-    @Column(name = FULL_NAME)
-    private String fullName;
+    @Column(name = LAST_NAME)
+    private String lastName;
+
+    @Column(name = FIRST_NAME)
+    private String firstName;
+
+    @Column(name = FATHER_NAME)
+    private String fatherName;
 
     @Column(name = EMAIL)
     private String email;
@@ -52,6 +60,6 @@ public class UserEntity {
     @Column(name = USER_MODIFIED_AT)
     private LocalDateTime modifiedAt;
 
-    @Column(name = ROLE_ID)
-    private UUID roleId;*/
+    @Column(name = ARCHIVE_DATE)
+    private LocalDateTime archiveDate;
 }

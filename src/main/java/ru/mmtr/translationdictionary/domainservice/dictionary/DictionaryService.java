@@ -65,7 +65,7 @@ public class DictionaryService {
         var result = dictionaryRepository.save(model);
 
         if (result == null) {
-            return new SuccessResultModel("CAN_NOT_SAVE", "Не удалось сохранить данные. Поля должны быть заполненными");
+            return new SuccessResultModel("CAN_NOT_SAVE", "Не удалось сохранить данные. Поля должны быть корректно заполненными");
         }
 
         return result;
@@ -87,7 +87,7 @@ public class DictionaryService {
         Integer repositoryResult = dictionaryRepository.update(model);
 
         if (repositoryResult == null) {
-            return new SuccessResultModel("CAN_NOT_UPDATE", "Не удалось сохранить данные. Поля должны быть заполненными");
+            return new SuccessResultModel("CAN_NOT_UPDATE", "Не удалось сохранить данные. Поля должны быть корректно заполненными");
         }
 
         return new SuccessResultModel(true);
@@ -97,7 +97,7 @@ public class DictionaryService {
         Integer repositoryResult = dictionaryRepository.delete(id);
 
         if (repositoryResult == null) {
-            return new SuccessResultModel("CAN_NOT_DELETE", "Не удалось удалить данные. Поля должны быть заполненными");
+            return new SuccessResultModel("CAN_NOT_DELETE", "Не удалось удалить данные. Поля должны быть корректно заполненными");
         }
 
         return new SuccessResultModel(true);

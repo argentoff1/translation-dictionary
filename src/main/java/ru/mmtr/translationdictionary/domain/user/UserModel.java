@@ -14,17 +14,23 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserModel {
-    @Schema(description = "Идентификатор пользователя", accessMode = Schema.AccessMode.READ_ONLY)
+    @Schema(description = "Идентификатор", accessMode = Schema.AccessMode.READ_ONLY)
     private UUID userId;
 
-    @Schema(description = "Имя пользователя", example = "repeatalexander")
-    private String username;
+    @Schema(description = "Логин", example = "repeatalexander")
+    private String login;
 
     @Schema(description = "Пароль", accessMode = Schema.AccessMode.READ_ONLY)
     private String password;
 
-    @Schema(description = "Полное имя", example = "Александров Александр Александрович")
-    private String fullName;
+    @Schema(description = "Фамилия", example = "Александров")
+    private String lastName;
+
+    @Schema(description = "Имя", example = "Александр")
+    private String firstName;
+
+    @Schema(description = "Отчество", example = "Александрович")
+    private String fatherName;
 
     @Schema(description = "Электронная почта", example = "alexandrov.alexander@mail.ru")
     private String email;
@@ -38,6 +44,6 @@ public class UserModel {
     @Schema(description = "Дата изменения", example = "2023-08-17 23:00:00.000")
     private LocalDateTime modifiedAt;
 
-    @Schema(description = "Идентификатор роли пользователя", accessMode = Schema.AccessMode.READ_ONLY)
-    private UUID roleId;
+    @Schema(description = "Дата архивации", example = "2023-08-17 11:55:24.979")
+    private LocalDateTime archiveDate;
 }

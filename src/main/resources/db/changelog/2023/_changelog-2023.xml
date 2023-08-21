@@ -22,4 +22,6 @@
     <include file="db/changelog/2023/14082023-rename-changeset-tables.xml"/>
 
     <include file="db/changelog/2023/17082023-add-changeset-date-columns.xml"/>
+
+    <include file="db/changelog/2023/21082023-create-changeset-users-table.xml"/>
 </databaseChangeLog>
