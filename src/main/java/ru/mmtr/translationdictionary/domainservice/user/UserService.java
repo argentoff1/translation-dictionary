@@ -1,12 +1,14 @@
 package ru.mmtr.translationdictionary.domainservice.user;
 
-import org.springframework.security.crypto.password.PasswordEncoder;
+//import org.springframework.security.crypto.password.PasswordEncoder;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import ru.mmtr.translationdictionary.domain.common.GUIDResultModel;
 import ru.mmtr.translationdictionary.domain.common.SuccessResultModel;
-import ru.mmtr.translationdictionary.domain.user.UserPasswordUpdateModel;
-import ru.mmtr.translationdictionary.domain.user.UserSaveModel;
-import ru.mmtr.translationdictionary.domain.user.UserUpdateModel;
+import ru.mmtr.translationdictionary.domain.user.*;
 import ru.mmtr.translationdictionary.infrastructure.repositories.user.UserRepository;
+
+import java.util.UUID;
 
 @Service
 public class UserService {
@@ -16,6 +18,24 @@ public class UserService {
     public UserService(UserRepository userRepository/*, PasswordEncoder passwordEncoder*/) {
         this.userRepository = userRepository;
         //this.passwordEncoder = passwordEncoder;
+    }
+
+    public GUIDResultModel login(UserAuthorizationModel model) {
+        var result = userRepository.login(model);
+
+        if (result == null) {
+            return new GUIDResultModel("CAN_NOT_AUTHORIZE",
+                    "Не удалось авторизоваться. " +
+                            "Поля должны быть корректно заполнены");
+        }
+
+        if (result.getResultId() == null) {
+            return new GUIDResultModel("CAN_NOT_AUTHORIZE",
+                    "Не удалось авторизоваться. " +
+                            "Поля должны быть корректно заполнены");
+        }
+
+        return result;
     }
 
     public SuccessResultModel save(UserSaveModel model) {
@@ -69,7 +89,6 @@ public class UserService {
         }
 
         //String hashedPassword = passwordEncoder.encode(model.getPassword());
-
 
         return result;
     }
@@ -133,15 +152,41 @@ public class UserService {
 
         if (result == null) {
             return new SuccessResultModel("CAN_NOT_SAVE",
-                    "Не удалось сохранить данные. " +
-                            "Поля должны быть корректно заполненными");
+                    "Не удалось сохранить данные. Поля должны быть корректно заполненными");
         }
 
         return new SuccessResultModel(true);
     }
 
+    public SuccessResultModel archiveById(UUID id) {
+        Integer repositoryResult = userRepository.archiveById(id);
+
+        if (repositoryResult == null) {
+            return new SuccessResultModel("CAN_NOT_UPDATE",
+                    "Не удалось сохранить данные. Поля должны быть корректно заполненными");
+        }
+
+        return new SuccessResultModel(true);
+    }
+
+    public SuccessResultModel unarchiveById(UUID id) {
+        Integer repositoryResult = userRepository.unarchiveById(id);
+
+        if (repositoryResult == null) {
+            return new SuccessResultModel("CAN_NOT_UPDATE",
+                    "Не удалось сохранить данные. Поля должны быть корректно заполненными");
+        }
+
+        return new SuccessResultModel(true);
+    }
+
+    public SuccessResultModel logout() {
+
+        return userRepository.logout();
+    }
+
     private SuccessResultModel stringValidation(String str) {
-        if (str.isEmpty()) {
+        if (StringUtils.isNotBlank(str)) {
             return new SuccessResultModel("FIELD_MUST_BE_FILLED",
                     "Поле должно быть заполнено");
         }
@@ -155,7 +200,7 @@ public class UserService {
         for (char element : str.toCharArray()) {
             count++;
         }
-        if (count > 15) {
+        if (count > 50) {
             return new SuccessResultModel("FIELD_VALUE_OUT_OF_BOUNDS",
                     "Поле не должно быть больше 15 символов");
         }

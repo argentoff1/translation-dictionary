@@ -87,7 +87,8 @@ public class DictionaryService {
         Integer repositoryResult = dictionaryRepository.update(model);
 
         if (repositoryResult == null) {
-            return new SuccessResultModel("CAN_NOT_UPDATE", "Не удалось сохранить данные. Поля должны быть корректно заполненными");
+            return new SuccessResultModel("CAN_NOT_UPDATE",
+                    "Не удалось сохранить данные. Поля должны быть корректно заполненными");
         }
 
         return new SuccessResultModel(true);

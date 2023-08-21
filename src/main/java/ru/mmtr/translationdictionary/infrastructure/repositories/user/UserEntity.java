@@ -36,7 +36,7 @@ public class UserEntity {
     @Column(name = LOGIN)
     private String login;
 
-    @Column(name = PASSWORD)
+    @Column(name = PASSWORD, updatable = true)
     private String password;
 
     @Column(name = LAST_NAME)

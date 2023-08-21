@@ -55,7 +55,8 @@ public class DictionaryController {
             summary = "Получение словаря",
             description = "Позволяет получить один словарь"
     )
-    public DictionaryModel getById(@PathVariable @Parameter(description = "Идентификатор словаря") UUID id) {
+    public DictionaryModel getById(@PathVariable @Parameter(description = "Идентификатор") UUID id) {
+
         return dictionaryService.getById(id);
     }
 
