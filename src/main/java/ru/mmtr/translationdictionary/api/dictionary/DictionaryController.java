@@ -75,7 +75,7 @@ public class DictionaryController {
             summary = "Сохранение",
             description = "Позволяет сохранить одну запись в словаре"
     )
-    public SuccessResultModel save(@RequestBody DictionarySaveModel model) {
+    public GUIDResultModel save(@RequestBody DictionarySaveModel model) {
 
         return dictionaryService.save(model);
     }

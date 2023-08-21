@@ -4,10 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
-import ru.mmtr.translationdictionary.domain.common.CollectionResultModel;
-import ru.mmtr.translationdictionary.domain.common.DateTimeResultModel;
-import ru.mmtr.translationdictionary.domain.common.PageResultModel;
-import ru.mmtr.translationdictionary.domain.common.SuccessResultModel;
+import ru.mmtr.translationdictionary.domain.common.*;
 import ru.mmtr.translationdictionary.domain.language.LanguageModel;
 import ru.mmtr.translationdictionary.domain.language.LanguagePageRequestModel;
 import ru.mmtr.translationdictionary.domain.language.LanguageSaveModel;
@@ -61,7 +58,7 @@ public class LanguageController {
             summary = "Сохранение языка",
             description = "Позволяет сохранить один язык"
     )
-    public SuccessResultModel save(@RequestBody LanguageSaveModel model) {
+    public GUIDResultModel save(@RequestBody LanguageSaveModel model) {
 
         return languageService.save(model);
     }

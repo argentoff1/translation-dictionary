@@ -3,10 +3,7 @@ package ru.mmtr.translationdictionary.infrastructure.repositories.language;
 import io.ebean.DB;
 import io.ebean.ExpressionList;
 import org.springframework.stereotype.Repository;
-import ru.mmtr.translationdictionary.domain.common.CollectionResultModel;
-import ru.mmtr.translationdictionary.domain.common.DateTimeResultModel;
-import ru.mmtr.translationdictionary.domain.common.PageResultModel;
-import ru.mmtr.translationdictionary.domain.common.SuccessResultModel;
+import ru.mmtr.translationdictionary.domain.common.*;
 import ru.mmtr.translationdictionary.domain.language.LanguageModel;
 import ru.mmtr.translationdictionary.domain.language.LanguagePageRequestModel;
 import ru.mmtr.translationdictionary.domain.language.LanguageSaveModel;
@@ -81,14 +78,16 @@ public class LanguageRepository {
         return getModel(foundEntity);
     }
 
-    public SuccessResultModel save(LanguageSaveModel model) {
+    public GUIDResultModel save(LanguageSaveModel model) {
         LanguageEntity languageEntity = new LanguageEntity();
         languageEntity.setLanguageId(UUID.randomUUID());
         languageEntity.setLanguageName(model.getLanguageName());
         languageEntity.setCreatedAt(LocalDateTime.now());
         DB.insert(languageEntity);
 
-        return new SuccessResultModel(true);
+        var resultModel = getModel(languageEntity);
+
+        return new GUIDResultModel(resultModel.getLanguageId());
     }
 
     public Integer update(LanguageUpdateModel model) {

@@ -1,6 +1,7 @@
 package ru.mmtr.translationdictionary.domainservice.language;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import ru.mmtr.translationdictionary.domain.common.*;
@@ -41,33 +42,35 @@ public class LanguageService {
         return languageRepository.getById(id);
     }
 
-    public SuccessResultModel save(LanguageSaveModel model) {
-        var validationResult = stringValidation(model.getLanguageName());
+    public GUIDResultModel save(LanguageSaveModel model) {
+        var validationResult = stringValidation(model.getLanguageName(), 15);
 
         if (validationResult.getErrorCode() != null) {
-            return validationResult;
+            return (GUIDResultModel) validationResult;
         }
 
         var result = languageRepository.save(model);
 
         if (result == null) {
-            return new SuccessResultModel("CAN_NOT_SAVE", "Не удалось сохранить данные. Поля должны быть заполненными");
+            return new GUIDResultModel("CAN_NOT_SAVE",
+                    "Не удалось сохранить данные. Поля должны быть заполненными");
         }
 
         return result;
     }
 
     public SuccessResultModel update(LanguageUpdateModel model) {
-        var validationResult = stringValidation(model.getLanguageName());
+        var validationResult = stringValidation(model.getLanguageName(), 15);
 
         if (validationResult.getErrorCode() != null) {
-            return validationResult;
+            return (SuccessResultModel) validationResult;
         }
 
         Integer repositoryResult = languageRepository.update(model);
 
         if (repositoryResult == null) {
-            return new SuccessResultModel("CAN_NOT_UPDATE", "Не удалось сохранить данные. Поля должны быть заполненными");
+            return new SuccessResultModel("CAN_NOT_UPDATE",
+                    "Не удалось сохранить данные. Поля должны быть заполненными");
         }
 
         return new SuccessResultModel(true);
@@ -77,19 +80,22 @@ public class LanguageService {
         Integer repositoryResult = languageRepository.delete(id);
 
         if (repositoryResult == null) {
-            return new SuccessResultModel("CAN_NOT_DELETE", "Не удалось удалить данные. Поля должны быть заполненными");
+            return new SuccessResultModel("CAN_NOT_DELETE",
+                    "Не удалось удалить данные. Поля должны быть заполненными");
         }
 
         return new SuccessResultModel(true);
     }
 
-    private static SuccessResultModel stringValidation(String str) {
-        if (str.isEmpty()) {
-            return new SuccessResultModel("FIELD_MUST_BE_FILLED", "Поле должно быть заполнено");
+    private static GeneralResultModel stringValidation(String str, int countChars) {
+        if (StringUtils.isNotBlank(str)) {
+            return new SuccessResultModel("FIELD_MUST_BE_FILLED",
+                    "Поле должно быть заполнено");
         }
 
         if (str.contains(" ")) {
-            return new SuccessResultModel("FIELD_MUST_NOT_CONTAIN_SPACES", "Поле не должно содержать пробелов");
+            return new SuccessResultModel("FIELD_MUST_NOT_CONTAIN_SPACES",
+                    "Поле не должно содержать пробелов");
         }
 
         int count = 0;
@@ -97,7 +103,8 @@ public class LanguageService {
             count++;
         }
         if (count > 15) {
-            return new SuccessResultModel("FIELD_VALUE_OUT_OF_BOUNDS", "Поле не должно быть больше 15 символов");
+            return new SuccessResultModel("FIELD_VALUE_OUT_OF_BOUNDS",
+                    "Поле не должно быть больше 15 символов");
         }
 
         return new SuccessResultModel(true);

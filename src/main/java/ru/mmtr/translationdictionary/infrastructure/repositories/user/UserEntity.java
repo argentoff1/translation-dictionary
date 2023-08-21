@@ -24,8 +24,8 @@ public class UserEntity {
     public static final String FATHER_NAME = "father_name";
     public static final String EMAIL = "email";
     public static final String PHONE_NUMBER = "phone_number";
-    public static final String USER_CREATED_AT = "created_at";
-    public static final String USER_MODIFIED_AT = "modified_at";
+    public static final String CREATED_AT = "created_at";
+    public static final String MODIFIED_AT = "modified_at";
     public static final String ARCHIVE_DATE = "archive_date";
 
     @Id
@@ -54,10 +54,10 @@ public class UserEntity {
     @Column(name = PHONE_NUMBER)
     private String phoneNumber;
 
-    @Column(name = USER_CREATED_AT)
+    @Column(name = CREATED_AT)
     private LocalDateTime createdAt;
 
-    @Column(name = USER_MODIFIED_AT)
+    @Column(name = MODIFIED_AT)
     private LocalDateTime modifiedAt;
 
     @Column(name = ARCHIVE_DATE)

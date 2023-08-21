@@ -3,8 +3,7 @@ package ru.mmtr.translationdictionary.domainservice.user;
 //import org.springframework.security.crypto.password.PasswordEncoder;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
-import ru.mmtr.translationdictionary.domain.common.GUIDResultModel;
-import ru.mmtr.translationdictionary.domain.common.SuccessResultModel;
+import ru.mmtr.translationdictionary.domain.common.*;
 import ru.mmtr.translationdictionary.domain.user.*;
 import ru.mmtr.translationdictionary.infrastructure.repositories.user.UserRepository;
 
@@ -20,17 +19,17 @@ public class UserService {
         //this.passwordEncoder = passwordEncoder;
     }
 
-    public GUIDResultModel login(UserAuthorizationModel model) {
+    public TokenResultModel login(UserAuthorizationModel model) {
         var result = userRepository.login(model);
 
         if (result == null) {
-            return new GUIDResultModel("CAN_NOT_AUTHORIZE",
+            return new TokenResultModel("CAN_NOT_AUTHORIZE",
                     "Не удалось авторизоваться. " +
                             "Поля должны быть корректно заполнены");
         }
 
-        if (result.getResultId() == null) {
-            return new GUIDResultModel("CAN_NOT_AUTHORIZE",
+        if (result.getAccessToken() == null || result.getRefreshToken() == null) {
+            return new TokenResultModel("CAN_NOT_AUTHORIZE",
                     "Не удалось авторизоваться. " +
                             "Поля должны быть корректно заполнены");
         }
@@ -38,53 +37,58 @@ public class UserService {
         return result;
     }
 
-    public SuccessResultModel save(UserSaveModel model) {
-        var validationResult = stringValidation(model.getLogin());
+    public PageResultModel<UserModel> getPage(UserPageRequestModel criteria) {
+
+        return userRepository.getPage(criteria);
+    }
+
+    public GUIDResultModel save(UserSaveModel model) {
+        var validationResult = stringValidation(model.getLogin(), 20);
 
         if (validationResult.getErrorCode() != null) {
-            return validationResult;
+            return (GUIDResultModel) validationResult;
         }
 
-        validationResult = stringValidation(model.getPassword());
+        validationResult = stringValidation(model.getPassword(), 100);
 
         if (validationResult.getErrorCode() != null) {
-            return validationResult;
+            return (GUIDResultModel) validationResult;
         }
 
-        validationResult = stringValidation(model.getLastName());
+        validationResult = stringValidation(model.getLastName(), 30);
 
         if (validationResult.getErrorCode() != null) {
-            return validationResult;
+            return (GUIDResultModel) validationResult;
         }
 
-        validationResult = stringValidation(model.getFirstName());
+        validationResult = stringValidation(model.getFirstName(), 20);
 
         if (validationResult.getErrorCode() != null) {
-            return validationResult;
+            return (GUIDResultModel) validationResult;
         }
 
-        validationResult = stringValidation(model.getFatherName());
+        validationResult = stringValidation(model.getFatherName(), 50);
 
         if (validationResult.getErrorCode() != null) {
-            return validationResult;
+            return (GUIDResultModel) validationResult;
         }
 
-        validationResult = stringValidation(model.getEmail());
+        validationResult = stringValidation(model.getEmail(), 320);
 
         if (validationResult.getErrorCode() != null) {
-            return validationResult;
+            return (GUIDResultModel) validationResult;
         }
 
-        validationResult = stringValidation(model.getPhoneNumber());
+        validationResult = stringValidation(model.getPhoneNumber(), 30);
 
         if (validationResult.getErrorCode() != null) {
-            return validationResult;
+            return (GUIDResultModel) validationResult;
         }
 
         var result = userRepository.save(model);
 
         if (result == null) {
-            return new SuccessResultModel("CAN_NOT_SAVE",
+            return new GUIDResultModel("CAN_NOT_SAVE",
                     "Не удалось сохранить данные. Поля должны быть корректно заполненными");
         }
 
@@ -94,40 +98,40 @@ public class UserService {
     }
 
     public SuccessResultModel updateUser(UserUpdateModel model) {
-        var validationResult = stringValidation(model.getLogin());
+        var validationResult = stringValidation(model.getLogin(), 20);
 
         if (validationResult.getErrorCode() != null) {
-            return validationResult;
+            return (SuccessResultModel) validationResult;
         }
 
-        validationResult = stringValidation(model.getLastName());
+        validationResult = stringValidation(model.getLastName(), 30);
 
         if (validationResult.getErrorCode() != null) {
-            return validationResult;
+            return (SuccessResultModel) validationResult;
         }
 
-        validationResult = stringValidation(model.getFirstName());
+        validationResult = stringValidation(model.getFirstName(), 20);
 
         if (validationResult.getErrorCode() != null) {
-            return validationResult;
+            return (SuccessResultModel) validationResult;
         }
 
-        validationResult = stringValidation(model.getFatherName());
+        validationResult = stringValidation(model.getFatherName(), 50);
 
         if (validationResult.getErrorCode() != null) {
-            return validationResult;
+            return (SuccessResultModel) validationResult;
         }
 
-        validationResult = stringValidation(model.getEmail());
+        validationResult = stringValidation(model.getEmail(), 320);
 
         if (validationResult.getErrorCode() != null) {
-            return validationResult;
+            return (SuccessResultModel) validationResult;
         }
 
-        validationResult = stringValidation(model.getPhoneNumber());
+        validationResult = stringValidation(model.getPhoneNumber(), 30);
 
         if (validationResult.getErrorCode() != null) {
-            return validationResult;
+            return (SuccessResultModel) validationResult;
         }
 
         Integer result = userRepository.updateUser(model);
@@ -142,10 +146,10 @@ public class UserService {
     }
 
     public SuccessResultModel updatePassword(UserPasswordUpdateModel model) {
-        var validationResult = stringValidation(model.getPassword());
+        var validationResult = stringValidation(model.getPassword(), 100);
 
         if (validationResult.getErrorCode() != null) {
-            return validationResult;
+            return (SuccessResultModel) validationResult;
         }
 
         Integer result = userRepository.updatePassword(model);
@@ -185,7 +189,7 @@ public class UserService {
         return userRepository.logout();
     }
 
-    private SuccessResultModel stringValidation(String str) {
+    private GeneralResultModel stringValidation(String str, int charsLimit) {
         if (StringUtils.isNotBlank(str)) {
             return new SuccessResultModel("FIELD_MUST_BE_FILLED",
                     "Поле должно быть заполнено");

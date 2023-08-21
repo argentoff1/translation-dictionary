@@ -104,7 +104,7 @@ public class DictionaryRepository {
         return new StringResultModel(foundTranslation.getTranslation());
     }
 
-    public SuccessResultModel save(DictionarySaveModel model) {
+    public GUIDResultModel save(DictionarySaveModel model) {
         DictionaryEntity entity = new DictionaryEntity();
         entity.setDictionaryId(UUID.randomUUID());
         entity.setWord(model.getWord());
@@ -114,7 +114,9 @@ public class DictionaryRepository {
         entity.setCreatedAt(LocalDateTime.now());
         DB.insert(entity);
 
-        return new SuccessResultModel(true);
+        var resultModel = getModel(entity);
+
+        return new GUIDResultModel(resultModel.getDictionaryId());
     }
 
     public Integer update(DictionaryUpdateModel model) {

@@ -5,7 +5,9 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 import ru.mmtr.translationdictionary.domain.common.GUIDResultModel;
+import ru.mmtr.translationdictionary.domain.common.PageResultModel;
 import ru.mmtr.translationdictionary.domain.common.SuccessResultModel;
+import ru.mmtr.translationdictionary.domain.common.TokenResultModel;
 import ru.mmtr.translationdictionary.domain.user.*;
 import ru.mmtr.translationdictionary.domainservice.user.UserService;
 
@@ -22,9 +24,23 @@ public class UserController {
     }
 
     @PostMapping(value = "/login")
-    public GUIDResultModel login(@RequestBody UserAuthorizationModel model) {
+    @Operation(
+            summary = "Авторизация пользователя",
+            description = "Позволяет пользователю авторизоваться"
+    )
+    public TokenResultModel login(@RequestBody UserAuthorizationModel model) {
 
         return userService.login(model);
+    }
+
+    @PostMapping(value = "/getPage")
+    @Operation(
+            summary = "Отображение всех пользователей постранично",
+            description = "Позволяет отобразить всех пользователей постранично"
+    )
+    public PageResultModel<UserModel> getPage(UserPageRequestModel criteria) {
+
+        return userService.getPage(criteria);
     }
 
     @PostMapping(value = "/save")
@@ -32,7 +48,7 @@ public class UserController {
             summary = "Регистрация",
             description = "Позволяет зарегистрировать пользователя"
     )
-    public SuccessResultModel save(@RequestBody UserSaveModel model) {
+    public GUIDResultModel save(@RequestBody UserSaveModel model) {
 
         return userService.save(model);
     }
@@ -58,17 +74,29 @@ public class UserController {
     }
 
     @PostMapping(value = "/archiveById/{id}")
+    @Operation(
+            summary = "Архивация пользователя",
+            description = "Позволяет архивировать пользователя"
+    )
     public SuccessResultModel archiveById(@PathVariable @Parameter(description = "Идентификатор") UUID id) {
 
         return userService.archiveById(id);
     }
 
     @PostMapping(value = "/unarchiveById/{id}")
+    @Operation(
+            summary = "Разархивация пользователя",
+            description = "Позволяет разархивировать пользователя"
+    )
     public SuccessResultModel unarchiveById(@PathVariable @Parameter(description = "Идентификатор") UUID id) {
         return userService.unarchiveById(id);
     }
 
     @PostMapping(value = "/logout")
+    @Operation(
+            summary = "Выход пользователя из системы ",
+            description = "Позволяет пользователю выйти из системы"
+    )
     public SuccessResultModel logout() {
         return userService.logout();
     }
