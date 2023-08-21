@@ -56,16 +56,6 @@ public class LanguageController {
         return languageService.getById(id);
     }
 
-    @GetMapping(value = "/getByName/{name}")
-    @Operation(
-            summary = "Получение языка",
-            description = "Позволяет получить язык по его названию"
-    )
-    public DateTimeResultModel getByName(@PathVariable @Parameter(description = "Название") String name) {
-
-        return languageService.getByName(name);
-    }
-
     @PostMapping(value = "/save")
     @Operation(
             summary = "Сохранение языка",

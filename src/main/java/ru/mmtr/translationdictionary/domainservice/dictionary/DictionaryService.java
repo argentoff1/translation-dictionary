@@ -50,9 +50,17 @@ public class DictionaryService {
     }
 
     public SuccessResultModel save(DictionarySaveModel model) {
-        stringValidation(model.getWord());
+        var validationResult = stringValidation(model.getWord());
 
-        stringValidation(model.getTranslation());
+        if (validationResult.getErrorCode() != null) {
+            return validationResult;
+        }
+
+        validationResult = stringValidation(model.getTranslation());
+
+        if (validationResult.getErrorCode() != null) {
+            return validationResult;
+        }
 
         var result = dictionaryRepository.save(model);
 
@@ -64,6 +72,18 @@ public class DictionaryService {
     }
 
     public SuccessResultModel update(DictionaryUpdateModel model) {
+        var validationResult = stringValidation(model.getWord());
+
+        if (validationResult.getErrorCode() != null) {
+            return validationResult;
+        }
+
+        validationResult = stringValidation(model.getTranslation());
+
+        if (validationResult.getErrorCode() != null) {
+            return validationResult;
+        }
+
         Integer repositoryResult = dictionaryRepository.update(model);
 
         if (repositoryResult == null) {

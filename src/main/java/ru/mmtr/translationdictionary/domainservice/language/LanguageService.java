@@ -3,10 +3,7 @@ package ru.mmtr.translationdictionary.domainservice.language;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
-import ru.mmtr.translationdictionary.domain.common.CollectionResultModel;
-import ru.mmtr.translationdictionary.domain.common.DateTimeResultModel;
-import ru.mmtr.translationdictionary.domain.common.PageResultModel;
-import ru.mmtr.translationdictionary.domain.common.SuccessResultModel;
+import ru.mmtr.translationdictionary.domain.common.*;
 import ru.mmtr.translationdictionary.domain.language.LanguageModel;
 import ru.mmtr.translationdictionary.domain.language.LanguagePageRequestModel;
 import ru.mmtr.translationdictionary.domain.language.LanguageSaveModel;
@@ -24,7 +21,7 @@ public class LanguageService {
     public LanguageService(LanguageRepository languageRepository) {
         this.languageRepository = languageRepository;
     }
-    // +
+
     public CollectionResultModel<LanguageModel> showAll() {
 
         return languageRepository.showAll();
@@ -35,7 +32,7 @@ public class LanguageService {
 
         return languageRepository.getPage(criteria);
     }
-    // +
+
     public LanguageModel getById(UUID id) {
         if (id == null) {
             return null;
@@ -44,20 +41,12 @@ public class LanguageService {
         return languageRepository.getById(id);
     }
 
-    public DateTimeResultModel getByName(String languageName) {
-        stringValidation(languageName);
-
-        var result = languageRepository.getByName(languageName);
-
-        if (result == null) {
-            return new DateTimeResultModel("LANGUAGE_NOT_FOUND", "Не удалось найти данные по введенному языку");
-        }
-
-        return new DateTimeResultModel(result.getCreatedAt(), result.getModifiedAt());
-    }
-    // +
     public SuccessResultModel save(LanguageSaveModel model) {
-        stringValidation(model.getLanguageName());
+        var validationResult = stringValidation(model.getLanguageName());
+
+        if (validationResult.getErrorCode() != null) {
+            return validationResult;
+        }
 
         var result = languageRepository.save(model);
 
@@ -67,8 +56,14 @@ public class LanguageService {
 
         return result;
     }
-    // +
+
     public SuccessResultModel update(LanguageUpdateModel model) {
+        var validationResult = stringValidation(model.getLanguageName());
+
+        if (validationResult.getErrorCode() != null) {
+            return validationResult;
+        }
+
         Integer repositoryResult = languageRepository.update(model);
 
         if (repositoryResult == null) {
@@ -88,7 +83,7 @@ public class LanguageService {
         return new SuccessResultModel(true);
     }
 
-    private SuccessResultModel stringValidation(String str) {
+    private static SuccessResultModel stringValidation(String str) {
         if (str.isEmpty()) {
             return new SuccessResultModel("FIELD_MUST_BE_FILLED", "Поле должно быть заполнено");
         }

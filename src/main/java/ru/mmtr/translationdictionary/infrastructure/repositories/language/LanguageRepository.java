@@ -81,16 +81,6 @@ public class LanguageRepository {
         return getModel(foundEntity);
     }
 
-    public DateTimeResultModel getByName(String languageName) {
-        LanguageEntity foundEntity = DB
-                .find(LanguageEntity.class)
-                .where()
-                .ilike(LanguageEntity.LANGUAGE_NAME, "%" + languageName + "%")
-                .findOne();
-
-        return new DateTimeResultModel(foundEntity.getCreatedAt(), foundEntity.getModifiedAt());
-    }
-
     public SuccessResultModel save(LanguageSaveModel model) {
         LanguageEntity languageEntity = new LanguageEntity();
         languageEntity.setLanguageId(UUID.randomUUID());

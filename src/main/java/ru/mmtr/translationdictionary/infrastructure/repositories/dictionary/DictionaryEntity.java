@@ -14,7 +14,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity
-@Table(name = "Dictionaries")
+@Table(name = "'Dictionaries'")
 @NoArgsConstructor
 @AllArgsConstructor
 public class DictionaryEntity {
