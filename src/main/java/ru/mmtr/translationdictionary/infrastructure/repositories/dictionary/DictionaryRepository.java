@@ -120,13 +120,12 @@ public class DictionaryRepository {
     }
 
     public Integer update(DictionaryUpdateModel model) {
-        return DB.find(DictionaryEntity.class)
-                .where()
-                .eq(DictionaryEntity.DICTIONARY_ID, model.getId())
-                .asUpdate()
+        return DB.update(DictionaryEntity.class)
                 .set(DictionaryEntity.WORD, model.getWord())
                 .set(DictionaryEntity.TRANSLATION, model.getTranslation())
                 .set(DictionaryEntity.DICTIONARY_MODIFIED_AT, LocalDateTime.now())
+                .where()
+                .eq(DictionaryEntity.DICTIONARY_ID, model.getId())
                 .update();
     }
 

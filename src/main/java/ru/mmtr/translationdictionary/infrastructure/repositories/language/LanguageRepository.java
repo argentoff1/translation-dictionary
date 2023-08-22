@@ -91,12 +91,11 @@ public class LanguageRepository {
     }
 
     public Integer update(LanguageUpdateModel model) {
-        return DB.find(LanguageEntity.class)
-                .where()
-                .eq(LanguageEntity.LANGUAGE_ID, model.getId())
-                .asUpdate()
+        return DB.update(LanguageEntity.class)
                 .set(LanguageEntity.LANGUAGE_NAME, model.getLanguageName())
                 .set(LanguageEntity.LANGUAGE_MODIFIED_AT, LocalDateTime.now())
+                .where()
+                .eq(LanguageEntity.LANGUAGE_ID, model.getId())
                 .update();
     }
 

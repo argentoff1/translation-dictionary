@@ -25,7 +25,7 @@ public class UserController {
 
     @PostMapping(value = "/login")
     @Operation(
-            summary = "Авторизация пользователя",
+            summary = "Вход пользователя в систему",
             description = "Позволяет пользователю авторизоваться"
     )
     public TokenResultModel login(@RequestBody UserAuthorizationModel model) {

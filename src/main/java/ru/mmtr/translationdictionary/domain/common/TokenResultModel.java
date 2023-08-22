@@ -21,6 +21,8 @@ public class TokenResultModel extends GeneralResultModel {
         refreshToken = null;
     }
 
+
+
     public TokenResultModel(String accessToken, String refreshToken) {
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;

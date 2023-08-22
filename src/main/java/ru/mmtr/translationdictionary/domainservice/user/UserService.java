@@ -46,43 +46,55 @@ public class UserService {
         var validationResult = stringValidation(model.getLogin(), 20);
 
         if (validationResult.getErrorCode() != null) {
-            return (GUIDResultModel) validationResult;
+            return new GUIDResultModel("CAN_NOT_SAVE",
+                    "Не удалось сохранить данные. Поля должны быть корректно заполненными");
         }
 
         validationResult = stringValidation(model.getPassword(), 100);
 
         if (validationResult.getErrorCode() != null) {
-            return (GUIDResultModel) validationResult;
+            return new GUIDResultModel("CAN_NOT_SAVE",
+                    "Не удалось сохранить данные. Поля должны быть заполненными");
         }
 
         validationResult = stringValidation(model.getLastName(), 30);
 
         if (validationResult.getErrorCode() != null) {
-            return (GUIDResultModel) validationResult;
+            return new GUIDResultModel("CAN_NOT_SAVE",
+                    "Не удалось сохранить данные. " +
+                            "Поля должны быть корректно заполненными");
         }
 
         validationResult = stringValidation(model.getFirstName(), 20);
 
         if (validationResult.getErrorCode() != null) {
-            return (GUIDResultModel) validationResult;
+            return new GUIDResultModel("CAN_NOT_SAVE",
+                    "Не удалось сохранить данные. " +
+                            "Поля должны быть корректно заполненными");
         }
 
         validationResult = stringValidation(model.getFatherName(), 50);
 
         if (validationResult.getErrorCode() != null) {
-            return (GUIDResultModel) validationResult;
+            return new GUIDResultModel("CAN_NOT_SAVE",
+                    "Не удалось сохранить данные. " +
+                            "Поля должны быть корректно заполненными");
         }
 
         validationResult = stringValidation(model.getEmail(), 320);
 
         if (validationResult.getErrorCode() != null) {
-            return (GUIDResultModel) validationResult;
+            return new GUIDResultModel("CAN_NOT_SAVE",
+                    "Не удалось сохранить данные. " +
+                            "Поля должны быть корректно заполненными");
         }
 
         validationResult = stringValidation(model.getPhoneNumber(), 30);
 
         if (validationResult.getErrorCode() != null) {
-            return (GUIDResultModel) validationResult;
+            return new GUIDResultModel("CAN_NOT_SAVE",
+                    "Не удалось сохранить данные. " +
+                            "Поля должны быть корректно заполненными");
         }
 
         var result = userRepository.save(model);
@@ -101,37 +113,37 @@ public class UserService {
         var validationResult = stringValidation(model.getLogin(), 20);
 
         if (validationResult.getErrorCode() != null) {
-            return (SuccessResultModel) validationResult;
+            return validationResult;
         }
 
         validationResult = stringValidation(model.getLastName(), 30);
 
         if (validationResult.getErrorCode() != null) {
-            return (SuccessResultModel) validationResult;
+            return validationResult;
         }
 
         validationResult = stringValidation(model.getFirstName(), 20);
 
         if (validationResult.getErrorCode() != null) {
-            return (SuccessResultModel) validationResult;
+            return validationResult;
         }
 
         validationResult = stringValidation(model.getFatherName(), 50);
 
         if (validationResult.getErrorCode() != null) {
-            return (SuccessResultModel) validationResult;
+            return validationResult;
         }
 
         validationResult = stringValidation(model.getEmail(), 320);
 
         if (validationResult.getErrorCode() != null) {
-            return (SuccessResultModel) validationResult;
+            return validationResult;
         }
 
         validationResult = stringValidation(model.getPhoneNumber(), 30);
 
         if (validationResult.getErrorCode() != null) {
-            return (SuccessResultModel) validationResult;
+            return validationResult;
         }
 
         Integer result = userRepository.updateUser(model);
@@ -149,7 +161,7 @@ public class UserService {
         var validationResult = stringValidation(model.getPassword(), 100);
 
         if (validationResult.getErrorCode() != null) {
-            return (SuccessResultModel) validationResult;
+            return validationResult;
         }
 
         Integer result = userRepository.updatePassword(model);
@@ -163,25 +175,25 @@ public class UserService {
     }
 
     public SuccessResultModel archiveById(UUID id) {
-        Integer repositoryResult = userRepository.archiveById(id);
+        var repositoryResult = userRepository.archiveById(id);
 
-        if (repositoryResult == null) {
+        if (repositoryResult.getErrorCode() != null) {
             return new SuccessResultModel("CAN_NOT_UPDATE",
                     "Не удалось сохранить данные. Поля должны быть корректно заполненными");
         }
 
-        return new SuccessResultModel(true);
+        return repositoryResult;
     }
 
     public SuccessResultModel unarchiveById(UUID id) {
-        Integer repositoryResult = userRepository.unarchiveById(id);
+        var repositoryResult = userRepository.unarchiveById(id);
 
-        if (repositoryResult == null) {
+        if (repositoryResult.getErrorCode() != null) {
             return new SuccessResultModel("CAN_NOT_UPDATE",
                     "Не удалось сохранить данные. Поля должны быть корректно заполненными");
         }
 
-        return new SuccessResultModel(true);
+        return repositoryResult;
     }
 
     public SuccessResultModel logout() {
@@ -189,8 +201,8 @@ public class UserService {
         return userRepository.logout();
     }
 
-    private GeneralResultModel stringValidation(String str, int charsLimit) {
-        if (StringUtils.isNotBlank(str)) {
+    private SuccessResultModel stringValidation(String str, int charsLimit) {
+        if (StringUtils.isBlank(str)) {
             return new SuccessResultModel("FIELD_MUST_BE_FILLED",
                     "Поле должно быть заполнено");
         }

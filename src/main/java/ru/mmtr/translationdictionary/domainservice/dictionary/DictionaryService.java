@@ -44,7 +44,8 @@ public class DictionaryService {
         var result = dictionaryRepository.getTranslatedWord(model);
 
         if (result == null) {
-            return new StringResultModel("TRANSLATION_NOT_FOUND", "Не удалось найти перевод данного слова");
+            return new StringResultModel("TRANSLATION_NOT_FOUND",
+                    "Не удалось найти перевод данного слова");
         }
 
         return result;
@@ -54,19 +55,22 @@ public class DictionaryService {
         var validationResult = stringValidation(model.getWord(), 100);
 
         if (validationResult.getErrorCode() != null) {
-            return (GUIDResultModel) validationResult;
+            return new GUIDResultModel("CAN_NOT_SAVE",
+                    "Не удалось сохранить данные. Поля должны быть заполненными");
         }
 
         validationResult = stringValidation(model.getTranslation(), 100);
 
         if (validationResult.getErrorCode() != null) {
-            return (GUIDResultModel) validationResult;
+            return new GUIDResultModel("CAN_NOT_SAVE",
+                    "Не удалось сохранить данные. Поля должны быть заполненными");
         }
 
         var result = dictionaryRepository.save(model);
 
         if (result == null) {
-            return new GUIDResultModel("CAN_NOT_SAVE", "Не удалось сохранить данные. Поля должны быть корректно заполненными");
+            return new GUIDResultModel("CAN_NOT_SAVE",
+                    "Не удалось сохранить данные. Поля должны быть корректно заполненными");
         }
 
         return result;
@@ -76,13 +80,13 @@ public class DictionaryService {
         var validationResult = stringValidation(model.getWord(), 100);
 
         if (validationResult.getErrorCode() != null) {
-            return (SuccessResultModel) validationResult;
+            return validationResult;
         }
 
         validationResult = stringValidation(model.getTranslation(), 100);
 
         if (validationResult.getErrorCode() != null) {
-            return (SuccessResultModel) validationResult;
+            return validationResult;
         }
 
         Integer repositoryResult = dictionaryRepository.update(model);
@@ -105,8 +109,8 @@ public class DictionaryService {
         return new SuccessResultModel(true);
     }
 
-    private GeneralResultModel stringValidation(String str, int countChars) {
-        if (StringUtils.isNotBlank(str)) {
+    private SuccessResultModel stringValidation(String str, int countChars) {
+        if (StringUtils.isBlank(str)) {
             return new SuccessResultModel("FIELD_MUST_BE_FILLED", "Поле должно быть заполнено");
         }
 

@@ -46,14 +46,17 @@ public class LanguageService {
         var validationResult = stringValidation(model.getLanguageName(), 15);
 
         if (validationResult.getErrorCode() != null) {
-            return (GUIDResultModel) validationResult;
+            return new GUIDResultModel("CAN_NOT_SAVE",
+                    "Не удалось сохранить данные. " +
+                            "Поля должны быть корректно заполненными");
         }
 
         var result = languageRepository.save(model);
 
         if (result == null) {
             return new GUIDResultModel("CAN_NOT_SAVE",
-                    "Не удалось сохранить данные. Поля должны быть заполненными");
+                    "Не удалось сохранить данные. " +
+                            "Поля должны быть корректно заполненными");
         }
 
         return result;
@@ -63,7 +66,7 @@ public class LanguageService {
         var validationResult = stringValidation(model.getLanguageName(), 15);
 
         if (validationResult.getErrorCode() != null) {
-            return (SuccessResultModel) validationResult;
+            return validationResult;
         }
 
         Integer repositoryResult = languageRepository.update(model);
@@ -87,8 +90,8 @@ public class LanguageService {
         return new SuccessResultModel(true);
     }
 
-    private static GeneralResultModel stringValidation(String str, int countChars) {
-        if (StringUtils.isNotBlank(str)) {
+    private static SuccessResultModel stringValidation(String str, int countChars) {
+        if (StringUtils.isBlank(str)) {
             return new SuccessResultModel("FIELD_MUST_BE_FILLED",
                     "Поле должно быть заполнено");
         }
