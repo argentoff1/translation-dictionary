@@ -10,20 +10,18 @@ import lombok.Setter;
 @NoArgsConstructor
 public class TokenResultModel extends GeneralResultModel {
     @Schema(description = "Токен доступа")
-    private String accessToken;
+    private Integer accessToken;
 
     @Schema(description = "Обновленный токен доступа")
-    private String refreshToken;
+    private Integer refreshToken;
 
-    public TokenResultModel(String errorCode, String errorMessage, String accessToken, String refreshToken) {
+    public TokenResultModel(String errorCode, String errorMessage) {
         super(errorCode, errorMessage);
-        accessToken = null;
-        refreshToken = null;
+        String accessToken = null;
+        String refreshToken = null;
     }
 
-
-
-    public TokenResultModel(String accessToken, String refreshToken) {
+    public TokenResultModel(Integer accessToken, Integer refreshToken) {
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
     }

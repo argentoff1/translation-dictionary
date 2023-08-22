@@ -27,6 +27,7 @@ public class UserEntity {
     public static final String CREATED_AT = "created_at";
     public static final String MODIFIED_AT = "modified_at";
     public static final String ARCHIVE_DATE = "archive_date";
+    public static final String ROLE_NAME = "role_name";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -62,4 +63,7 @@ public class UserEntity {
 
     @Column(name = ARCHIVE_DATE)
     private LocalDateTime archiveDate;
+
+    @Column(name = ROLE_NAME)
+    private UserRole roleName;
 }

@@ -2,6 +2,7 @@ package ru.mmtr.translationdictionary.infrastructure.repositories.dictionary;
 
 import io.ebean.DB;
 import io.ebean.ExpressionList;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
 import ru.mmtr.translationdictionary.domain.common.*;
 import ru.mmtr.translationdictionary.domain.dictionary.*;
@@ -120,9 +121,17 @@ public class DictionaryRepository {
     }
 
     public Integer update(DictionaryUpdateModel model) {
-        return DB.update(DictionaryEntity.class)
-                .set(DictionaryEntity.WORD, model.getWord())
-                .set(DictionaryEntity.TRANSLATION, model.getTranslation())
+        var updateQuery = DB.update(DictionaryEntity.class);
+
+        if (StringUtils.isNotBlank(model.getWord())) {
+            updateQuery = updateQuery.set(DictionaryEntity.WORD, model.getWord());
+        }
+
+        if (StringUtils.isNotBlank(model.getTranslation())) {
+            updateQuery = updateQuery.set(DictionaryEntity.TRANSLATION, model.getTranslation());
+        }
+
+        return updateQuery
                 .set(DictionaryEntity.DICTIONARY_MODIFIED_AT, LocalDateTime.now())
                 .where()
                 .eq(DictionaryEntity.DICTIONARY_ID, model.getId())

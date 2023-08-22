@@ -46,4 +46,7 @@ public class UserModel {
 
     @Schema(description = "Дата архивации", example = "2023-08-17 11:55:24.979")
     private LocalDateTime archiveDate;
+
+    @Schema(description = "Роль", example = "Пользователь")
+    private String roleName;
 }

@@ -29,7 +29,6 @@ public class UserController {
             description = "Позволяет пользователю авторизоваться"
     )
     public TokenResultModel login(@RequestBody UserAuthorizationModel model) {
-
         return userService.login(model);
     }
 
@@ -39,7 +38,6 @@ public class UserController {
             description = "Позволяет отобразить всех пользователей постранично"
     )
     public PageResultModel<UserModel> getPage(UserPageRequestModel criteria) {
-
         return userService.getPage(criteria);
     }
 
@@ -49,7 +47,6 @@ public class UserController {
             description = "Позволяет зарегистрировать пользователя"
     )
     public GUIDResultModel save(@RequestBody UserSaveModel model) {
-
         return userService.save(model);
     }
 
@@ -59,8 +56,16 @@ public class UserController {
             description = "Позволяет обновить личные данные"
     )
     public SuccessResultModel updateUser(@RequestBody UserUpdateModel model) {
-
         return userService.updateUser(model);
+    }
+
+    @PutMapping(value = "/updateLogin")
+    @Operation(
+            summary = "Обновление логина",
+            description = "Позволяет обновить логин пользователя"
+    )
+    public SuccessResultModel updateLogin(UserLoginUpdateModel model) {
+        return userService.updateLogin(model);
     }
 
     @PutMapping(value = "/updatePassword")
@@ -69,7 +74,6 @@ public class UserController {
             description = "Позволяет обновить пароль"
     )
     public SuccessResultModel updatePassword(@RequestBody UserPasswordUpdateModel model) {
-
         return userService.updatePassword(model);
     }
 
@@ -79,7 +83,6 @@ public class UserController {
             description = "Позволяет архивировать пользователя"
     )
     public SuccessResultModel archiveById(@PathVariable @Parameter(description = "Идентификатор") UUID id) {
-
         return userService.archiveById(id);
     }
 

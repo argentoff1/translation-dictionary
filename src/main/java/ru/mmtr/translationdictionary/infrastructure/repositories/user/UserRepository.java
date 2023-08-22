@@ -1,13 +1,10 @@
 package ru.mmtr.translationdictionary.infrastructure.repositories.user;
 
-/*import de.mkammerer.argon2.Argon2;
-import de.mkammerer.argon2.Argon2Factory;*/
 import io.ebean.DB;
-//import org.springframework.security.crypto.password.PasswordEncoder;
 import io.ebean.ExpressionList;
 import org.apache.commons.lang3.StringUtils;
-import org.bouncycastle.crypto.generators.Argon2BytesGenerator;
-import org.bouncycastle.crypto.params.Argon2Parameters;
+import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
 import ru.mmtr.translationdictionary.domain.common.GUIDResultModel;
 import ru.mmtr.translationdictionary.domain.common.PageResultModel;
@@ -15,27 +12,21 @@ import ru.mmtr.translationdictionary.domain.common.SuccessResultModel;
 import ru.mmtr.translationdictionary.domain.common.TokenResultModel;
 import ru.mmtr.translationdictionary.domain.user.*;
 
-import java.nio.charset.StandardCharsets;
-import java.security.SecureRandom;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Repository
 public class UserRepository {
     public TokenResultModel login(UserAuthorizationModel model) {
-        String userPassword = model.getPassword();
-
-        UserEntity foundEntity = DB.find(UserEntity.class)
+        var foundEntity = DB.find(UserEntity.class)
                 .where()
                 .eq(UserEntity.LOGIN, model.getLogin())
-                .eq(UserEntity.PASSWORD, model.getPassword())
                 .findOne();
 
-        if (userPassword.equals(hashPassword(foundEntity.getPassword()))) {
-
-
+        if (BCrypt.checkpw(model.getPassword(), foundEntity.getPassword()) == false) {
+            return new TokenResultModel("CAN_NOT_AUTHORIZE",
+                    "Не удалось авторизоваться. Поля должны быть корректно заполнены");
         }
 
         if (foundEntity == null) {
@@ -43,7 +34,7 @@ public class UserRepository {
                     "Не удалось авторизоваться. Поля должны быть корректно заполнены");
         }
 
-        return new TokenResultModel("222222222", "2222222222222");
+        return new TokenResultModel(222222222, 222222222);
     }
 
     public PageResultModel<UserModel> getPage(UserPageRequestModel criteria) {
@@ -121,17 +112,10 @@ public class UserRepository {
     }
 
     public GUIDResultModel save(UserSaveModel model) {
-        /*if (hashPassword(model.getPassword()) == false) {
-            return new GUIDResultModel("PASSWORD_IS_NOT_IDENTICAL",
-                    "Не удалось сохранить данные. Пароль введен некорректно");
-        }*/
-
-        String hashedPassword = hashPassword(model.getPassword());
-
         UserEntity entity = new UserEntity();
         entity.setUserId(UUID.randomUUID());
         entity.setLogin(model.getLogin());
-        entity.setPassword(hashedPassword);
+        entity.setPassword(hashPassword(model.getPassword()));
         entity.setLastName(model.getLastName());
         entity.setFirstName(model.getFirstName());
         entity.setFatherName(model.getFatherName());
@@ -146,16 +130,42 @@ public class UserRepository {
     }
 
     public Integer updateUser(UserUpdateModel model) {
-        var updateQuery = DB.update(UserEntity.class)
-                .set(UserEntity.LOGIN, model.getLogin())
-                .set(UserEntity.LAST_NAME, model.getLastName())
-                .set(UserEntity.FIRST_NAME, model.getFirstName());
-        if (StringUtils.isNotBlank(model.getFatherName()))
-        {
+        var updateQuery = DB.update(UserEntity.class);
+
+        if (StringUtils.isNotBlank(model.getLogin())) {
+            updateQuery = updateQuery.set(UserEntity.LOGIN, model.getLogin());
+        }
+
+        if (StringUtils.isNotBlank(model.getLastName())) {
+            updateQuery = updateQuery.set(UserEntity.LAST_NAME, model.getLastName());
+        }
+
+        if (StringUtils.isNotBlank(model.getFirstName())) {
+            updateQuery = updateQuery.set(UserEntity.FIRST_NAME, model.getFirstName());
+        }
+
+        if (StringUtils.isNotBlank(model.getFatherName())) {
             updateQuery = updateQuery.set(UserEntity.FATHER_NAME, model.getFatherName());
         }
-        return updateQuery.set(UserEntity.EMAIL, model.getEmail())
-                .set(UserEntity.PHONE_NUMBER, model.getPhoneNumber())
+
+        if (StringUtils.isNotBlank(model.getEmail())) {
+            updateQuery = updateQuery.set(UserEntity.EMAIL, model.getEmail());
+        }
+
+        if (StringUtils.isNotBlank(model.getPhoneNumber())) {
+            updateQuery = updateQuery.set(UserEntity.PHONE_NUMBER, model.getPhoneNumber());
+        }
+
+        return updateQuery
+                .set(UserEntity.MODIFIED_AT, LocalDateTime.now())
+                .where()
+                .eq(UserEntity.USER_ID, model.getId())
+                .update();
+    }
+
+    public Integer updateLogin(UserLoginUpdateModel model) {
+        return DB.update(UserEntity.class)
+                .set(UserEntity.LOGIN, model.getLogin())
                 .set(UserEntity.MODIFIED_AT, LocalDateTime.now())
                 .where()
                 .eq(UserEntity.USER_ID, model.getId())
@@ -163,10 +173,8 @@ public class UserRepository {
     }
 
     public Integer updatePassword(UserPasswordUpdateModel model) {
-        String hashedPassword = hashPassword(model.getPassword());
-
         return DB.update(UserEntity.class)
-                .set(UserEntity.PASSWORD, hashedPassword)
+                .set(UserEntity.PASSWORD, hashPassword(model.getPassword()))
                 .set(UserEntity.MODIFIED_AT, LocalDateTime.now())
                 .where()
                 .eq(UserEntity.USER_ID, model.getId())
@@ -242,65 +250,9 @@ public class UserRepository {
         return model;
     }
 
-    private byte[] generateSalt16Byte() {
-        SecureRandom secureRandom = new SecureRandom();
-        byte[] salt = new byte[16];
-        secureRandom.nextBytes(salt);
+    public static String hashPassword(String password) {
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
-        return salt;
-    }
-
-    private String hashPassword(String passwordFromUser) {
-        byte[] salt = generateSalt16Byte();
-
-        int iterations = 2;
-        int memLimit = 66536;
-        int hashLength = 16;
-        int parallelism = 1;
-
-        Argon2Parameters.Builder builder = new Argon2Parameters.Builder(Argon2Parameters.ARGON2_id)
-                .withVersion(Argon2Parameters.ARGON2_VERSION_13)
-                .withIterations(iterations)
-                .withMemoryAsKB(memLimit)
-                .withParallelism(parallelism)
-                .withSalt(salt);
-
-        Argon2BytesGenerator generator = new Argon2BytesGenerator();
-        generator.init(builder.build());
-        byte[] result = new byte[hashLength];
-        generator.generateBytes(passwordFromUser.getBytes(StandardCharsets.UTF_8), result, 0, result.length);
-
-        Argon2BytesGenerator verifier = new Argon2BytesGenerator();
-        verifier.init(builder.build());
-        byte[] testHash = new byte[hashLength];
-        verifier.generateBytes(passwordFromUser.getBytes(StandardCharsets.UTF_8), testHash, 0, testHash.length);
-
-        /*if (result != testHash) {
-            return null;
-        }*/
-
-        return Arrays.toString(result);
-
-
-        /*Argon2 argon2 = Argon2Factory.create();
-
-        char[] password = passwordFromUser.toCharArray();
-
-        try {
-            // Hash password
-            String hash = argon2.hash(10, 65536, 1, password);
-
-            // Verify password
-            if (argon2.verify(hash, password)) {
-                // Hash matches password
-                return hash;
-            } else {
-                // Hash doesn't match password
-                return null;
-            }
-        } finally {
-            // Wipe confidential data
-            argon2.wipeArray(password);
-        }*/
+        return encoder.encode(password);
     }
 }

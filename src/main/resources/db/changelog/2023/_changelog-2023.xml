@@ -24,4 +24,6 @@
     <include file="db/changelog/2023/17082023-add-changeset-date-columns.xml"/>
 
     <include file="db/changelog/2023/21082023-create-changeset-users-table.xml"/>
+
+    <include file="db/changelog/2023/22082023-add-changeset-role-column.xml"/>
 </databaseChangeLog>

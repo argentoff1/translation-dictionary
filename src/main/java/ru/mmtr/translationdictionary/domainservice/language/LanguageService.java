@@ -24,13 +24,10 @@ public class LanguageService {
     }
 
     public CollectionResultModel<LanguageModel> showAll() {
-
         return languageRepository.showAll();
     }
 
     public PageResultModel<LanguageModel> getPage(LanguagePageRequestModel criteria) {
-
-
         return languageRepository.getPage(criteria);
     }
 

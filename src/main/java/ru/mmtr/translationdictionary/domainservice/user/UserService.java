@@ -1,6 +1,5 @@
 package ru.mmtr.translationdictionary.domainservice.user;
 
-//import org.springframework.security.crypto.password.PasswordEncoder;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import ru.mmtr.translationdictionary.domain.common.*;
@@ -12,11 +11,9 @@ import java.util.UUID;
 @Service
 public class UserService {
     private final UserRepository userRepository;
-    //private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository/*, PasswordEncoder passwordEncoder*/) {
+    public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
-        //this.passwordEncoder = passwordEncoder;
     }
 
     public TokenResultModel login(UserAuthorizationModel model) {
@@ -104,8 +101,6 @@ public class UserService {
                     "Не удалось сохранить данные. Поля должны быть корректно заполненными");
         }
 
-        //String hashedPassword = passwordEncoder.encode(model.getPassword());
-
         return result;
     }
 
@@ -152,6 +147,23 @@ public class UserService {
             return new SuccessResultModel("CAN_NOT_SAVE",
                     "Не удалось сохранить данные. " +
                             "Поля должны быть корректно заполненными");
+        }
+
+        return new SuccessResultModel(true);
+    }
+
+    public SuccessResultModel updateLogin(UserLoginUpdateModel model) {
+        var validationResult = stringValidation(model.getLogin(), 20);
+
+        if (validationResult.getErrorCode() != null) {
+            return validationResult;
+        }
+
+        Integer result = userRepository.updateLogin(model);
+
+        if (result == null) {
+            return new SuccessResultModel("CAN_NOT_SAVE",
+                    "Не удалось сохранить данные. Поля должны быть корректно заполненными");
         }
 
         return new SuccessResultModel(true);
