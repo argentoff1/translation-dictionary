@@ -110,7 +110,8 @@ public class DictionaryService {
         var repositoryResult = dictionaryRepository.delete(id);
 
         if (repositoryResult == null) {
-            return new SuccessResultModel("CAN_NOT_DELETE", "Не удалось удалить данные. Поля должны быть корректно заполненными");
+            return new SuccessResultModel("CAN_NOT_DELETE",
+                    "Не удалось удалить данные. Поля должны быть корректно заполненными");
         }
 
         return new SuccessResultModel(true);
@@ -118,11 +119,13 @@ public class DictionaryService {
 
     private SuccessResultModel stringValidation(String str, int countChars) {
         if (StringUtils.isBlank(str)) {
-            return new SuccessResultModel("FIELD_MUST_BE_FILLED", "Поле должно быть заполнено");
+            return new SuccessResultModel("FIELD_MUST_BE_FILLED",
+                    "Поле должно быть заполнено");
         }
 
         if (str.contains(" ")) {
-            return new SuccessResultModel("FIELD_MUST_NOT_CONTAIN_SPACES", "Поле не должно содержать пробелов");
+            return new SuccessResultModel("FIELD_MUST_NOT_CONTAIN_SPACES",
+                    "Поле не должно содержать пробелов");
         }
 
         int count = 0;
@@ -130,7 +133,8 @@ public class DictionaryService {
             count++;
         }
         if (count > 15) {
-            return new SuccessResultModel("FIELD_VALUE_OUT_OF_BOUNDS", "Поле не должно быть больше 15 символов");
+            return new SuccessResultModel("FIELD_VALUE_OUT_OF_BOUNDS",
+                    "Поле не должно быть больше 15 символов");
         }
 
         return new SuccessResultModel(true);

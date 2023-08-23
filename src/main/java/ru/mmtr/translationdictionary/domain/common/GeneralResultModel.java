@@ -18,6 +18,10 @@ public class GeneralResultModel {
     @Schema(description = "Сообщение ошибки", example = "Не удалось найти язык")
     private String errorMessage;
 
+    public GeneralResultModel(String errorCode) {
+        this.errorCode = errorCode;
+    }
+
     public boolean isError() {
         return StringUtils.isNotBlank(errorCode) || StringUtils.isNotBlank(errorMessage);
     }

@@ -2,6 +2,7 @@ package ru.mmtr.translationdictionary.infrastructure.repositories.user;
 
 import io.ebean.DB;
 import io.ebean.ExpressionList;
+import io.micrometer.common.lang.NonNull;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -13,6 +14,8 @@ import ru.mmtr.translationdictionary.domain.common.TokenResultModel;
 import ru.mmtr.translationdictionary.domain.user.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -34,7 +37,7 @@ public class UserRepository {
                     "Не удалось авторизоваться. Поля должны быть корректно заполнены");
         }
 
-        return new TokenResultModel(222222222, 222222222);
+        return new TokenResultModel("222222222", "222222222");
     }
 
     public PageResultModel<UserModel> getPage(UserPageRequestModel criteria) {
@@ -110,6 +113,12 @@ public class UserRepository {
 
         return expression;
     }
+
+    /*public Optional<UserEntity> getByLogin(@NonNull String login) {
+        return users.stream()
+                .filter(user -> login.equals(user.getLogin()))
+                .findFirst();
+    }*/
 
     public GUIDResultModel save(UserSaveModel model) {
         UserEntity entity = new UserEntity();

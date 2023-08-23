@@ -5,8 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import ru.mmtr.translationdictionary.infrastructure.repositories.user.UserRole;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 import java.util.UUID;
 
 @Getter
@@ -48,5 +50,5 @@ public class UserModel {
     private LocalDateTime archiveDate;
 
     @Schema(description = "Роль", example = "Пользователь")
-    private String roleName;
+    private Set<UserRole> roleName;
 }

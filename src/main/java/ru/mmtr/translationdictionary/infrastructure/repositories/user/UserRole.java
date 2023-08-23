@@ -1,15 +1,19 @@
 package ru.mmtr.translationdictionary.infrastructure.repositories.user;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
 
 @Getter
-public enum UserRole {
-    ADMIN("Администратор"),
-    USER("Пользователь");
+@RequiredArgsConstructor
+public enum UserRole implements GrantedAuthority {
+    ADMIN("ADMIN"),
+    USER("USER");
 
     private final String roleName;
 
-    UserRole(String roleName) {
-        this.roleName = roleName;
+    @Override
+    public String getAuthority() {
+        return roleName;
     }
 }

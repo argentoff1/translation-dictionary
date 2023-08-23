@@ -38,7 +38,7 @@ public class DictionaryRepository {
         );
     }
 
-    public PageResultModel<DictionaryModel> getPage (DictionaryPageRequestModel criteria) {
+    public PageResultModel<DictionaryModel> getPage(DictionaryPageRequestModel criteria) {
         var expression = DB
                 .find(DictionaryEntity.class)
                 .setMaxRows(criteria.getPageSize())
@@ -74,11 +74,11 @@ public class DictionaryRepository {
         }
 
         if (criteria.getModifyDateFromFilter() != null) {
-            expression = expression.ge(DictionaryEntity.DICTIONARY_CREATED_AT, criteria.getModifyDateFromFilter());
+            expression = expression.ge(DictionaryEntity.DICTIONARY_MODIFIED_AT, criteria.getModifyDateFromFilter());
         }
 
         if (criteria.getModifyDateToFilter() != null) {
-            expression = expression.le(DictionaryEntity.DICTIONARY_CREATED_AT, criteria.getModifyDateToFilter());
+            expression = expression.le(DictionaryEntity.DICTIONARY_MODIFIED_AT, criteria.getModifyDateToFilter());
         }
 
         return expression;

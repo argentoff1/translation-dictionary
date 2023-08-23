@@ -8,20 +8,22 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class TokenResultModel extends GeneralResultModel {
+public class TokenResultModel extends GeneralResultModel{
     @Schema(description = "Токен доступа")
-    private Integer accessToken;
+    private String accessToken;
 
     @Schema(description = "Обновленный токен доступа")
-    private Integer refreshToken;
+    private String refreshToken;
 
-    public TokenResultModel(String errorCode, String errorMessage) {
-        super(errorCode, errorMessage);
-        String accessToken = null;
-        String refreshToken = null;
+    private final String type = "Bearer";
+
+    public TokenResultModel(String errorCode) {
+        super(errorCode);
+        accessToken = null;
+        refreshToken = null;
     }
 
-    public TokenResultModel(Integer accessToken, Integer refreshToken) {
+    public TokenResultModel(String accessToken, String refreshToken) {
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
     }
