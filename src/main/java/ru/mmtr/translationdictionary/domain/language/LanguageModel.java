@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import ru.mmtr.translationdictionary.domain.common.GeneralResultModel;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -11,7 +12,7 @@ import java.util.UUID;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class LanguageModel {
+public class LanguageModel extends GeneralResultModel {
     @Schema(description = "Идентификатор", accessMode = Schema.AccessMode.READ_ONLY)
     private UUID languageId;
 
@@ -23,6 +24,14 @@ public class LanguageModel {
 
     @Schema(description = "Дата изменения", example = "2023-08-17 23:00:00.000")
     private LocalDateTime modifiedAt;
+
+    public LanguageModel(String errorCode, String errorMessage) {
+        super(errorCode, errorMessage);
+        languageId = null;
+        languageName = null;
+        createdAt = null;
+        modifiedAt = null;
+    }
 
     public void setLanguageId(UUID languageId) {
         this.languageId = languageId;

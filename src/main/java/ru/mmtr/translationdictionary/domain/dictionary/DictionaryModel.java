@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import ru.mmtr.translationdictionary.domain.common.GeneralResultModel;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -13,7 +14,7 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class DictionaryModel {
+public class DictionaryModel extends GeneralResultModel {
     @Schema(description = "Идентификатор", accessMode = Schema.AccessMode.READ_ONLY)
     private UUID dictionaryId;
 
@@ -34,6 +35,17 @@ public class DictionaryModel {
 
     @Schema(description = "Дата изменения", example = "2023-08-17 23:00:00.000")
     private LocalDateTime modifiedAt;
+
+    public DictionaryModel(String errorCode, String errorMessage) {
+        super(errorCode, errorMessage);
+        dictionaryId = null;
+        word = null;
+        translation = null;
+        fromLanguage = null;
+        toLanguage = null;
+        createdAt = null;
+        modifiedAt = null;
+    }
 
     public void setDictionaryId(UUID dictionaryId) {
         this.dictionaryId = dictionaryId;

@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
 import ru.mmtr.translationdictionary.domain.common.*;
 import ru.mmtr.translationdictionary.domain.dictionary.*;
+import ru.mmtr.translationdictionary.infrastructure.repositories.language.LanguageEntity;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -90,11 +91,16 @@ public class DictionaryRepository {
                 .eq(DictionaryEntity.DICTIONARY_ID, id)
                 .findOne();
 
+        if (foundEntity == null) {
+            return new DictionaryModel("CAN_NOT_FIND",
+                    "Не удалось найти данные. Поля должны быть корректно заполненными");
+        }
+
         return getModel(foundEntity);
     }
 
     public StringResultModel getTranslatedWord(DictionaryTranslateModel model) {
-        DictionaryEntity foundTranslation = DB.
+        DictionaryEntity foundEntity = DB.
                 find(DictionaryEntity.class).
                 where().
                 ilike(DictionaryEntity.WORD, "%" + model.getWord() + "%").
@@ -102,9 +108,14 @@ public class DictionaryRepository {
                 eq(DictionaryEntity.TO_LANGUAGE, model.getToLanguage()).
                 findOne();
 
-        return new StringResultModel(foundTranslation.getTranslation());
-    }
+        if (foundEntity == null) {
+            return new StringResultModel("CAN_NOT_FIND",
+                    "Не удалось найти данные. Поля должны быть корректно заполненными");
+        }
 
+        return new StringResultModel(foundEntity.getTranslation());
+    }
+    // -
     public GUIDResultModel save(DictionarySaveModel model) {
         DictionaryEntity entity = new DictionaryEntity();
         entity.setDictionaryId(UUID.randomUUID());
@@ -115,12 +126,17 @@ public class DictionaryRepository {
         entity.setCreatedAt(LocalDateTime.now());
         DB.insert(entity);
 
+        if (entity == null) {
+            return new GUIDResultModel("CAN_NOT_SAVE",
+                    "Не удалось сохранить данные. Поля должны быть корректно заполненными");
+        }
+
         var resultModel = getModel(entity);
 
         return new GUIDResultModel(resultModel.getDictionaryId());
     }
 
-    public Integer update(DictionaryUpdateModel model) {
+    public SuccessResultModel update(DictionaryUpdateModel model) {
         var updateQuery = DB.update(DictionaryEntity.class);
 
         if (StringUtils.isNotBlank(model.getWord())) {
@@ -131,18 +147,38 @@ public class DictionaryRepository {
             updateQuery = updateQuery.set(DictionaryEntity.TRANSLATION, model.getTranslation());
         }
 
-        return updateQuery
+        updateQuery
                 .set(DictionaryEntity.DICTIONARY_MODIFIED_AT, LocalDateTime.now())
                 .where()
                 .eq(DictionaryEntity.DICTIONARY_ID, model.getId())
                 .update();
+
+        if (updateQuery == null) {
+            return new SuccessResultModel("CAN_NOT_UPDATE",
+                    "Не удалось обновить данные. Поля должны быть корректно заполненными");
+        }
+
+        return new SuccessResultModel(true);
     }
 
-    public Integer delete(UUID id) {
-        return DB.find(DictionaryEntity.class)
+    public SuccessResultModel delete(UUID id) {
+        DictionaryEntity foundEntity = DB
+                .find(DictionaryEntity.class)
+                .where()
+                .eq(DictionaryEntity.DICTIONARY_ID, id)
+                .findOne();
+
+        if (foundEntity == null) {
+            return new SuccessResultModel("CAN_NOT_DELETE",
+                    "Не удалось удалить данные. Поля должны быть корректно заполненными");
+        }
+
+        DB.find(DictionaryEntity.class)
                 .where()
                 .eq(DictionaryEntity.DICTIONARY_ID, id)
                 .delete();
+
+        return new SuccessResultModel(true);
     }
 
     private DictionaryModel getModel(DictionaryEntity entity) {

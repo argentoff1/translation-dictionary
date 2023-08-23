@@ -41,6 +41,13 @@ public class DictionaryService {
     }
 
     public StringResultModel getTranslatedWord(DictionaryTranslateModel model) {
+        var validationResult = stringValidation(model.getWord(), 100);
+
+        if (validationResult.getErrorCode() != null) {
+            return new StringResultModel("CAN_NOT_FIND",
+                    "Не удалось найти данные. Поля должны быть корректно заполненными");
+        }
+
         var result = dictionaryRepository.getTranslatedWord(model);
 
         if (result == null) {
@@ -89,7 +96,7 @@ public class DictionaryService {
             return validationResult;
         }
 
-        Integer repositoryResult = dictionaryRepository.update(model);
+        var repositoryResult = dictionaryRepository.update(model);
 
         if (repositoryResult == null) {
             return new SuccessResultModel("CAN_NOT_UPDATE",
@@ -100,7 +107,7 @@ public class DictionaryService {
     }
 
     public SuccessResultModel delete(UUID id) {
-        Integer repositoryResult = dictionaryRepository.delete(id);
+        var repositoryResult = dictionaryRepository.delete(id);
 
         if (repositoryResult == null) {
             return new SuccessResultModel("CAN_NOT_DELETE", "Не удалось удалить данные. Поля должны быть корректно заполненными");

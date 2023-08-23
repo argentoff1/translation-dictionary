@@ -66,7 +66,7 @@ public class LanguageService {
             return validationResult;
         }
 
-        Integer repositoryResult = languageRepository.update(model);
+        var repositoryResult = languageRepository.update(model);
 
         if (repositoryResult == null) {
             return new SuccessResultModel("CAN_NOT_UPDATE",
@@ -77,7 +77,7 @@ public class LanguageService {
     }
 
     public SuccessResultModel delete(UUID id) {
-        Integer repositoryResult = languageRepository.delete(id);
+        var repositoryResult = languageRepository.delete(id);
 
         if (repositoryResult == null) {
             return new SuccessResultModel("CAN_NOT_DELETE",
