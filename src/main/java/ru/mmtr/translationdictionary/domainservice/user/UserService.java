@@ -1,14 +1,14 @@
 package ru.mmtr.translationdictionary.domainservice.user;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
-import ru.mmtr.translationdictionary.JwtUtil;
 import ru.mmtr.translationdictionary.domain.common.*;
 import ru.mmtr.translationdictionary.domain.user.*;
 import ru.mmtr.translationdictionary.domainservice.session.UserSessionService;
 import ru.mmtr.translationdictionary.infrastructure.repositories.user.UserRepository;
 
 import java.util.UUID;
+
+import static ru.mmtr.translationdictionary.domainservice.Validation.stringValidation;
 
 @Service
 public class UserService {
@@ -22,49 +22,20 @@ public class UserService {
 
     public JwtResponseResultModel login(JwtRequestModel model) {
         var validationResult = stringValidation(model.getLogin(), 20);
-
         if (validationResult.getErrorCode() != null) {
             return new JwtResponseResultModel("CAN_NOT_AUTHORIZE");
         }
-
-
-
-
-
 
         var findUser = userRepository.getByLogin(model.getLogin());
         if (findUser == null) {
             return new JwtResponseResultModel("CAN_NOT_AUTHORIZE");
         }
 
-        var login = userRepository.login(model);
+        userRepository.login(model);
 
         var session = userSessionService.save(findUser);
+
         return new JwtResponseResultModel(session.getAccessToken(), session.getRefreshToken());
-
-
-
-
-
-
-
-
-
-        /*var result = userRepository.login(model);
-        var findUser = userRepository.getByLogin(model.getLogin());
-
-        if (result == null) {
-            return new JwtResponseResultModel("CAN_NOT_AUTHORIZE");
-        }
-
-        if (result.getAccessToken() == null || result.getRefreshToken() == null) {
-            return new JwtResponseResultModel("CAN_NOT_AUTHORIZE");
-        }
-
-        *//*var session = userRepository.save(findUser);
-        String token = jwtUtil.generateToken(model.getLogin());*//*
-
-        return result;*/
     }
 
     public UserModel getByLogin(String login) {
@@ -251,29 +222,7 @@ public class UserService {
 
     public SuccessResultModel logout() {
 
+
         return userRepository.logout();
-    }
-
-    private SuccessResultModel stringValidation(String str, int charsLimit) {
-        if (StringUtils.isBlank(str)) {
-            return new SuccessResultModel("FIELD_MUST_BE_FILLED",
-                    "Поле должно быть заполнено");
-        }
-
-        if (str.contains(" ")) {
-            return new SuccessResultModel("FIELD_MUST_NOT_CONTAIN_SPACES",
-                    "Поле не должно содержать пробелов");
-        }
-
-        int count = 0;
-        for (char element : str.toCharArray()) {
-            count++;
-        }
-        if (count > 50) {
-            return new SuccessResultModel("FIELD_VALUE_OUT_OF_BOUNDS",
-                    "Поле не должно быть больше 15 символов");
-        }
-
-        return new SuccessResultModel(true);
     }
 }
