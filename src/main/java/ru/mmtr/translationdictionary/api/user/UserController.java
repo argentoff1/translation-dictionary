@@ -3,13 +3,12 @@ package ru.mmtr.translationdictionary.api.user;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import ru.mmtr.translationdictionary.JwtUtil;
 import ru.mmtr.translationdictionary.domain.common.GUIDResultModel;
 import ru.mmtr.translationdictionary.domain.common.PageResultModel;
 import ru.mmtr.translationdictionary.domain.common.SuccessResultModel;
-import ru.mmtr.translationdictionary.domain.common.JwtResponse;
+import ru.mmtr.translationdictionary.domain.common.JwtResponseResultModel;
 import ru.mmtr.translationdictionary.domain.user.*;
 import ru.mmtr.translationdictionary.domainservice.user.UserService;
 
@@ -30,12 +29,12 @@ public class UserController {
             summary = "Вход пользователя в систему",
             description = "Позволяет пользователю авторизоваться"
     )
-    public JwtResponse login(@RequestBody JwtRequest model) {
-
+    public JwtResponseResultModel login(@RequestBody JwtRequestModel model) {
         return userService.login(model);
     }
 
     @PostMapping(value = "/getPage")
+    //@PreAuthorize("hasAuthority('ADMIN')")
     @Operation(
             summary = "Отображение всех пользователей постранично",
             description = "Позволяет отобразить всех пользователей постранично"
@@ -81,6 +80,7 @@ public class UserController {
     }
 
     @PostMapping(value = "/archiveById/{id}")
+    //@PreAuthorize("hasAuthority('ADMIN')")
     @Operation(
             summary = "Архивация пользователя",
             description = "Позволяет архивировать пользователя"
@@ -90,6 +90,7 @@ public class UserController {
     }
 
     @PostMapping(value = "/unarchiveById/{id}")
+    //@PreAuthorize("hasAuthority('ADMIN')")
     @Operation(
             summary = "Разархивация пользователя",
             description = "Позволяет разархивировать пользователя"

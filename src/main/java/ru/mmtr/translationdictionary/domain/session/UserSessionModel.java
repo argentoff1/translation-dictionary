@@ -14,7 +14,7 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class SessionModel extends GeneralResultModel {
+public class UserSessionModel extends GeneralResultModel {
     @Schema(description = "Идентификатор")
     private UUID sessionId;
 
@@ -36,7 +36,7 @@ public class SessionModel extends GeneralResultModel {
     @Schema(description = "Идентификатор пользователя")
     private UUID userId;
 
-    public SessionModel(String errorCode, String errorMessage) {
+    public UserSessionModel(String errorCode, String errorMessage) {
         super(errorCode, errorMessage);
         sessionId = null;
         accessToken = null;

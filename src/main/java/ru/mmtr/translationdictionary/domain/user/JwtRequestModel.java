@@ -4,9 +4,17 @@ import io.swagger.v3.oas.annotations.Parameter;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.UUID;
+
 @Getter
 @Setter
-public class JwtRequest {
+public class JwtRequestModel {
+    /*@Parameter(description = "Идентификатор пользователя")
+    private UUID userId;
+
+    @Parameter(description = "Идентификатор сессии")
+    private UUID sessionId;*/
+
     @Parameter(description = "Логин", example = "alexx")
     private String login;
 

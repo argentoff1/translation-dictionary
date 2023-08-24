@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.function.Function;
 
 @Component
@@ -25,36 +26,48 @@ public class JwtUtil {
     @Value("${jwt.expiration.refresh}")
     private Long expirationRefresh;
 
-    public String generateAccessToken(String login) {
+    public String generateAccessToken(String role, UUID userId, UUID sessionId) {
         Map<String, Object> claims = new HashMap<>();
-        return createAccessToken(claims, login);
+        return createAccessToken(claims, role, userId, sessionId);
     }
 
-    private String createAccessToken(Map<String, Object> claims, String subject) {
+    private String createAccessToken(Map<String, Object> claims, String role, UUID userId, UUID sessionId) {
+        claims.put("role", role);
+        claims.put("userId", userId);
+        claims.put("sessionId", sessionId);
+
         Date now = new Date();
         Date expirationDate = new Date(now.getTime() + expirationAccess);
 
         return Jwts.builder()
                 .setClaims(claims)
-                .setSubject(subject)
+                .setIssuer("dictionaries-api")
+                .setAudience("dictionaries-app")
+                .setSubject("parinos.ma@mmtr.ru")
                 .setIssuedAt(now)
                 .setExpiration(expirationDate)
                 .signWith(SignatureAlgorithm.HS256, secretAccess)
                 .compact();
     }
 
-    public String generateRefreshToken(String login) {
+    public String generateRefreshToken(String role, UUID userId, UUID sessionId) {
         Map<String, Object> claims = new HashMap<>();
-        return createRefreshToken(claims, login);
+        return createRefreshToken(claims, role, userId, sessionId);
     }
 
-    private String createRefreshToken(Map<String, Object> claims, String subject) {
+    private String createRefreshToken(Map<String, Object> claims, String role, UUID userId, UUID sessionId) {
+        claims.put("role", role);
+        claims.put("userId", userId);
+        claims.put("sessionId", sessionId);
+
         Date now = new Date();
         Date expirationDate = new Date(now.getTime() + expirationRefresh);
 
         return Jwts.builder()
                 .setClaims(claims)
-                .setSubject(subject)
+                .setIssuer("dictionaries-api")
+                .setAudience("dictionaries-app")
+                .setSubject("parinos.ma@mmtr.ru")
                 .setIssuedAt(now)
                 .setExpiration(expirationDate)
                 .signWith(SignatureAlgorithm.HS256, secretRefresh)

@@ -8,7 +8,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
 import ru.mmtr.translationdictionary.JwtUtil;
 import ru.mmtr.translationdictionary.domain.common.*;
+import ru.mmtr.translationdictionary.domain.session.UserSessionModel;
+import ru.mmtr.translationdictionary.domain.session.UserSessionSaveModel;
 import ru.mmtr.translationdictionary.domain.user.*;
+import ru.mmtr.translationdictionary.infrastructure.repositories.session.UserSessionEntity;
+import ru.mmtr.translationdictionary.infrastructure.repositories.session.UserSessionRepository;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -17,35 +21,33 @@ import java.util.stream.Collectors;
 @Repository
 public class UserRepository {
     private final JwtUtil jwtUtil;
+    private final UserSessionRepository userSessionRepository;
 
-    public UserRepository(JwtUtil jwtUtil) {
+    public UserRepository(JwtUtil jwtUtil, UserSessionRepository userSessionRepository) {
         this.jwtUtil = jwtUtil;
+        this.userSessionRepository = userSessionRepository;
     }
 
-    public JwtResponse login(JwtRequest model) {
-        var foundEntity = DB.find(UserEntity.class)
+    public JwtResponseResultModel login(JwtRequestModel model) {
+        var foundUserEntity = DB.find(UserEntity.class)
                 .where()
                 .eq(UserEntity.LOGIN, model.getLogin())
                 .findOne();
 
-        if (BCrypt.checkpw(model.getPassword(), foundEntity.getPassword()) == false) {
-            return new JwtResponse("CAN_NOT_AUTHORIZE");
+        if (BCrypt.checkpw(model.getPassword(), foundUserEntity.getPassword()) == false) {
+            return new JwtResponseResultModel("CAN_NOT_AUTHORIZE");
         }
 
-        if (foundEntity == null) {
-            return new JwtResponse("CAN_NOT_AUTHORIZE");
+        if (foundUserEntity == null) {
+            return new JwtResponseResultModel("CAN_NOT_AUTHORIZE");
         }
 
-        return new JwtResponse(jwtUtil.generateAccessToken(model.getLogin()), jwtUtil.generateRefreshToken(model.getLogin()));
-    }
+        /*String accessToken = jwtUtil.generateAccessToken(UserRole.USER.getRoleName(), model.getUserId(), model.getSessionId());
+        String refreshToken = jwtUtil.generateRefreshToken(UserRole.REFRESH_TOKEN.getRoleName(), model.getUserId(), model.getSessionId());*/
 
-    public StringResultModel getToken(JwtRequest model) {
-        var foundEntity = DB.find(UserEntity.class)
-                .where()
-                .eq(UserEntity.LOGIN, model.getLogin())
-                .findOne();
+        //userSessionRepository.save()
 
-        return new StringResultModel();
+        return new JwtResponseResultModel("2131231", "213213123123");
     }
 
     public UserModel getByLogin(String login) {
@@ -252,6 +254,7 @@ public class UserRepository {
 
     public SuccessResultModel logout() {
 
+
         return new SuccessResultModel(true);
     }
 
@@ -274,6 +277,23 @@ public class UserRepository {
         model.setArchiveDate(entity.getArchiveDate());
 
         return model;
+    }
+
+    private UserSessionEntity getEntity(UserSessionSaveModel model) {
+        if (model == null) {
+            return null;
+        }
+
+        var entity = new UserSessionEntity();
+        entity.setSessionId(UUID.randomUUID());
+        entity.setAccessToken(jwtUtil.generateAccessToken(UserRole.ADMIN.getRoleName(),entity.getUserId(), entity.getSessionId()));
+        entity.setAccessTokenExpiredDate(LocalDateTime.now().plusMinutes(5));
+        entity.setRefreshToken(jwtUtil.generateRefreshToken(UserRole.ADMIN.getRoleName(),entity.getUserId(), entity.getSessionId()));
+        entity.setRefreshTokenExpiredDate(LocalDateTime.now().plusDays(1));
+        entity.setUserId(model.getUserId());
+        entity.setTokenCreatedAt(LocalDateTime.now());
+
+        return entity;
     }
 
     public static String hashPassword(String password) {

@@ -8,7 +8,7 @@ import java.util.UUID;
 
 @Getter
 @Setter
-public class SessionSaveModel {
+public class UserSessionSaveModel {
     @Parameter(description = "Токен доступа")
     private String accessToken;
 

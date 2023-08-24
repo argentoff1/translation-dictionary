@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-public class SessionPageRequestModel extends PageModel {
+public class UserSessionPageRequestModel extends PageModel {
     private LocalDateTime tokenCreatedAtFromFilter;
 
     private LocalDateTime tokenCreatedAtToFilter;

@@ -6,59 +6,45 @@ import ru.mmtr.translationdictionary.domain.common.CollectionResultModel;
 import ru.mmtr.translationdictionary.domain.common.GUIDResultModel;
 import ru.mmtr.translationdictionary.domain.common.PageResultModel;
 import ru.mmtr.translationdictionary.domain.common.SuccessResultModel;
-import ru.mmtr.translationdictionary.domain.dictionary.DictionaryModel;
-import ru.mmtr.translationdictionary.domain.session.SessionModel;
-import ru.mmtr.translationdictionary.domain.session.SessionPageRequestModel;
-import ru.mmtr.translationdictionary.domain.session.SessionSaveModel;
-import ru.mmtr.translationdictionary.infrastructure.repositories.session.SessionRepository;
+import ru.mmtr.translationdictionary.domain.session.UserSessionModel;
+import ru.mmtr.translationdictionary.domain.session.UserSessionPageRequestModel;
+import ru.mmtr.translationdictionary.domain.session.UserSessionSaveModel;
+import ru.mmtr.translationdictionary.domain.user.UserModel;
+import ru.mmtr.translationdictionary.infrastructure.repositories.session.UserSessionRepository;
 
 import java.util.UUID;
 
 @Service
-public class SessionService {
-    private final SessionRepository sessionRepository;
+public class UserSessionService {
+    private final UserSessionRepository userSessionRepository;
 
-    public SessionService(SessionRepository sessionRepository) {
-        this.sessionRepository = sessionRepository;
+    public UserSessionService(UserSessionRepository userSessionRepository) {
+        this.userSessionRepository = userSessionRepository;
     }
 
-    public CollectionResultModel<SessionModel> showAll() {
+    public CollectionResultModel<UserSessionModel> showAll() {
 
-        return sessionRepository.showAll();
+        return userSessionRepository.showAll();
     }
 
-    public PageResultModel<SessionModel> getPage(SessionPageRequestModel criteria) {
+    public PageResultModel<UserSessionModel> getPage(UserSessionPageRequestModel criteria) {
 
-        return sessionRepository.getPage(criteria);
+        return userSessionRepository.getPage(criteria);
     }
 
-    public SessionModel getById(UUID id) {
+    public UserSessionModel getById(UUID id) {
         if (id == null) {
             return null;
         }
 
-        return sessionRepository.getById(id);
+        return userSessionRepository.getById(id);
     }
 
-    public GUIDResultModel save(SessionSaveModel model) {
-        var validationResult = stringValidation(model.getAccessToken(), 255);
-
-        if (validationResult.getErrorCode() != null) {
-            return new GUIDResultModel("CAN_NOT_SAVE",
-                    "Не удалось сохранить данные. Поля должны быть заполненными");
-        }
-
-        validationResult = stringValidation(model.getRefreshToken(), 255);
-
-        if (validationResult.getErrorCode() != null) {
-            return new GUIDResultModel("CAN_NOT_SAVE",
-                    "Не удалось сохранить данные. Поля должны быть заполненными");
-        }
-
-        var result = sessionRepository.save(model);
+    public UserSessionModel save(UserModel model) {
+        var result = userSessionRepository.save(model);
 
         if (result == null) {
-            return new GUIDResultModel("CAN_NOT_SAVE",
+            return new UserSessionModel("CAN_NOT_SAVE",
                     "Не удалось сохранить данные. Поля должны быть корректно заполненными");
         }
 
@@ -66,7 +52,7 @@ public class SessionService {
     }
 
     public SuccessResultModel delete(UUID id) {
-        var repositoryResult = sessionRepository.delete(id);
+        var repositoryResult = userSessionRepository.delete(id);
 
         if (repositoryResult == null) {
             return new SuccessResultModel("CAN_NOT_DELETE",

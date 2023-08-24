@@ -29,4 +29,6 @@
 
     <include file="db/changelog/2023/23082023-create-changeset-table-user-sessions.xml"/>
     <include file="db/changelog/2023/23082023-add-changeset-foreign-keys.xml"/>
+
+    <include file="/db/changelog/2023/24082023-modify-changeset-columns-user-sessions.xml"/>
 </databaseChangeLog>

@@ -7,7 +7,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum UserRole {
     ADMIN("ADMIN"),
-    USER("USER");
+    USER("USER"),
+    REFRESH_TOKEN("REFRESH_TOKEN");
 
     private final String roleName;
 }
