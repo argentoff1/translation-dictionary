@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class TokenResultModel extends GeneralResultModel{
+public class JwtResponse extends GeneralResultModel{
     @Schema(description = "Токен доступа")
     private String accessToken;
 
@@ -17,13 +17,13 @@ public class TokenResultModel extends GeneralResultModel{
 
     private final String type = "Bearer";
 
-    public TokenResultModel(String errorCode) {
+    public JwtResponse(String errorCode) {
         super(errorCode);
         accessToken = null;
         refreshToken = null;
     }
 
-    public TokenResultModel(String accessToken, String refreshToken) {
+    public JwtResponse(String accessToken, String refreshToken) {
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
     }

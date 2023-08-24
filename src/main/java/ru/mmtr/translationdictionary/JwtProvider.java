@@ -17,10 +17,10 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 
-@Slf4j
-@Component
+/*@Slf4j
+@Component*/
 public class JwtProvider {
-    private final SecretKey jwtAccessSecret;
+    /*private final SecretKey jwtAccessSecret;
     private final SecretKey jwtRefreshSecret;
 
     public JwtProvider(
@@ -76,9 +76,9 @@ public class JwtProvider {
             log.error("Unsupported jwt", unsEx);
         } catch (MalformedJwtException mjEx) {
             log.error("Malformed jwt", mjEx);
-        } /*catch (SignatureException sEx) {
+        } *//*catch (SignatureException sEx) {
             log.error("Invalid signature", sEx);
-        }*/ catch (Exception e) {
+        }*//* catch (Exception e) {
             log.error("invalid token", e);
         }
         return false;
@@ -98,5 +98,5 @@ public class JwtProvider {
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
-    }
+    }*/
 }

@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import ru.mmtr.translationdictionary.domain.common.GeneralResultModel;
 import ru.mmtr.translationdictionary.infrastructure.repositories.user.UserRole;
 
 import java.time.LocalDateTime;
@@ -15,7 +16,7 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserModel {
+public class UserModel extends GeneralResultModel {
     @Schema(description = "Идентификатор", accessMode = Schema.AccessMode.READ_ONLY)
     private UUID userId;
 
@@ -51,4 +52,20 @@ public class UserModel {
 
     @Schema(description = "Роль", example = "Пользователь")
     private Set<UserRole> roleName;
+
+    public UserModel(String errorCode, String errorMessage) {
+        super(errorCode, errorMessage);
+        userId = null;
+        login = null;
+        password = null;
+        lastName = null;
+        firstName = null;
+        fatherName = null;
+        email = null;
+        phoneNumber = null;
+        createdAt = null;
+        modifiedAt = null;
+        archiveDate = null;
+        roleName = null;
+    }
 }

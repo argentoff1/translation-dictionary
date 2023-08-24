@@ -4,64 +4,60 @@ import io.jsonwebtoken.Claims;
 import io.micrometer.common.lang.NonNull;
 import jakarta.security.auth.message.AuthException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import ru.mmtr.translationdictionary.JwtProvider;
-import ru.mmtr.translationdictionary.domain.common.TokenResultModel;
-import ru.mmtr.translationdictionary.domain.user.UserAuthorizationModel;
+import ru.mmtr.translationdictionary.domain.common.JwtResponse;
+import ru.mmtr.translationdictionary.domain.user.JwtRequest;
 import ru.mmtr.translationdictionary.domain.user.UserModel;
 import ru.mmtr.translationdictionary.domainservice.user.UserService;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@Service
-@RequiredArgsConstructor
+/*@Service
+@RequiredArgsConstructor*/
 public class AuthService {
-    private final UserService userService;
+    /*private final UserService userService;
     private final Map<String, String> refreshStorage = new HashMap<>();
     private final JwtProvider jwtProvider;
 
-    public TokenResultModel login(@NonNull UserAuthorizationModel authRequest) throws AuthException {
-        final UserModel user = userService.getByLogin(authRequest.getLogin())
-                .orElseThrow(() -> new AuthException("Пользователь не найден"));
+    public JwtResponse login(@NonNull JwtRequest authRequest) throws AuthException {
+        final UserModel user = userService.getByLogin(authRequest.getLogin());
         if (user.getPassword().equals(authRequest.getPassword())) {
             final String accessToken = jwtProvider.generateAccessToken(user);
             final String refreshToken = jwtProvider.generateRefreshToken(user);
             refreshStorage.put(user.getLogin(), refreshToken);
-            return new TokenResultModel(accessToken, refreshToken);
+            return new JwtResponse(accessToken, refreshToken);
         } else {
-            throw new AuthException("Неправильный пароль");
+            return new JwtResponse("PASSWORD_NOT_FOUND");
         }
     }
 
-    public TokenResultModel getAccessToken(@NonNull String refreshToken) {
+    public JwtResponse getAccessToken(@NonNull String refreshToken) {
         if (jwtProvider.validateRefreshToken(refreshToken)) {
             final Claims claims = jwtProvider.getRefreshClaims(refreshToken);
             final String login = claims.getSubject();
             final String saveRefreshToken = refreshStorage.get(login);
             if (saveRefreshToken != null && saveRefreshToken.equals(refreshToken)) {
-                final UserModel user = userService.getByLogin(login)
-                        .orElseThrow(() -> new AuthException("Пользователь не найден"));
+                final UserModel user = userService.getByLogin(login);
                 final String accessToken = jwtProvider.generateAccessToken(user);
-                return new TokenResultModel(accessToken, null);
+                return new JwtResponse(accessToken, null);
             }
         }
-        return new TokenResultModel(null, null);
+        return new JwtResponse(null, null);
     }
 
-    public TokenResultModel refresh(@NonNull String refreshToken) throws AuthException {
+    public JwtResponse refresh(@NonNull String refreshToken) throws AuthException {
         if (jwtProvider.validateRefreshToken(refreshToken)) {
             final Claims claims = jwtProvider.getRefreshClaims(refreshToken);
             final String login = claims.getSubject();
             final String saveRefreshToken = refreshStorage.get(login);
             if (saveRefreshToken != null && saveRefreshToken.equals(refreshToken)) {
-                final UserModel user = userService.getByLogin(login)
-                        .orElseThrow(() -> new AuthException("Пользователь не найден"));
+                final UserModel user = userService.getByLogin(login);
                 final String accessToken = jwtProvider.generateAccessToken(user);
                 final String newRefreshToken = jwtProvider.generateRefreshToken(user);
                 refreshStorage.put(user.getLogin(), newRefreshToken);
-                return new TokenResultModel(accessToken, newRefreshToken);
+                return new JwtResponse(accessToken, newRefreshToken);
             }
         }
         throw new AuthException("Невалидный JWT токен");
@@ -69,5 +65,5 @@ public class AuthService {
 
     public JwtAuthentication getAuthInfo() {
         return (JwtAuthentication) SecurityContextHolder.getContext().getAuthentication();
-    }
+    }*/
 }

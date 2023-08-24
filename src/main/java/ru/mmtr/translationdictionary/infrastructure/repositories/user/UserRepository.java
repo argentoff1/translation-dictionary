@@ -2,42 +2,65 @@ package ru.mmtr.translationdictionary.infrastructure.repositories.user;
 
 import io.ebean.DB;
 import io.ebean.ExpressionList;
-import io.micrometer.common.lang.NonNull;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
-import ru.mmtr.translationdictionary.domain.common.GUIDResultModel;
-import ru.mmtr.translationdictionary.domain.common.PageResultModel;
-import ru.mmtr.translationdictionary.domain.common.SuccessResultModel;
-import ru.mmtr.translationdictionary.domain.common.TokenResultModel;
+import ru.mmtr.translationdictionary.JwtUtil;
+import ru.mmtr.translationdictionary.domain.common.*;
 import ru.mmtr.translationdictionary.domain.user.*;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Repository
 public class UserRepository {
-    public TokenResultModel login(UserAuthorizationModel model) {
+    private final JwtUtil jwtUtil;
+
+    public UserRepository(JwtUtil jwtUtil) {
+        this.jwtUtil = jwtUtil;
+    }
+
+    public JwtResponse login(JwtRequest model) {
         var foundEntity = DB.find(UserEntity.class)
                 .where()
                 .eq(UserEntity.LOGIN, model.getLogin())
                 .findOne();
 
         if (BCrypt.checkpw(model.getPassword(), foundEntity.getPassword()) == false) {
-            return new TokenResultModel("CAN_NOT_AUTHORIZE",
-                    "Не удалось авторизоваться. Поля должны быть корректно заполнены");
+            return new JwtResponse("CAN_NOT_AUTHORIZE");
         }
 
         if (foundEntity == null) {
-            return new TokenResultModel("CAN_NOT_AUTHORIZE",
-                    "Не удалось авторизоваться. Поля должны быть корректно заполнены");
+            return new JwtResponse("CAN_NOT_AUTHORIZE");
         }
 
-        return new TokenResultModel("222222222", "222222222");
+        return new JwtResponse(jwtUtil.generateAccessToken(model.getLogin()), jwtUtil.generateRefreshToken(model.getLogin()));
+    }
+
+    public StringResultModel getToken(JwtRequest model) {
+        var foundEntity = DB.find(UserEntity.class)
+                .where()
+                .eq(UserEntity.LOGIN, model.getLogin())
+                .findOne();
+
+        return new StringResultModel();
+    }
+
+    public UserModel getByLogin(String login) {
+        UserEntity foundEntity = DB
+                .find(UserEntity.class)
+                .where()
+                .eq(UserEntity.LOGIN, login)
+                .findOne();
+
+        if (foundEntity == null) {
+            return new UserModel("CAN_NOT_FIND",
+                    "Не удалось найти данные. Поля должны быть корректно заполненными");
+        }
+
+        return getModel(foundEntity);
     }
 
     public PageResultModel<UserModel> getPage(UserPageRequestModel criteria) {
@@ -113,12 +136,6 @@ public class UserRepository {
 
         return expression;
     }
-
-    /*public Optional<UserEntity> getByLogin(@NonNull String login) {
-        return users.stream()
-                .filter(user -> login.equals(user.getLogin()))
-                .findFirst();
-    }*/
 
     public GUIDResultModel save(UserSaveModel model) {
         UserEntity entity = new UserEntity();

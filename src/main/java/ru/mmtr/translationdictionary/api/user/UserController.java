@@ -3,11 +3,13 @@ package ru.mmtr.translationdictionary.api.user;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import ru.mmtr.translationdictionary.JwtUtil;
 import ru.mmtr.translationdictionary.domain.common.GUIDResultModel;
 import ru.mmtr.translationdictionary.domain.common.PageResultModel;
 import ru.mmtr.translationdictionary.domain.common.SuccessResultModel;
-import ru.mmtr.translationdictionary.domain.common.TokenResultModel;
+import ru.mmtr.translationdictionary.domain.common.JwtResponse;
 import ru.mmtr.translationdictionary.domain.user.*;
 import ru.mmtr.translationdictionary.domainservice.user.UserService;
 
@@ -28,7 +30,8 @@ public class UserController {
             summary = "Вход пользователя в систему",
             description = "Позволяет пользователю авторизоваться"
     )
-    public TokenResultModel login(@RequestBody UserAuthorizationModel model) {
+    public JwtResponse login(@RequestBody JwtRequest model) {
+
         return userService.login(model);
     }
 

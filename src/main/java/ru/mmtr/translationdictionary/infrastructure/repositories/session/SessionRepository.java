@@ -3,6 +3,7 @@ package ru.mmtr.translationdictionary.infrastructure.repositories.session;
 import io.ebean.DB;
 import io.ebean.ExpressionList;
 import org.springframework.stereotype.Repository;
+import ru.mmtr.translationdictionary.JwtUtil;
 import ru.mmtr.translationdictionary.domain.common.CollectionResultModel;
 import ru.mmtr.translationdictionary.domain.common.GUIDResultModel;
 import ru.mmtr.translationdictionary.domain.common.PageResultModel;
@@ -11,6 +12,7 @@ import ru.mmtr.translationdictionary.domain.dictionary.DictionaryModel;
 import ru.mmtr.translationdictionary.domain.session.SessionModel;
 import ru.mmtr.translationdictionary.domain.session.SessionPageRequestModel;
 import ru.mmtr.translationdictionary.domain.session.SessionSaveModel;
+import ru.mmtr.translationdictionary.domain.user.UserModel;
 import ru.mmtr.translationdictionary.infrastructure.repositories.dictionary.DictionaryEntity;
 
 import java.time.LocalDateTime;
@@ -20,6 +22,12 @@ import java.util.stream.Collectors;
 
 @Repository
 public class SessionRepository {
+
+    public SessionRepository(JwtUtil jwtUtil) {
+        this.jwtUtil = jwtUtil;
+    }
+
+    JwtUtil jwtUtil;
     public CollectionResultModel<SessionModel> showAll() {
         List<SessionEntity> entities = DB
                 .find(SessionEntity.class)
@@ -92,6 +100,7 @@ public class SessionRepository {
     }
 
     public GUIDResultModel save(SessionSaveModel model) {
+        //var entity1 = getEntity(model);
         SessionEntity entity = new SessionEntity();
         entity.setSessionId(UUID.randomUUID());
         entity.setAccessToken(model.getAccessToken());
@@ -146,4 +155,21 @@ public class SessionRepository {
 
         return model;
     }
+
+    /*private SessionEntity getEntity(UserModel user) {
+        if (user == null) {
+            return null;
+        }
+
+        var model = new SessionModel();
+        model.setSessionId(UUID.randomUUID());
+        model.setAccessToken(jwtUtil.generateToken());
+        model.setRefreshToken(user.getRefreshToken());
+        model.setTokenCreatedAt(user.getTokenCreatedAt());
+        model.setAccessTokenExpiredDate(user.getAccessTokenExpiredDate());
+        model.setRefreshTokenExpiredDate(user.getRefreshTokenExpiredDate());
+        model.setUserId(user.getUserId());
+
+        return model;
+    }*/
 }
