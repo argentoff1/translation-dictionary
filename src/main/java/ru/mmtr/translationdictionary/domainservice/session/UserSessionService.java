@@ -2,12 +2,10 @@ package ru.mmtr.translationdictionary.domainservice.session;
 
 import org.springframework.stereotype.Service;
 import ru.mmtr.translationdictionary.domain.common.CollectionResultModel;
-import ru.mmtr.translationdictionary.domain.common.GUIDResultModel;
 import ru.mmtr.translationdictionary.domain.common.PageResultModel;
 import ru.mmtr.translationdictionary.domain.common.SuccessResultModel;
 import ru.mmtr.translationdictionary.domain.session.UserSessionModel;
 import ru.mmtr.translationdictionary.domain.session.UserSessionPageRequestModel;
-import ru.mmtr.translationdictionary.domain.session.UserSessionSaveModel;
 import ru.mmtr.translationdictionary.domain.user.UserModel;
 import ru.mmtr.translationdictionary.infrastructure.repositories.session.UserSessionRepository;
 
@@ -26,7 +24,7 @@ public class UserSessionService {
     }
 
     public PageResultModel<UserSessionModel> getPage(UserSessionPageRequestModel criteria) {
-        return userSessionRepository.getPage(criteria);
+        return userSessionRepository.getPageSessions(criteria);
     }
 
     public UserSessionModel getById(UUID id) {
@@ -37,8 +35,19 @@ public class UserSessionService {
         return userSessionRepository.getById(id);
     }
 
-    public UserSessionModel save(UserModel model) {
-        var result = userSessionRepository.save(model);
+    public UserSessionModel saveAdmin(UserModel model) {
+        var result = userSessionRepository.saveAdmin(model);
+
+        if (result == null) {
+            return new UserSessionModel("CAN_NOT_SAVE",
+                    "Не удалось сохранить данные. Поля должны быть корректно заполненными");
+        }
+
+        return result;
+    }
+
+    public UserSessionModel saveUser(UserModel model) {
+        var result = userSessionRepository.saveUser(model);
 
         if (result == null) {
             return new UserSessionModel("CAN_NOT_SAVE",

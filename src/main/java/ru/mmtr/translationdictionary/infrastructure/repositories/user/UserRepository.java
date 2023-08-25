@@ -14,6 +14,7 @@ import ru.mmtr.translationdictionary.infrastructure.repositories.session.UserSes
 import ru.mmtr.translationdictionary.infrastructure.repositories.session.UserSessionRepository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -46,37 +47,17 @@ public class UserRepository {
 
         //userSessionRepository.save()
 
-        return new JwtResponseResultModel("2131231", "213213123123");
+        return new JwtResponseResultModel("1", "1");
     }
 
-    public UserModel getById(UUID id) {
-        UserEntity foundEntity = DB
+    public CollectionResultModel<UserModel> showAllUsers() {
+        List<UserEntity> entities = DB
                 .find(UserEntity.class)
-                .where()
-                .eq(UserEntity.USER_ID, id)
-                .findOne();
+                .findList();
 
-        if (foundEntity == null) {
-            return new UserModel("CAN_NOT_FIND",
-                    "Не удалось найти данные. Поля должны быть корректно заполненными");
-        }
-
-        return getModel(foundEntity);
-    }
-
-    public UserModel getByLogin(String login) {
-        UserEntity foundEntity = DB
-                .find(UserEntity.class)
-                .where()
-                .eq(UserEntity.LOGIN, login)
-                .findOne();
-
-        if (foundEntity == null) {
-            return new UserModel("CAN_NOT_FIND",
-                    "Не удалось найти данные. Поля должны быть корректно заполненными");
-        }
-
-        return getModel(foundEntity);
+        return new CollectionResultModel<>(
+                entities.stream().map(this::getModel).collect(Collectors.toList())
+        );
     }
 
     public PageResultModel<UserModel> getPage(UserPageRequestModel criteria) {
@@ -97,7 +78,7 @@ public class UserRepository {
     }
 
     private ExpressionList<UserEntity> applyFilters(ExpressionList<UserEntity> expression,
-                                                    UserPageRequestModel criteria) {
+                                                         UserPageRequestModel criteria) {
         if (criteria.getLoginFilter() != null) {
             expression = expression.ilike(UserEntity.LOGIN, "%" + criteria.getLoginFilter() + "%");
         }
@@ -153,6 +134,36 @@ public class UserRepository {
         return expression;
     }
 
+    public UserModel getById(UUID id) {
+        UserEntity foundEntity = DB
+                .find(UserEntity.class)
+                .where()
+                .eq(UserEntity.USER_ID, id)
+                .findOne();
+
+        if (foundEntity == null) {
+            return new UserModel("CAN_NOT_FIND",
+                    "Не удалось найти данные. Поля должны быть корректно заполненными");
+        }
+
+        return getModel(foundEntity);
+    }
+
+    public UserModel getByLogin(String login) {
+        UserEntity foundEntity = DB
+                .find(UserEntity.class)
+                .where()
+                .eq(UserEntity.LOGIN, login)
+                .findOne();
+
+        if (foundEntity == null) {
+            return new UserModel("CAN_NOT_FIND",
+                    "Не удалось найти данные. Поля должны быть корректно заполненными");
+        }
+
+        return getModel(foundEntity);
+    }
+
     public GUIDResultModel save(UserSaveModel model) {
         UserEntity entity = new UserEntity();
         entity.setUserId(UUID.randomUUID());
@@ -164,6 +175,7 @@ public class UserRepository {
         entity.setEmail(model.getEmail());
         entity.setPhoneNumber(model.getPhoneNumber());
         entity.setCreatedAt(LocalDateTime.now());
+        entity.setRoleName(UserRole.USER.getRoleName());
         DB.insert(entity);
 
         var resultModel = getModel(entity);
@@ -223,49 +235,6 @@ public class UserRepository {
                 .update();
     }
 
-    public SuccessResultModel archiveById(UUID id) {
-        UserEntity foundEntity = DB
-                .find(UserEntity.class)
-                .where()
-                .eq(UserEntity.USER_ID, id)
-                .findOne();
-
-        if (foundEntity == null) {
-            return new SuccessResultModel("CAN_NOT_UPDATE",
-                    "Не удалось сохранить данные. Поля должны быть корректно заполненными");
-        }
-
-        DB.update(UserEntity.class)
-                .set(UserEntity.ARCHIVE_DATE, LocalDateTime.now())
-                .where()
-                .eq(UserEntity.USER_ID, id)
-                .update();
-
-        return new SuccessResultModel(true);
-    }
-
-    public SuccessResultModel unarchiveById(UUID id) {
-        UserEntity foundEntity = DB
-                .find(UserEntity.class)
-                .where()
-                .eq(UserEntity.USER_ID, id)
-                .findOne();
-
-        if (foundEntity == null) {
-            return new SuccessResultModel("CAN_NOT_UPDATE",
-                    "Не удалось сохранить данные. Поля должны быть корректно заполненными");
-        }
-
-        DB.find(UserEntity.class)
-                .where()
-                .eq(UserEntity.USER_ID, id)
-                .asUpdate()
-                .set(UserEntity.ARCHIVE_DATE, null)
-                .update();
-
-        return new SuccessResultModel(true);
-    }
-
     public SuccessResultModel logout() {
 
 
@@ -300,9 +269,9 @@ public class UserRepository {
 
         var entity = new UserSessionEntity();
         entity.setSessionId(UUID.randomUUID());
-        entity.setAccessToken(jwtConfiguration.generateAccessToken(UserRole.ADMIN.getRoleName(),entity.getUserId(), entity.getSessionId()));
+        entity.setAccessToken(jwtConfiguration.generateAccessToken(UserRole.USER.getRoleName(),entity.getUserId(), entity.getSessionId()));
         entity.setAccessTokenExpiredDate(LocalDateTime.now().plusMinutes(5));
-        entity.setRefreshToken(jwtConfiguration.generateRefreshToken(UserRole.ADMIN.getRoleName(),entity.getUserId(), entity.getSessionId()));
+        entity.setRefreshToken(jwtConfiguration.generateRefreshToken(UserRole.USER.getRoleName(),entity.getUserId(), entity.getSessionId()));
         entity.setRefreshTokenExpiredDate(LocalDateTime.now().plusDays(1));
         entity.setUserId(model.getUserId());
         entity.setTokenCreatedAt(LocalDateTime.now());

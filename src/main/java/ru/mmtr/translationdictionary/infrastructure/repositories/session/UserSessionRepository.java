@@ -34,14 +34,14 @@ public class UserSessionRepository {
         );
     }
 
-    public PageResultModel<UserSessionModel> getPage(UserSessionPageRequestModel criteria) {
+    public PageResultModel<UserSessionModel> getPageSessions(UserSessionPageRequestModel criteria) {
         var expression = DB
                 .find(UserSessionEntity.class)
                 .setMaxRows(criteria.getPageSize())
                 .setFirstRow((criteria.getPageNum() - 1) * criteria.getPageSize())
                 .where();
 
-        expression = applyFilters(expression, criteria);
+        expression = applyFiltersSessions(expression, criteria);
 
         var page = expression.findPagedList();
 
@@ -51,8 +51,8 @@ public class UserSessionRepository {
         );
     }
 
-    private ExpressionList<UserSessionEntity> applyFilters(ExpressionList<UserSessionEntity> expression,
-                                                           UserSessionPageRequestModel criteria) {
+    private ExpressionList<UserSessionEntity> applyFiltersSessions(ExpressionList<UserSessionEntity> expression,
+                                                                   UserSessionPageRequestModel criteria) {
         if (criteria.getTokenCreatedAtFromFilter() != null) {
             expression = expression.ge(UserSessionEntity.TOKEN_CREATED_AT, criteria.getTokenCreatedAtFromFilter());
         }
@@ -95,8 +95,20 @@ public class UserSessionRepository {
         return getModel(foundEntity);
     }
 
-    public UserSessionModel save(UserModel model) {
-        var userSessionEntity = getEntity(model);
+    public UserSessionModel saveAdmin(UserModel model) {
+        var userSessionEntity = getAdminEntity(model);
+        DB.insert(userSessionEntity);
+
+        if (userSessionEntity == null) {
+            return new UserSessionModel("CAN_NOT_SAVE",
+                    "Не удалось сохранить данные. Поля должны быть корректно заполненными");
+        }
+
+        return getModel(userSessionEntity);
+    }
+
+    public UserSessionModel saveUser(UserModel model) {
+        var userSessionEntity = getUserEntity(model);
         DB.insert(userSessionEntity);
 
         if (userSessionEntity == null) {
@@ -144,7 +156,24 @@ public class UserSessionRepository {
         return model;
     }
 
-    private UserSessionEntity getEntity(UserModel model) {
+    private UserSessionEntity getAdminEntity(UserModel model) {
+        if (model == null) {
+            return null;
+        }
+
+        var entity = new UserSessionEntity();
+        entity.setSessionId(UUID.randomUUID());
+        entity.setAccessToken(jwtConfiguration.generateAccessToken(UserRole.ADMIN.getRoleName(),entity.getUserId(), entity.getSessionId()));
+        entity.setAccessTokenExpiredDate(LocalDateTime.now().plusMinutes(5));
+        entity.setRefreshToken(jwtConfiguration.generateRefreshToken(UserRole.ADMIN.getRoleName(),entity.getUserId(), entity.getSessionId()));
+        entity.setRefreshTokenExpiredDate(LocalDateTime.now().plusDays(1));
+        entity.setUserId(model.getUserId());
+        entity.setTokenCreatedAt(LocalDateTime.now());
+
+        return entity;
+    }
+
+    private UserSessionEntity getUserEntity(UserModel model) {
         if (model == null) {
             return null;
         }

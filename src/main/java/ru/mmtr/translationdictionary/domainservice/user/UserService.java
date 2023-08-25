@@ -34,9 +34,18 @@ public class UserService {
 
         userRepository.login(model);
 
-        var session = userSessionService.save(findUser);
+        var session = userSessionService.saveUser(findUser);
 
         return new JwtResponseResultModel(session.getAccessToken(), session.getRefreshToken());
+    }
+
+    public CollectionResultModel<UserModel> showAllUsers() {
+        return userRepository.showAllUsers();
+    }
+
+    public PageResultModel<UserModel> getPage(UserPageRequestModel criteria) {
+
+        return userRepository.getPage(criteria);
     }
 
     public UserModel getById(UUID id) {
@@ -54,11 +63,6 @@ public class UserService {
         }
 
         return userRepository.getByLogin(login);
-    }
-
-    public PageResultModel<UserModel> getPage(UserPageRequestModel criteria) {
-
-        return userRepository.getPage(criteria);
     }
 
     public GUIDResultModel save(UserSaveModel model) {
@@ -206,28 +210,6 @@ public class UserService {
         }
 
         return new SuccessResultModel(true);
-    }
-
-    public SuccessResultModel archiveById(UUID id) {
-        var repositoryResult = userRepository.archiveById(id);
-
-        if (repositoryResult.getErrorCode() != null) {
-            return new SuccessResultModel("CAN_NOT_UPDATE",
-                    "Не удалось сохранить данные. Поля должны быть корректно заполненными");
-        }
-
-        return repositoryResult;
-    }
-
-    public SuccessResultModel unarchiveById(UUID id) {
-        var repositoryResult = userRepository.unarchiveById(id);
-
-        if (repositoryResult.getErrorCode() != null) {
-            return new SuccessResultModel("CAN_NOT_UPDATE",
-                    "Не удалось сохранить данные. Поля должны быть корректно заполненными");
-        }
-
-        return repositoryResult;
     }
 
     public SuccessResultModel logout(JwtRequestModel model) {

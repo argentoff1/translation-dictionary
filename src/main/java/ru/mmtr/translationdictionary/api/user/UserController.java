@@ -5,10 +5,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 //import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import ru.mmtr.translationdictionary.domain.common.GUIDResultModel;
-import ru.mmtr.translationdictionary.domain.common.PageResultModel;
-import ru.mmtr.translationdictionary.domain.common.SuccessResultModel;
-import ru.mmtr.translationdictionary.domain.common.JwtResponseResultModel;
+import ru.mmtr.translationdictionary.domain.common.*;
 import ru.mmtr.translationdictionary.domain.user.*;
 import ru.mmtr.translationdictionary.domainservice.user.UserService;
 
@@ -33,13 +30,22 @@ public class UserController {
         return userService.login(model);
     }
 
-    @PostMapping(value = "/getPage")
+    @GetMapping("/showAllUsers")
+    @Operation(
+            summary = "Отображение всех пользователей",
+            description = "Позволяет отобразить всех пользователей"
+    )
+    public CollectionResultModel<UserModel> showAllUsers() {
+        return userService.showAllUsers();
+    }
+
+    @PostMapping(value = "/getPageUsers")
     //@PreAuthorize("hasAuthority('ADMIN')")
     @Operation(
             summary = "Отображение всех пользователей постранично",
             description = "Позволяет отобразить всех пользователей постранично"
     )
-    public PageResultModel<UserModel> getPage(UserPageRequestModel criteria) {
+    public PageResultModel<UserModel> getPageUsers(UserPageRequestModel criteria) {
         return userService.getPage(criteria);
     }
 
@@ -77,26 +83,6 @@ public class UserController {
     )
     public SuccessResultModel updatePassword(@RequestBody UserPasswordUpdateModel model) {
         return userService.updatePassword(model);
-    }
-
-    @PostMapping(value = "/archiveById/{id}")
-    //@PreAuthorize("hasAuthority('ADMIN')")
-    @Operation(
-            summary = "Архивация пользователя",
-            description = "Позволяет архивировать пользователя"
-    )
-    public SuccessResultModel archiveById(@PathVariable @Parameter(description = "Идентификатор") UUID id) {
-        return userService.archiveById(id);
-    }
-
-    @PostMapping(value = "/unarchiveById/{id}")
-    //@PreAuthorize("hasAuthority('ADMIN')")
-    @Operation(
-            summary = "Разархивация пользователя",
-            description = "Позволяет разархивировать пользователя"
-    )
-    public SuccessResultModel unarchiveById(@PathVariable @Parameter(description = "Идентификатор") UUID id) {
-        return userService.unarchiveById(id);
     }
 
     @PostMapping(value = "/logout")

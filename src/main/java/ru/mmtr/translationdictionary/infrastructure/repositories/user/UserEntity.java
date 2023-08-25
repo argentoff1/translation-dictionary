@@ -65,5 +65,5 @@ public class UserEntity {
     private LocalDateTime archiveDate;
 
     @Column(name = ROLE_NAME)
-    private UserRole roleName;
+    private String roleName;
 }
