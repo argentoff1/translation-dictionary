@@ -3,7 +3,7 @@ package ru.mmtr.translationdictionary.infrastructure.repositories.user;
 import io.ebean.DB;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
-import ru.mmtr.translationdictionary.JwtGeneration;
+import ru.mmtr.translationdictionary.JwtProvider;
 import ru.mmtr.translationdictionary.domain.common.*;
 import ru.mmtr.translationdictionary.domain.session.UserSessionSaveModel;
 import ru.mmtr.translationdictionary.domain.user.UserModel;
@@ -15,10 +15,10 @@ import java.util.UUID;
 
 @Repository
 public class AdminRepository {
-    private final JwtGeneration jwtGeneration;
+    private final JwtProvider jwtProvider;
 
-    public AdminRepository(JwtGeneration jwtGeneration) {
-        this.jwtGeneration = jwtGeneration;
+    public AdminRepository(JwtProvider jwtProvider) {
+        this.jwtProvider = jwtProvider;
     }
 
     public UserModel getByLogin(String login) {
@@ -126,9 +126,9 @@ public class AdminRepository {
 
         var entity = new UserSessionEntity();
         entity.setSessionId(UUID.randomUUID());
-        entity.setAccessToken(jwtGeneration.generateAccessToken(UserRole.ADMIN.getRoleName(), entity.getUserId(), entity.getSessionId()));
+        entity.setAccessToken(jwtProvider.generateAccessToken(UserRole.ADMIN.getRoleName(), entity.getUserId(), entity.getSessionId()));
         entity.setAccessTokenExpiredDate(LocalDateTime.now().plusMinutes(5));
-        entity.setRefreshToken(jwtGeneration.generateRefreshToken(UserRole.ADMIN.getRoleName(), entity.getUserId(), entity.getSessionId()));
+        entity.setRefreshToken(jwtProvider.generateRefreshToken(UserRole.ADMIN.getRoleName(), entity.getUserId(), entity.getSessionId()));
         entity.setRefreshTokenExpiredDate(LocalDateTime.now().plusDays(1));
         entity.setUserId(model.getUserId());
         entity.setTokenCreatedAt(LocalDateTime.now());

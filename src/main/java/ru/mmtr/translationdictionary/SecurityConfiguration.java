@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
 import ru.mmtr.translationdictionary.infrastructure.repositories.user.UserRole;
 
@@ -21,6 +22,9 @@ import ru.mmtr.translationdictionary.infrastructure.repositories.user.UserRole;
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfiguration {
+    @Autowired
+    private JwtFilter jwtFilter;
+
     @Bean
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.cors(AbstractHttpConfigurer::disable);
@@ -36,8 +40,16 @@ public class SecurityConfiguration {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         );
 
+        httpSecurity.authorizeHttpRequests((authorize) -> authorize
+                .requestMatchers("/api/users/login", "/api/users/getNewAccessToken").permitAll()
+                .anyRequest().authenticated()
+                .and()
+                .addFilterAfter(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+        ).build();
+
         httpSecurity
                 .exceptionHandling((exceptionHandling) -> exceptionHandling
+                        // Заглушка
                         .authenticationEntryPoint(new BasicAuthenticationEntryPoint()));
     }
 

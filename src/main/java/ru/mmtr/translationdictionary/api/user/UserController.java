@@ -1,16 +1,16 @@
 package ru.mmtr.translationdictionary.api.user;
 
+import io.jsonwebtoken.Claims;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 //import org.springframework.security.access.prepost.PreAuthorize;
+import lombok.NonNull;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import ru.mmtr.translationdictionary.JwtProvider;
 import ru.mmtr.translationdictionary.domain.common.*;
 import ru.mmtr.translationdictionary.domain.user.*;
 import ru.mmtr.translationdictionary.domainservice.user.UserService;
-
-import java.util.UUID;
 
 @RestController
 @RequestMapping(value = "/api/users")
@@ -30,6 +30,18 @@ public class UserController {
     )
     public JwtResponseResultModel login(@RequestBody JwtRequestModel model) {
         return userService.login(model);
+    }
+
+    @PostMapping(value = "/getNewAccessToken")
+    public JwtResponseResultModel getNewAccessToken(@RequestBody RefreshJwtRequestModel model) {
+
+        return userService.getAccessToken(model.getRefreshToken());
+    }
+
+    @PostMapping(value = "/getNewRefreshToken")
+    public JwtResponseResultModel getNewRefreshToken(@RequestBody RefreshJwtRequestModel model) {
+
+        return userService.refreshToken(model.getRefreshToken());
     }
 
     @GetMapping("/showAllUsers")

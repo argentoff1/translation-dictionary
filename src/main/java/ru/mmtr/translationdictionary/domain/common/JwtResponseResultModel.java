@@ -8,7 +8,10 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class JwtResponseResultModel extends GeneralResultModel{
+public class JwtResponseResultModel extends GeneralResultModel {
+    @Schema(description = "Тип токена")
+    private final String type = "Bearer";
+
     @Schema(description = "Токен доступа")
     private String accessToken;
 

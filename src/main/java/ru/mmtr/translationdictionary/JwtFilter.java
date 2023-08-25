@@ -14,6 +14,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.GenericFilterBean;
 
 import java.io.IOException;
+import java.util.UUID;
 
 @Slf4j
 @Component
@@ -21,17 +22,15 @@ public class JwtFilter extends GenericFilterBean {
     private static final String AUTHORIZATION = "Authorization";
 
     @Autowired
-    private JwtGeneration jwtGeneration;
-
-    public JwtFilter() {}
+    private JwtProvider jwtProvider;
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
             throws IOException, ServletException {
         final String token = getTokenFromRequest((HttpServletRequest) servletRequest);
-        if (token != null && jwtGeneration.validateAccessToken(token)) {
-            final Claims claims = jwtGeneration.getAccessClaims(token);
-            final JwtAuthentication jwtInfoToken = jwtGeneration.generateAccessToken(claims);
+        if (token != null && jwtProvider.validateAccessToken(token)) {
+            final Claims claims = jwtProvider.getAccessClaims(token);
+            final JwtAuthentication jwtInfoToken = JwtUtils.generate(claims);
             jwtInfoToken.setAuthenticated(true);
             SecurityContextHolder.getContext().setAuthentication(jwtInfoToken);
         }
