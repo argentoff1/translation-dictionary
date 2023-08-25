@@ -3,6 +3,7 @@ package ru.mmtr.translationdictionary.domainservice.user;
 import org.springframework.stereotype.Service;
 import ru.mmtr.translationdictionary.domain.common.*;
 import ru.mmtr.translationdictionary.domain.user.*;
+import ru.mmtr.translationdictionary.domainservice.Validation;
 import ru.mmtr.translationdictionary.domainservice.session.UserSessionService;
 import ru.mmtr.translationdictionary.infrastructure.repositories.user.UserRepository;
 
@@ -36,6 +37,15 @@ public class UserService {
         var session = userSessionService.save(findUser);
 
         return new JwtResponseResultModel(session.getAccessToken(), session.getRefreshToken());
+    }
+
+    public UserModel getById(UUID id) {
+        if (id == null) {
+            return new UserModel("CAN_NOT_FIND",
+                    "Не удалось найти данные. Поля должны быть корректно заполненными");
+        }
+
+        return userRepository.getById(id);
     }
 
     public UserModel getByLogin(String login) {
@@ -220,8 +230,20 @@ public class UserService {
         return repositoryResult;
     }
 
-    public SuccessResultModel logout() {
+    public SuccessResultModel logout(JwtRequestModel model) {
+        var validationResult = Validation.stringValidation(model.getLogin(), 20);
+        if (validationResult.getErrorCode() != null) {
+            return new SuccessResultModel("CAN_NOT_LOGOUT",
+                    "Не удалось сохранить данные. Поля должны быть корректно заполненными");
+        }
 
+        var findUser = userRepository.getByLogin(model.getLogin());
+        if (findUser == null) {
+            return new SuccessResultModel("CAN_NOT_LOGOUT",
+                    "Не удалось сохранить данные. Поля должны быть корректно заполненными");
+        }
+
+        userSessionService.delete(findUser);
 
         return userRepository.logout();
     }

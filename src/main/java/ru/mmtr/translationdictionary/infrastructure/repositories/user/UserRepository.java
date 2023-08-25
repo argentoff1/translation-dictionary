@@ -49,6 +49,21 @@ public class UserRepository {
         return new JwtResponseResultModel("2131231", "213213123123");
     }
 
+    public UserModel getById(UUID id) {
+        UserEntity foundEntity = DB
+                .find(UserEntity.class)
+                .where()
+                .eq(UserEntity.USER_ID, id)
+                .findOne();
+
+        if (foundEntity == null) {
+            return new UserModel("CAN_NOT_FIND",
+                    "Не удалось найти данные. Поля должны быть корректно заполненными");
+        }
+
+        return getModel(foundEntity);
+    }
+
     public UserModel getByLogin(String login) {
         UserEntity foundEntity = DB
                 .find(UserEntity.class)

@@ -48,10 +48,10 @@ public class UserSessionService {
         return result;
     }
 
-    public SuccessResultModel delete(UUID id) {
-        var repositoryResult = userSessionRepository.delete(id);
+    public SuccessResultModel delete(UserModel model) {
+        var result = userSessionRepository.delete(model);
 
-        if (repositoryResult == null) {
+        if (result == null) {
             return new SuccessResultModel("CAN_NOT_DELETE",
                     "Не удалось удалить данные. Поля должны быть корректно заполненными");
         }

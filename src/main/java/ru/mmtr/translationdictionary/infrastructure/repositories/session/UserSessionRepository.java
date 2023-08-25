@@ -107,11 +107,11 @@ public class UserSessionRepository {
         return getModel(userSessionEntity);
     }
 
-    public SuccessResultModel delete(UUID id) {
+    public SuccessResultModel delete(UserModel model) {
         UserSessionEntity foundEntity = DB
                 .find(UserSessionEntity.class)
                 .where()
-                .eq(UserSessionEntity.SESSION_ID, id)
+                .eq(UserSessionEntity.USER_ID, model.getUserId())
                 .findOne();
 
         if (foundEntity == null) {
@@ -121,7 +121,7 @@ public class UserSessionRepository {
 
         DB.find(UserSessionEntity.class)
                 .where()
-                .eq(UserSessionEntity.SESSION_ID, id)
+                .eq(UserSessionEntity.USER_ID, model.getUserId())
                 .delete();
 
         return new SuccessResultModel(true);
