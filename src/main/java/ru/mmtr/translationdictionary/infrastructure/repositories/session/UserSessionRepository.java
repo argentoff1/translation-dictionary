@@ -3,7 +3,7 @@ package ru.mmtr.translationdictionary.infrastructure.repositories.session;
 import io.ebean.DB;
 import io.ebean.ExpressionList;
 import org.springframework.stereotype.Repository;
-import ru.mmtr.translationdictionary.JwtConfiguration;
+import ru.mmtr.translationdictionary.JwtGeneration;
 import ru.mmtr.translationdictionary.domain.common.*;
 import ru.mmtr.translationdictionary.domain.session.UserSessionModel;
 import ru.mmtr.translationdictionary.domain.session.UserSessionPageRequestModel;
@@ -18,10 +18,10 @@ import java.util.stream.Collectors;
 
 @Repository
 public class UserSessionRepository {
-    private final JwtConfiguration jwtConfiguration;
+    private final JwtGeneration jwtGeneration;
 
-    public UserSessionRepository(JwtConfiguration jwtConfiguration) {
-        this.jwtConfiguration = jwtConfiguration;
+    public UserSessionRepository(JwtGeneration jwtGeneration) {
+        this.jwtGeneration = jwtGeneration;
     }
 
     public CollectionResultModel<UserSessionModel> showAll() {
@@ -163,9 +163,9 @@ public class UserSessionRepository {
 
         var entity = new UserSessionEntity();
         entity.setSessionId(UUID.randomUUID());
-        entity.setAccessToken(jwtConfiguration.generateAccessToken(UserRole.ADMIN.getRoleName(),entity.getUserId(), entity.getSessionId()));
+        entity.setAccessToken(jwtGeneration.generateAccessToken(UserRole.ADMIN.getRoleName(),entity.getUserId(), entity.getSessionId()));
         entity.setAccessTokenExpiredDate(LocalDateTime.now().plusMinutes(5));
-        entity.setRefreshToken(jwtConfiguration.generateRefreshToken(UserRole.ADMIN.getRoleName(),entity.getUserId(), entity.getSessionId()));
+        entity.setRefreshToken(jwtGeneration.generateRefreshToken(UserRole.ADMIN.getRoleName(),entity.getUserId(), entity.getSessionId()));
         entity.setRefreshTokenExpiredDate(LocalDateTime.now().plusDays(1));
         entity.setUserId(model.getUserId());
         entity.setTokenCreatedAt(LocalDateTime.now());
@@ -180,9 +180,9 @@ public class UserSessionRepository {
 
         var entity = new UserSessionEntity();
         entity.setSessionId(UUID.randomUUID());
-        entity.setAccessToken(jwtConfiguration.generateAccessToken(UserRole.ADMIN.getRoleName(),entity.getUserId(), entity.getSessionId()));
+        entity.setAccessToken(jwtGeneration.generateAccessToken(UserRole.ADMIN.getRoleName(),entity.getUserId(), entity.getSessionId()));
         entity.setAccessTokenExpiredDate(LocalDateTime.now().plusMinutes(5));
-        entity.setRefreshToken(jwtConfiguration.generateRefreshToken(UserRole.ADMIN.getRoleName(),entity.getUserId(), entity.getSessionId()));
+        entity.setRefreshToken(jwtGeneration.generateRefreshToken(UserRole.ADMIN.getRoleName(),entity.getUserId(), entity.getSessionId()));
         entity.setRefreshTokenExpiredDate(LocalDateTime.now().plusDays(1));
         entity.setUserId(model.getUserId());
         entity.setTokenCreatedAt(LocalDateTime.now());

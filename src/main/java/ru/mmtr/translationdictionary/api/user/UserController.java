@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 //import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.mmtr.translationdictionary.domain.common.*;
 import ru.mmtr.translationdictionary.domain.user.*;
@@ -22,6 +23,7 @@ public class UserController {
     }
 
     @PostMapping(value = "/login")
+    @PreAuthorize("hasAuthority('USER')")
     @Operation(
             summary = "Вход пользователя в систему",
             description = "Позволяет пользователю авторизоваться"
@@ -31,6 +33,7 @@ public class UserController {
     }
 
     @GetMapping("/showAllUsers")
+    @PreAuthorize("hasAuthority('USER')")
     @Operation(
             summary = "Отображение всех пользователей",
             description = "Позволяет отобразить всех пользователей"
@@ -40,7 +43,7 @@ public class UserController {
     }
 
     @PostMapping(value = "/getPageUsers")
-    //@PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('USER')")
     @Operation(
             summary = "Отображение всех пользователей постранично",
             description = "Позволяет отобразить всех пользователей постранично"
@@ -50,6 +53,7 @@ public class UserController {
     }
 
     @PostMapping(value = "/save")
+    @PreAuthorize("hasAuthority('USER')")
     @Operation(
             summary = "Регистрация",
             description = "Позволяет зарегистрировать пользователя"
@@ -59,6 +63,7 @@ public class UserController {
     }
 
     @PutMapping(value = "/updateUser")
+    @PreAuthorize("hasAuthority('USER')")
     @Operation(
             summary = "Обновление данных",
             description = "Позволяет обновить личные данные"
@@ -68,6 +73,7 @@ public class UserController {
     }
 
     @PutMapping(value = "/updateLogin")
+    @PreAuthorize("hasAuthority('USER')")
     @Operation(
             summary = "Обновление логина",
             description = "Позволяет обновить логин пользователя"
@@ -77,6 +83,7 @@ public class UserController {
     }
 
     @PutMapping(value = "/updatePassword")
+    @PreAuthorize("hasAuthority('USER')")
     @Operation(
             summary = "Обновление пароля",
             description = "Позволяет обновить пароль"
@@ -86,6 +93,7 @@ public class UserController {
     }
 
     @PostMapping(value = "/logout")
+    @PreAuthorize("hasAuthority('USER')")
     @Operation(
             summary = "Выход пользователя из системы ",
             description = "Позволяет пользователю выйти из системы"

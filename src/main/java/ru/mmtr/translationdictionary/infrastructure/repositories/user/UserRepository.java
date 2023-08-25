@@ -6,7 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
-import ru.mmtr.translationdictionary.JwtConfiguration;
+import ru.mmtr.translationdictionary.JwtGeneration;
 import ru.mmtr.translationdictionary.domain.common.*;
 import ru.mmtr.translationdictionary.domain.session.UserSessionSaveModel;
 import ru.mmtr.translationdictionary.domain.user.*;
@@ -20,11 +20,11 @@ import java.util.stream.Collectors;
 
 @Repository
 public class UserRepository {
-    private final JwtConfiguration jwtConfiguration;
+    private final JwtGeneration jwtGeneration;
     private final UserSessionRepository userSessionRepository;
 
-    public UserRepository(JwtConfiguration jwtConfiguration, UserSessionRepository userSessionRepository) {
-        this.jwtConfiguration = jwtConfiguration;
+    public UserRepository(JwtGeneration jwtGeneration, UserSessionRepository userSessionRepository) {
+        this.jwtGeneration = jwtGeneration;
         this.userSessionRepository = userSessionRepository;
     }
 
@@ -269,9 +269,9 @@ public class UserRepository {
 
         var entity = new UserSessionEntity();
         entity.setSessionId(UUID.randomUUID());
-        entity.setAccessToken(jwtConfiguration.generateAccessToken(UserRole.USER.getRoleName(),entity.getUserId(), entity.getSessionId()));
+        entity.setAccessToken(jwtGeneration.generateAccessToken(UserRole.USER.getRoleName(),entity.getUserId(), entity.getSessionId()));
         entity.setAccessTokenExpiredDate(LocalDateTime.now().plusMinutes(5));
-        entity.setRefreshToken(jwtConfiguration.generateRefreshToken(UserRole.USER.getRoleName(),entity.getUserId(), entity.getSessionId()));
+        entity.setRefreshToken(jwtGeneration.generateRefreshToken(UserRole.USER.getRoleName(),entity.getUserId(), entity.getSessionId()));
         entity.setRefreshTokenExpiredDate(LocalDateTime.now().plusDays(1));
         entity.setUserId(model.getUserId());
         entity.setTokenCreatedAt(LocalDateTime.now());

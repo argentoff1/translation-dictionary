@@ -14,16 +14,50 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
-import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
 import ru.mmtr.translationdictionary.infrastructure.repositories.user.UserRole;
-
-import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfiguration {
+    @Bean
+    protected void configure(HttpSecurity httpSecurity) throws Exception {
+        httpSecurity.cors(AbstractHttpConfigurer::disable);
+        httpSecurity.csrf(AbstractHttpConfigurer::disable);
+        httpSecurity.formLogin(AbstractHttpConfigurer::disable);
+
+        httpSecurity
+                .addFilter(new JwtFilter())
+                ;
+
+        httpSecurity.
+                sessionManagement((session) -> session
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        );
+
+        httpSecurity
+                .exceptionHandling((exceptionHandling) -> exceptionHandling
+                        .authenticationEntryPoint(new BasicAuthenticationEntryPoint()));
+    }
+
+    /*@Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        return http
+                .cors(cors -> cors.disable())
+                .and()
+                .csrf().disable()
+                .formLogin().disable()
+                .addFilterAfter(new JwtAuthorizationFilter(), BasicAuthenticationFilter.class)
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and.exceptionHandling()
+                .authenticationEntryPoint(new CustomAuthEntryPoint())
+                .and().build;
+    }*/
+
+    //private final JwtConfiguration jwtConfiguration;
+
     /*@Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
@@ -62,42 +96,4 @@ public class SecurityConfiguration {
     public static PasswordEncoder encoder() {
         return new BCryptPasswordEncoder();
     }
-
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf()
-                .disable()
-                .authorizeRequests()
-                .and()
-                .authorizeRequests()
-                .requestMatchers("/api/languages/**")
-                .permitAll()
-                .requestMatchers("/api/dictionaries/**")
-                .permitAll()
-                .requestMatchers("/api/users/**")
-                .permitAll()
-                .requestMatchers("/api/admins/**")
-                .hasRole(UserRole.ADMIN.getRoleName())
-                .and()
-                .httpBasic()
-                .and()
-                .logout();
-
-        return http.build();
-    }
-
-    /*// Версия Леонида
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        return http.cors()
-                .and()
-                .csrf().disable()
-                .formLogin().disable()
-                .addFilterAfter(new , BasicAuthenticationFilter.class)
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and.exceptionHandling()
-                .authenticationEntryPoint(new CustomAuthEntrypoint())
-                .and().build;
-    }*/
 }

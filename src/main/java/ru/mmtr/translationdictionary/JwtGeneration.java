@@ -1,7 +1,8 @@
 package ru.mmtr.translationdictionary;
 
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
+import io.micrometer.common.lang.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -11,7 +12,8 @@ import java.util.Map;
 import java.util.UUID;
 
 @Component
-public class JwtConfiguration {
+@Slf4j
+public class JwtGeneration {
     @Value("${jwt.secret.access}")
     private String secretAccess;
 
@@ -72,6 +74,55 @@ public class JwtConfiguration {
                 .compact();
     }
 
+    public boolean validateAccessToken(@NonNull String accessToken) {
+        return validateToken(accessToken, secretAccess);
+    }
+
+    public boolean validateRefreshToken(@NonNull String refreshToken) {
+        return validateToken(refreshToken, secretRefresh);
+    }
+
+    private boolean validateToken(@NonNull String token, @NonNull String secret) {
+        try {
+            Jwts.parserBuilder()
+                    .setSigningKey(secretAccess)
+                    .build()
+                    .parseClaimsJws(token);
+            return true;
+        } catch (ExpiredJwtException expEx) {
+            log.error("Token expired", expEx);
+        } catch (UnsupportedJwtException unsEx) {
+            log.error("Unsupported jwt", unsEx);
+        } catch (MalformedJwtException mjEx) {
+            log.error("Malformed jwt", mjEx);
+        } catch (SignatureException sEx) {
+            log.error("Invalid signature", sEx);
+        } catch (Exception e) {
+            log.error("invalid token", e);
+        }
+        return false;
+    }
+
+    public Claims getAccessClaims(@NonNull String token) {
+        return getClaims(token, secretAccess);
+    }
+
+    public Claims getRefreshClaims(@NonNull String token) {
+        return getClaims(token, secretRefresh);
+    }
+
+    private Claims getClaims(@NonNull String token, @NonNull String secret) {
+        return Jwts.parserBuilder()
+                .setSigningKey(secret)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+    }
+
+
+
+
+
     /*public Boolean validateToken(String token, String username) {
         String extractedUsername = extractUsername(token);
         return (extractedUsername.equals(username) && !isTokenExpired(token));
@@ -91,7 +142,7 @@ public class JwtConfiguration {
     }
 
     private Claims extractAllClaims(String token) {
-        return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
+        return Jwts.parser().setSigningKey(secretAccess).parseClaimsJws(token).getBody();
     }
 
     private Boolean isTokenExpired(String token) {

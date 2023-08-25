@@ -3,6 +3,7 @@ package ru.mmtr.translationdictionary.api.user;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.mmtr.translationdictionary.domain.common.*;
 import ru.mmtr.translationdictionary.domain.session.UserSessionModel;
@@ -28,6 +29,7 @@ public class AdminController {
     }
 
     @PostMapping(value = "/login")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(
             summary = "Вход администратора в систему",
             description = "Позволяет администратору войти в систему"
@@ -37,6 +39,7 @@ public class AdminController {
     }
 
     @GetMapping(value = "/showAllSessions")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(
             summary = "Отображение всех сессий постранично",
             description = "Позволяет отобразить все сессии постранично"
@@ -46,7 +49,7 @@ public class AdminController {
     }
 
     @PostMapping(value = "/getPageSessions")
-    //@PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(
             summary = "Отображение всех пользователей постранично",
             description = "Позволяет отобразить всех пользователей постранично"
@@ -56,6 +59,7 @@ public class AdminController {
     }
 
     @GetMapping(value = "/getSessionById/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(
             summary = "Получение сессии",
             description = "Позволяет получить одну сессию"
@@ -65,6 +69,7 @@ public class AdminController {
     }
 
     @GetMapping("/showAllUsers")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(
             summary = "Отображение всех пользователей",
             description = "Позволяет отобразить всех пользователей"
@@ -74,6 +79,7 @@ public class AdminController {
     }
 
     @PostMapping("/saveAdmin")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(
             summary = "Создание нового администратора",
             description = "Позволяет создать нового администратора"
@@ -83,7 +89,7 @@ public class AdminController {
     }
 
     @PostMapping(value = "/archiveById/{id}")
-    //@PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(
             summary = "Архивация пользователя",
             description = "Позволяет архивировать пользователя"
@@ -93,7 +99,7 @@ public class AdminController {
     }
 
     @PostMapping(value = "/unarchiveById/{id}")
-    //@PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(
             summary = "Разархивация пользователя",
             description = "Позволяет разархивировать пользователя"
@@ -103,6 +109,7 @@ public class AdminController {
     }
 
     @PostMapping(value = "/logout")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(
             summary = "Выход администратора из системы ",
             description = "Позволяет администратору выйти из системы"
