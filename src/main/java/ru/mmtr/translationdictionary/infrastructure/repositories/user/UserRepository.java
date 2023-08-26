@@ -175,7 +175,7 @@ public class UserRepository {
         entity.setEmail(model.getEmail());
         entity.setPhoneNumber(model.getPhoneNumber());
         entity.setCreatedAt(LocalDateTime.now());
-        entity.setRoleName(UserRole.USER.getRoleName());
+        entity.setRoleName(model.getRoleName());
         DB.insert(entity);
 
         var resultModel = getModel(entity);
@@ -233,6 +233,49 @@ public class UserRepository {
                 .where()
                 .eq(UserEntity.USER_ID, model.getId())
                 .update();
+    }
+
+    public SuccessResultModel archiveById(UUID id) {
+        UserEntity foundEntity = DB
+                .find(UserEntity.class)
+                .where()
+                .eq(UserEntity.USER_ID, id)
+                .findOne();
+
+        if (foundEntity == null) {
+            return new SuccessResultModel("CAN_NOT_UPDATE",
+                    "Не удалось сохранить данные. Поля должны быть корректно заполненными");
+        }
+
+        DB.update(UserEntity.class)
+                .set(UserEntity.ARCHIVE_DATE, LocalDateTime.now())
+                .where()
+                .eq(UserEntity.USER_ID, id)
+                .update();
+
+        return new SuccessResultModel(true);
+    }
+
+    public SuccessResultModel unarchiveById(UUID id) {
+        UserEntity foundEntity = DB
+                .find(UserEntity.class)
+                .where()
+                .eq(UserEntity.USER_ID, id)
+                .findOne();
+
+        if (foundEntity == null) {
+            return new SuccessResultModel("CAN_NOT_UPDATE",
+                    "Не удалось сохранить данные. Поля должны быть корректно заполненными");
+        }
+
+        DB.find(UserEntity.class)
+                .where()
+                .eq(UserEntity.USER_ID, id)
+                .asUpdate()
+                .set(UserEntity.ARCHIVE_DATE, null)
+                .update();
+
+        return new SuccessResultModel(true);
     }
 
     public SuccessResultModel logout() {

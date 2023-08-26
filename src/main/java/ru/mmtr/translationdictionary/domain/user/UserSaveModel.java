@@ -27,4 +27,7 @@ public class UserSaveModel {
 
     @Parameter(description = "Номер телефона", example = "88005553535")
     private String phoneNumber;
+
+    @Parameter(description = "Роль пользователя", example = "USER")
+    private String roleName;
 }

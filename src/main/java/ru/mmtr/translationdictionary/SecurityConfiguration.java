@@ -32,8 +32,7 @@ public class SecurityConfiguration {
         httpSecurity.formLogin(AbstractHttpConfigurer::disable);
 
         httpSecurity
-                .addFilter(new JwtFilter())
-                ;
+                .addFilter(new JwtFilter());
 
         httpSecurity.
                 sessionManagement((session) -> session

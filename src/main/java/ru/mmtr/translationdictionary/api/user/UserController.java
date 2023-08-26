@@ -2,6 +2,7 @@ package ru.mmtr.translationdictionary.api.user;
 
 import io.jsonwebtoken.Claims;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 //import org.springframework.security.access.prepost.PreAuthorize;
 import lombok.NonNull;
@@ -9,8 +10,12 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.mmtr.translationdictionary.JwtProvider;
 import ru.mmtr.translationdictionary.domain.common.*;
+import ru.mmtr.translationdictionary.domain.session.UserSessionModel;
+import ru.mmtr.translationdictionary.domain.session.UserSessionPageRequestModel;
 import ru.mmtr.translationdictionary.domain.user.*;
 import ru.mmtr.translationdictionary.domainservice.user.UserService;
+
+import java.util.UUID;
 
 @RestController
 @RequestMapping(value = "/api/users")
@@ -23,7 +28,7 @@ public class UserController {
     }
 
     @PostMapping(value = "/login")
-    @PreAuthorize("hasAuthority('USER')")
+    //@PreAuthorize("hasAuthority('USER')")
     @Operation(
             summary = "Вход пользователя в систему",
             description = "Позволяет пользователю авторизоваться"
@@ -45,7 +50,7 @@ public class UserController {
     }
 
     @GetMapping("/showAllUsers")
-    @PreAuthorize("hasAuthority('USER')")
+    //@PreAuthorize("hasAuthority('USER')")
     @Operation(
             summary = "Отображение всех пользователей",
             description = "Позволяет отобразить всех пользователей"
@@ -54,18 +59,57 @@ public class UserController {
         return userService.showAllUsers();
     }
 
+    @GetMapping(value = "/showAllSessions")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @Operation(
+            summary = "Отображение всех сессий постранично",
+            description = "Позволяет отобразить все сессии постранично"
+    )
+    public CollectionResultModel<UserSessionModel> showAllSessions() {
+        return userService.showAllSessions();
+    }
+
     @PostMapping(value = "/getPageUsers")
     @PreAuthorize("hasAuthority('USER')")
     @Operation(
             summary = "Отображение всех пользователей постранично",
             description = "Позволяет отобразить всех пользователей постранично"
     )
-    public PageResultModel<UserModel> getPageUsers(UserPageRequestModel criteria) {
-        return userService.getPage(criteria);
+    public PageResultModel<UserModel> getPageUsers(@RequestBody UserPageRequestModel criteria) {
+        return userService.getPageUsers(criteria);
+    }
+
+    @PostMapping(value = "/getPageSessions")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @Operation(
+            summary = "Отображение всех пользователей постранично",
+            description = "Позволяет отобразить всех пользователей постранично"
+    )
+    public PageResultModel<UserSessionModel> getPageSessions(@RequestBody UserSessionPageRequestModel criteria) {
+        return userService.getPageSessions(criteria);
+    }
+
+    @GetMapping(value = "/getUserById")
+    @Operation(
+            summary = "Получение пользователя",
+            description = "Позволяет получить одного пользователя"
+    )
+    public UserModel getUserById(@PathVariable @Parameter(description = "Идентификатор") UUID id) {
+        return userService.getUserById(id);
+    }
+
+    @GetMapping(value = "/getSessionById/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @Operation(
+            summary = "Получение сессии",
+            description = "Позволяет получить одну сессию"
+    )
+    public UserSessionModel getSessionById(@PathVariable @Parameter(description = "Идентификатор") UUID id) {
+        return userService.getSessionById(id);
     }
 
     @PostMapping(value = "/save")
-    @PreAuthorize("hasAuthority('USER')")
+    //@PreAuthorize("hasAuthority('USER')")
     @Operation(
             summary = "Регистрация",
             description = "Позволяет зарегистрировать пользователя"
@@ -75,7 +119,7 @@ public class UserController {
     }
 
     @PutMapping(value = "/updateUser")
-    @PreAuthorize("hasAuthority('USER')")
+    //@PreAuthorize("hasAuthority('USER')")
     @Operation(
             summary = "Обновление данных",
             description = "Позволяет обновить личные данные"
@@ -85,17 +129,17 @@ public class UserController {
     }
 
     @PutMapping(value = "/updateLogin")
-    @PreAuthorize("hasAuthority('USER')")
+    //@PreAuthorize("hasAuthority('USER')")
     @Operation(
             summary = "Обновление логина",
             description = "Позволяет обновить логин пользователя"
     )
-    public SuccessResultModel updateLogin(UserLoginUpdateModel model) {
+    public SuccessResultModel updateLogin(@RequestBody UserLoginUpdateModel model) {
         return userService.updateLogin(model);
     }
 
     @PutMapping(value = "/updatePassword")
-    @PreAuthorize("hasAuthority('USER')")
+    //@PreAuthorize("hasAuthority('USER')")
     @Operation(
             summary = "Обновление пароля",
             description = "Позволяет обновить пароль"
@@ -104,13 +148,33 @@ public class UserController {
         return userService.updatePassword(model);
     }
 
+    @PostMapping(value = "/archiveById/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @Operation(
+            summary = "Архивация пользователя",
+            description = "Позволяет архивировать пользователя"
+    )
+    public SuccessResultModel archiveById(@PathVariable @Parameter(description = "Идентификатор") UUID id) {
+        return userService.archiveById(id);
+    }
+
+    @PostMapping(value = "/unarchiveById/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @Operation(
+            summary = "Разархивация пользователя",
+            description = "Позволяет разархивировать пользователя"
+    )
+    public SuccessResultModel unarchiveById(@PathVariable @Parameter(description = "Идентификатор") UUID id) {
+        return userService.unarchiveById(id);
+    }
+
     @PostMapping(value = "/logout")
     @PreAuthorize("hasAuthority('USER')")
     @Operation(
             summary = "Выход пользователя из системы ",
             description = "Позволяет пользователю выйти из системы"
     )
-    public SuccessResultModel logout(JwtRequestModel model) {
+    public SuccessResultModel logout(@RequestBody JwtRequestModel model) {
         return userService.logout(model);
     }
 }

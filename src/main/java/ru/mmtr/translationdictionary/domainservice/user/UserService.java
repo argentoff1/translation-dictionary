@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import ru.mmtr.translationdictionary.JwtAuthentication;
 import ru.mmtr.translationdictionary.JwtProvider;
 import ru.mmtr.translationdictionary.domain.common.*;
+import ru.mmtr.translationdictionary.domain.session.UserSessionModel;
+import ru.mmtr.translationdictionary.domain.session.UserSessionPageRequestModel;
 import ru.mmtr.translationdictionary.domain.user.*;
 import ru.mmtr.translationdictionary.domainservice.Validation;
 import ru.mmtr.translationdictionary.domainservice.session.UserSessionService;
@@ -81,18 +83,31 @@ public class UserService {
         return userRepository.showAllUsers();
     }
 
-    public PageResultModel<UserModel> getPage(UserPageRequestModel criteria) {
+    public CollectionResultModel<UserSessionModel> showAllSessions() {
+        return userSessionService.showAll();
+    }
+
+    public PageResultModel<UserModel> getPageUsers(UserPageRequestModel criteria) {
 
         return userRepository.getPage(criteria);
     }
 
-    public UserModel getById(UUID id) {
+    public PageResultModel<UserSessionModel> getPageSessions(UserSessionPageRequestModel criteria) {
+
+        return userSessionService.getPage(criteria);
+    }
+
+    public UserModel getUserById(UUID id) {
         if (id == null) {
             return new UserModel("CAN_NOT_FIND",
                     "Не удалось найти данные. Поля должны быть корректно заполненными");
         }
 
         return userRepository.getById(id);
+    }
+
+    public UserSessionModel getSessionById(UUID id) {
+        return userSessionService.getById(id);
     }
 
     public UserModel getByLogin(String login) {
@@ -248,6 +263,28 @@ public class UserService {
         }
 
         return new SuccessResultModel(true);
+    }
+
+    public SuccessResultModel archiveById(UUID id) {
+        var repositoryResult = userRepository.archiveById(id);
+
+        if (repositoryResult.getErrorCode() != null) {
+            return new SuccessResultModel("CAN_NOT_UPDATE",
+                    "Не удалось сохранить данные. Поля должны быть корректно заполненными");
+        }
+
+        return repositoryResult;
+    }
+
+    public SuccessResultModel unarchiveById(UUID id) {
+        var repositoryResult = userRepository.unarchiveById(id);
+
+        if (repositoryResult.getErrorCode() != null) {
+            return new SuccessResultModel("CAN_NOT_UPDATE",
+                    "Не удалось сохранить данные. Поля должны быть корректно заполненными");
+        }
+
+        return repositoryResult;
     }
 
     public SuccessResultModel logout(JwtRequestModel model) {
