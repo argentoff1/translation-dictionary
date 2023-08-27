@@ -305,18 +305,18 @@ public class UserRepository {
         return model;
     }
 
-    private UserSessionEntity getEntity(UserSessionSaveModel model) {
-        if (model == null) {
+    private UserSessionEntity getEntity(UserSessionSaveModel sessionSaveModel, UserModel userModel) {
+        if (sessionSaveModel == null) {
             return null;
         }
 
         var entity = new UserSessionEntity();
         entity.setSessionId(UUID.randomUUID());
-        entity.setAccessToken(jwtProvider.generateAccessToken(UserRole.USER.getRoleName(),entity.getUserId(), entity.getSessionId()));
+        entity.setAccessToken(jwtProvider.generateAccessToken(userModel));
         entity.setAccessTokenExpiredDate(LocalDateTime.now().plusMinutes(5));
-        entity.setRefreshToken(jwtProvider.generateRefreshToken(UserRole.USER.getRoleName(),entity.getUserId(), entity.getSessionId()));
+        entity.setRefreshToken(jwtProvider.generateRefreshToken(userModel));
         entity.setRefreshTokenExpiredDate(LocalDateTime.now().plusDays(1));
-        entity.setUserId(model.getUserId());
+        entity.setUserId(sessionSaveModel.getUserId());
         entity.setTokenCreatedAt(LocalDateTime.now());
 
         return entity;

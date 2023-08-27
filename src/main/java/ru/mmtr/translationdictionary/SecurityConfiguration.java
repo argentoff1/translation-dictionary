@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
 import ru.mmtr.translationdictionary.infrastructure.repositories.user.UserRole;
@@ -26,7 +27,7 @@ public class SecurityConfiguration {
     private JwtFilter jwtFilter;
 
     @Bean
-    protected void configure(HttpSecurity httpSecurity) throws Exception {
+    protected SecurityFilterChain configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.cors(AbstractHttpConfigurer::disable);
         httpSecurity.csrf(AbstractHttpConfigurer::disable);
         httpSecurity.formLogin(AbstractHttpConfigurer::disable);
@@ -50,6 +51,8 @@ public class SecurityConfiguration {
                 .exceptionHandling((exceptionHandling) -> exceptionHandling
                         // Заглушка
                         .authenticationEntryPoint(new BasicAuthenticationEntryPoint()));
+
+        return httpSecurity.build();
     }
 
     /*@Bean

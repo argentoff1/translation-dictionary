@@ -163,9 +163,9 @@ public class UserSessionRepository {
 
         var entity = new UserSessionEntity();
         entity.setSessionId(UUID.randomUUID());
-        entity.setAccessToken(jwtProvider.generateAccessToken(UserRole.ADMIN.getRoleName(),entity.getUserId(), entity.getSessionId()));
+        entity.setAccessToken(jwtProvider.generateAccessToken(model));
         entity.setAccessTokenExpiredDate(LocalDateTime.now().plusMinutes(5));
-        entity.setRefreshToken(jwtProvider.generateRefreshToken(UserRole.ADMIN.getRoleName(),entity.getUserId(), entity.getSessionId()));
+        entity.setRefreshToken(jwtProvider.generateRefreshToken(model));
         entity.setRefreshTokenExpiredDate(LocalDateTime.now().plusDays(1));
         entity.setUserId(model.getUserId());
         entity.setTokenCreatedAt(LocalDateTime.now());
@@ -180,9 +180,9 @@ public class UserSessionRepository {
 
         var entity = new UserSessionEntity();
         entity.setSessionId(UUID.randomUUID());
-        entity.setAccessToken(jwtProvider.generateAccessToken(UserRole.ADMIN.getRoleName(),entity.getUserId(), entity.getSessionId()));
+        entity.setAccessToken(jwtProvider.generateAccessToken(model));
         entity.setAccessTokenExpiredDate(LocalDateTime.now().plusMinutes(5));
-        entity.setRefreshToken(jwtProvider.generateRefreshToken(UserRole.ADMIN.getRoleName(),entity.getUserId(), entity.getSessionId()));
+        entity.setRefreshToken(jwtProvider.generateRefreshToken(model));
         entity.setRefreshTokenExpiredDate(LocalDateTime.now().plusDays(1));
         entity.setUserId(model.getUserId());
         entity.setTokenCreatedAt(LocalDateTime.now());

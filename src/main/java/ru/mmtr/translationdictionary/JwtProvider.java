@@ -41,7 +41,7 @@ public class JwtProvider {
         return Jwts.builder()
                 .setSubject(user.getLogin())
                 .setIssuer("dictionaries-api")
-                .setAudience("dictionaries-app")
+                .setAudience("translation-dictionary-app")
                 .setExpiration(accessExpiration)
                 .signWith(jwtAccessSecret)
                 .claim("role", user.getRoleName())
