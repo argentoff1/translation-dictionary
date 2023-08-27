@@ -6,8 +6,10 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 //import org.springframework.security.access.prepost.PreAuthorize;
 import lombok.NonNull;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import ru.mmtr.translationdictionary.JwtAuthentication;
 import ru.mmtr.translationdictionary.JwtProvider;
 import ru.mmtr.translationdictionary.domain.common.*;
 import ru.mmtr.translationdictionary.domain.session.UserSessionModel;
@@ -25,6 +27,20 @@ public class UserController {
 
     public UserController(UserService userService) {
         this.userService = userService;
+    }
+
+    //@PreAuthorize("hasAuthority('USER')")
+    @GetMapping("hello/user")
+    public ResponseEntity<String> helloUser() {
+        final JwtAuthentication authInfo = userService.getAuthInfo();
+        return ResponseEntity.ok("Hello user " + authInfo.getPrincipal() + "!");
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping("hello/admin")
+    public ResponseEntity<String> helloAdmin() {
+        final JwtAuthentication authInfo = userService.getAuthInfo();
+        return ResponseEntity.ok("Hello admin " + authInfo.getPrincipal() + "!");
     }
 
     @PostMapping(value = "/login")

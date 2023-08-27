@@ -21,7 +21,10 @@ import ru.mmtr.translationdictionary.infrastructure.repositories.user.UserRole;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity
+@EnableMethodSecurity(
+        prePostEnabled = true,
+        securedEnabled = true,
+        jsr250Enabled = true)
 public class SecurityConfiguration {
     @Autowired
     private JwtFilter jwtFilter;
@@ -32,25 +35,25 @@ public class SecurityConfiguration {
         httpSecurity.csrf(AbstractHttpConfigurer::disable);
         httpSecurity.formLogin(AbstractHttpConfigurer::disable);
 
-        httpSecurity
-                .addFilter(new JwtFilter());
+        /*httpSecurity
+                .addFilter(new JwtFilter());*/
 
         httpSecurity.
                 sessionManagement((session) -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         );
 
+        httpSecurity
+                .exceptionHandling((exceptionHandling) -> exceptionHandling
+                        // Заглушка
+                        .authenticationEntryPoint(new BasicAuthenticationEntryPoint()));
+
         httpSecurity.authorizeHttpRequests((authorize) -> authorize
                 .requestMatchers("/api/users/login", "/api/users/getNewAccessToken").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .addFilterAfter(jwtFilter, UsernamePasswordAuthenticationFilter.class)
-        ).build();
-
-        httpSecurity
-                .exceptionHandling((exceptionHandling) -> exceptionHandling
-                        // Заглушка
-                        .authenticationEntryPoint(new BasicAuthenticationEntryPoint()));
+        );
 
         return httpSecurity.build();
     }
