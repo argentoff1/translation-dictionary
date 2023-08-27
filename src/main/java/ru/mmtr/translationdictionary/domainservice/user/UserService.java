@@ -291,13 +291,13 @@ public class UserService {
         var validationResult = Validation.stringValidation(model.getLogin(), 20);
         if (validationResult.getErrorCode() != null) {
             return new SuccessResultModel("CAN_NOT_LOGOUT",
-                    "Не удалось сохранить данные. Поля должны быть корректно заполненными");
+                    "Не удалось выйти из системы. Поля должны быть корректно заполненными");
         }
 
         var findUser = userRepository.getByLogin(model.getLogin());
         if (findUser == null) {
             return new SuccessResultModel("CAN_NOT_LOGOUT",
-                    "Не удалось сохранить данные. Поля должны быть корректно заполненными");
+                    "Не удалось выйти из системы. Пользователь не найден");
         }
 
         userSessionService.delete(findUser);

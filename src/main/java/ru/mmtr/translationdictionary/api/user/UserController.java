@@ -190,7 +190,7 @@ public class UserController {
             summary = "Выход пользователя из системы ",
             description = "Позволяет пользователю выйти из системы"
     )
-    public SuccessResultModel logout(@RequestBody JwtRequestModel model) {
-        return userService.logout(model);
+    public SuccessResultModel logout() {
+        return userService.logout();
     }
 }
