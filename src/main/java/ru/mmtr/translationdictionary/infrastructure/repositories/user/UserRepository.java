@@ -8,6 +8,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
 import ru.mmtr.translationdictionary.JwtProvider;
 import ru.mmtr.translationdictionary.domain.common.*;
+import ru.mmtr.translationdictionary.domain.session.UserSessionModel;
 import ru.mmtr.translationdictionary.domain.session.UserSessionSaveModel;
 import ru.mmtr.translationdictionary.domain.user.*;
 import ru.mmtr.translationdictionary.infrastructure.repositories.session.UserSessionEntity;
@@ -34,6 +35,10 @@ public class UserRepository {
                 .eq(UserEntity.LOGIN, model.getLogin())
                 .findOne();
 
+        if (foundUserEntity == null) {
+            return new JwtResponseResultModel("CAN_NOT_AUTHORIZE");
+        }
+
         if (BCrypt.checkpw(model.getPassword(), foundUserEntity.getPassword()) == false) {
             return new JwtResponseResultModel("CAN_NOT_AUTHORIZE");
         }
@@ -48,6 +53,13 @@ public class UserRepository {
         //userSessionRepository.save()
 
         return new JwtResponseResultModel(null, null);
+    }
+
+    public Integer getAccessToken(UserSessionModel model) {
+
+        return DB
+                .update(UserSessionEntity.class)
+                .set(UserSessionEntity.ACCESS_TOKEN, model.getAccessToken()).update();
     }
 
     public CollectionResultModel<UserModel> showAllUsers() {
@@ -175,7 +187,7 @@ public class UserRepository {
         entity.setEmail(model.getEmail());
         entity.setPhoneNumber(model.getPhoneNumber());
         entity.setCreatedAt(LocalDateTime.now());
-        entity.setRoleName(model.getRoleName());
+        entity.setRoleName(UserRole.USER.getRoleName());
         DB.insert(entity);
 
         var resultModel = getModel(entity);
@@ -301,6 +313,7 @@ public class UserRepository {
         model.setCreatedAt(entity.getCreatedAt());
         model.setModifiedAt(entity.getModifiedAt());
         model.setArchiveDate(entity.getArchiveDate());
+        model.setRoleName(UserRole.USER.getRoleName());
 
         return model;
     }

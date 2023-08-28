@@ -51,7 +51,7 @@ public class UserModel extends GeneralResultModel {
     private LocalDateTime archiveDate;
 
     @Schema(description = "Роль", example = "Пользователь")
-    private Set<UserRole> roleName;
+    private String roleName;
 
     public UserModel(String errorCode, String errorMessage) {
         super(errorCode, errorMessage);

@@ -31,4 +31,9 @@
     <include file="db/changelog/2023/23082023-add-changeset-foreign-keys.xml"/>
 
     <include file="/db/changelog/2023/24082023-modify-changeset-columns-user-sessions.xml"/>
+
+    <include file="/db/changelog/2023/28082023-update-changeset-role-into-admin.xml"/>
+    <include file="db/changelog/2023/28082023-update-changeset-role-into-users.xml"/>
+    <include file="db/changelog/2023/28082023-update-changeset-column-role-name.xml"/>
+    <include file="db/changelog/2023/28082023-insert-changeset-role-name-into-users.xml"/>
 </databaseChangeLog>

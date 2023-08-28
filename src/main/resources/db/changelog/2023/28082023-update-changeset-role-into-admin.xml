@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="insert_role_name_into_admin" author="parinos">
+        <update schemaName="public" tableName="Users">
+            <column name="role_name" value="ADMIN"/>
+            <where>login='argentoff1'</where>
+        </update>
+    </changeSet>
+</databaseChangeLog>

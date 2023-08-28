@@ -66,7 +66,6 @@ public class UserController {
     }
 
     @GetMapping("/showAllUsers")
-    //@PreAuthorize("hasAuthority('USER')")
     @Operation(
             summary = "Отображение всех пользователей",
             description = "Позволяет отобразить всех пользователей"
@@ -86,7 +85,6 @@ public class UserController {
     }
 
     @PostMapping(value = "/getPageUsers")
-    @PreAuthorize("hasAuthority('USER')")
     @Operation(
             summary = "Отображение всех пользователей постранично",
             description = "Позволяет отобразить всех пользователей постранично"
@@ -105,7 +103,7 @@ public class UserController {
         return userService.getPageSessions(criteria);
     }
 
-    @GetMapping(value = "/getUserById")
+    @GetMapping(value = "/getUserById/{id}")
     @Operation(
             summary = "Получение пользователя",
             description = "Позволяет получить одного пользователя"
@@ -125,7 +123,6 @@ public class UserController {
     }
 
     @PostMapping(value = "/save")
-    //@PreAuthorize("hasAuthority('USER')")
     @Operation(
             summary = "Регистрация",
             description = "Позволяет зарегистрировать пользователя"
@@ -135,7 +132,6 @@ public class UserController {
     }
 
     @PutMapping(value = "/updateUser")
-    //@PreAuthorize("hasAuthority('USER')")
     @Operation(
             summary = "Обновление данных",
             description = "Позволяет обновить личные данные"
@@ -145,7 +141,6 @@ public class UserController {
     }
 
     @PutMapping(value = "/updateLogin")
-    //@PreAuthorize("hasAuthority('USER')")
     @Operation(
             summary = "Обновление логина",
             description = "Позволяет обновить логин пользователя"
@@ -155,7 +150,6 @@ public class UserController {
     }
 
     @PutMapping(value = "/updatePassword")
-    //@PreAuthorize("hasAuthority('USER')")
     @Operation(
             summary = "Обновление пароля",
             description = "Позволяет обновить пароль"
@@ -185,12 +179,12 @@ public class UserController {
     }
 
     @PostMapping(value = "/logout")
-    @PreAuthorize("hasAuthority('USER')")
     @Operation(
             summary = "Выход пользователя из системы ",
             description = "Позволяет пользователю выйти из системы"
     )
     public SuccessResultModel logout() {
-        return userService.logout();
+        //return userService.logout();
+        return null;
     }
 }

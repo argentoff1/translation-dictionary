@@ -49,6 +49,8 @@ public class UserService {
     }
 
     public JwtResponseResultModel getAccessToken(@NonNull String refreshToken) {
+
+
         if (jwtProvider.validateRefreshToken(refreshToken)) {
             final Claims claims = jwtProvider.getRefreshClaims(refreshToken);
             final String login = claims.getSubject();
@@ -58,6 +60,9 @@ public class UserService {
             final String accessToken = jwtProvider.generateAccessToken(user);
             return new JwtResponseResultModel(accessToken, null);
         }
+
+        //userRepository.getAccessToken()
+
         return new JwtResponseResultModel("CAN_NOT_GENERATE_TOKEN");
     }
 

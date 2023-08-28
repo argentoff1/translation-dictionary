@@ -15,8 +15,6 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 @Component
@@ -59,7 +57,7 @@ public class JwtProvider {
         return Jwts.builder()
                 .setSubject(user.getLogin())
                 .setIssuer("dictionaries-api")
-                .setAudience("dictionaries-app")
+                .setAudience("translation-dictionary-app")
                 .setExpiration(refreshExpiration)
                 .signWith(jwtRefreshSecret)
                 .claim("role", user.getRoleName())
