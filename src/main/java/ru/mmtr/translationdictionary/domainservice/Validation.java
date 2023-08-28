@@ -3,6 +3,8 @@ package ru.mmtr.translationdictionary.domainservice;
 import org.apache.commons.lang3.StringUtils;
 import ru.mmtr.translationdictionary.domain.common.SuccessResultModel;
 
+import java.time.LocalDateTime;
+
 public abstract class Validation {
     public static SuccessResultModel stringValidation(String str, int countChars) {
         if (StringUtils.isBlank(str)) {
@@ -25,5 +27,13 @@ public abstract class Validation {
         }
 
         return new SuccessResultModel(true);
+    }
+
+    public static Boolean checkingForArchiving(LocalDateTime archiveDate) {
+        if (archiveDate != null) {
+            return false;
+        }
+
+        return true;
     }
 }

@@ -11,6 +11,7 @@ import ru.mmtr.translationdictionary.domain.common.*;
 import ru.mmtr.translationdictionary.domain.session.UserSessionModel;
 import ru.mmtr.translationdictionary.domain.session.UserSessionSaveModel;
 import ru.mmtr.translationdictionary.domain.user.*;
+import ru.mmtr.translationdictionary.domainservice.Validation;
 import ru.mmtr.translationdictionary.infrastructure.repositories.session.UserSessionEntity;
 import ru.mmtr.translationdictionary.infrastructure.repositories.session.UserSessionRepository;
 
@@ -39,11 +40,11 @@ public class UserRepository {
             return new JwtResponseResultModel("CAN_NOT_AUTHORIZE");
         }
 
-        if (BCrypt.checkpw(model.getPassword(), foundUserEntity.getPassword()) == false) {
+        if (!Validation.checkingForArchiving(foundUserEntity.getArchiveDate())) {
             return new JwtResponseResultModel("CAN_NOT_AUTHORIZE");
         }
 
-        if (foundUserEntity == null) {
+        if (!BCrypt.checkpw(model.getPassword(), foundUserEntity.getPassword())) {
             return new JwtResponseResultModel("CAN_NOT_AUTHORIZE");
         }
 
@@ -195,7 +196,22 @@ public class UserRepository {
         return new GUIDResultModel(resultModel.getUserId());
     }
 
-    public Integer updateUser(UserUpdateModel model) {
+    public SuccessResultModel updateUser(UserUpdateModel model) {
+        UserEntity foundEntity = DB
+                .find(UserEntity.class)
+                .where()
+                .eq(UserEntity.USER_ID, model.getId())
+                .findOne();
+
+        if (foundEntity == null) {
+            return new SuccessResultModel("CAN_NOT_FIND",
+                    "Не удалось найти данные. Поля должны быть корректно заполненными");
+        }
+
+        if (!Validation.checkingForArchiving(foundEntity.getArchiveDate())) {
+            return new SuccessResultModel("CAN_NOT_AUTHORIZE", "sad");
+        }
+
         var updateQuery = DB.update(UserEntity.class);
 
         if (StringUtils.isNotBlank(model.getLogin())) {
@@ -222,29 +238,65 @@ public class UserRepository {
             updateQuery = updateQuery.set(UserEntity.PHONE_NUMBER, model.getPhoneNumber());
         }
 
-        return updateQuery
+        updateQuery
                 .set(UserEntity.MODIFIED_AT, LocalDateTime.now())
                 .where()
                 .eq(UserEntity.USER_ID, model.getId())
                 .update();
+
+        return new SuccessResultModel(true);
     }
 
-    public Integer updateLogin(UserLoginUpdateModel model) {
-        return DB.update(UserEntity.class)
+    public SuccessResultModel updateLogin(UserLoginUpdateModel model) {
+        UserEntity foundEntity = DB
+                .find(UserEntity.class)
+                .where()
+                .eq(UserEntity.USER_ID, model.getId())
+                .findOne();
+
+        if (foundEntity == null) {
+            return new SuccessResultModel("CAN_NOT_FIND",
+                    "Не удалось найти данные. Поля должны быть корректно заполненными");
+        }
+
+        if (!Validation.checkingForArchiving(foundEntity.getArchiveDate())) {
+            return new SuccessResultModel("CAN_NOT_AUTHORIZE", "sad");
+        }
+
+        DB.update(UserEntity.class)
                 .set(UserEntity.LOGIN, model.getLogin())
                 .set(UserEntity.MODIFIED_AT, LocalDateTime.now())
                 .where()
                 .eq(UserEntity.USER_ID, model.getId())
                 .update();
+
+        return new SuccessResultModel(true);
     }
 
-    public Integer updatePassword(UserPasswordUpdateModel model) {
-        return DB.update(UserEntity.class)
+    public SuccessResultModel updatePassword(UserPasswordUpdateModel model) {
+        UserEntity foundEntity = DB
+                .find(UserEntity.class)
+                .where()
+                .eq(UserEntity.USER_ID, model.getId())
+                .findOne();
+
+        if (foundEntity == null) {
+            return new SuccessResultModel("CAN_NOT_FIND",
+                    "Не удалось найти данные. Поля должны быть корректно заполненными");
+        }
+
+        if (!Validation.checkingForArchiving(foundEntity.getArchiveDate())) {
+            return new SuccessResultModel("CAN_NOT_AUTHORIZE", "sad");
+        }
+
+        DB.update(UserEntity.class)
                 .set(UserEntity.PASSWORD, hashPassword(model.getPassword()))
                 .set(UserEntity.MODIFIED_AT, LocalDateTime.now())
                 .where()
                 .eq(UserEntity.USER_ID, model.getId())
                 .update();
+
+        return new SuccessResultModel(true);
     }
 
     public SuccessResultModel archiveById(UUID id) {

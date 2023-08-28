@@ -225,7 +225,7 @@ public class UserService {
             return validationResult;
         }
 
-        Integer result = userRepository.updateUser(model);
+        var result = userRepository.updateUser(model);
 
         if (result == null) {
             return new SuccessResultModel("CAN_NOT_SAVE",
@@ -243,7 +243,7 @@ public class UserService {
             return validationResult;
         }
 
-        Integer result = userRepository.updateLogin(model);
+        var result = userRepository.updateLogin(model);
 
         if (result == null) {
             return new SuccessResultModel("CAN_NOT_SAVE",
@@ -260,7 +260,7 @@ public class UserService {
             return validationResult;
         }
 
-        Integer result = userRepository.updatePassword(model);
+        var result = userRepository.updatePassword(model);
 
         if (result == null) {
             return new SuccessResultModel("CAN_NOT_SAVE",

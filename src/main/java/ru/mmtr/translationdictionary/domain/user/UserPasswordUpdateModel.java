@@ -12,7 +12,6 @@ public class UserPasswordUpdateModel {
     @Parameter(description = "Идентификатор")
     private UUID id;
 
-    // Пока что без хэширования
     @Parameter(description = "Пароль")
     private String password;
 }
