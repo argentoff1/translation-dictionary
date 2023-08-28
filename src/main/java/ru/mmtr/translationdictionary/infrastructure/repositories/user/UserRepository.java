@@ -342,8 +342,21 @@ public class UserRepository {
         return new SuccessResultModel(true);
     }
 
-    public SuccessResultModel logout() {
+    public SuccessResultModel logout(JwtRequestModel model) {
+        var foundUserEntity = DB.find(UserEntity.class)
+                .where()
+                .eq(UserEntity.LOGIN, model.getLogin())
+                .findOne();
 
+        if (foundUserEntity == null) {
+            return new SuccessResultModel("CAN_NOT_AUTHORIZE",
+                    "Невозможно выйти из системы");
+        }
+
+        if (!Validation.checkingForArchiving(foundUserEntity.getArchiveDate())) {
+            return new SuccessResultModel("CAN_NOT_AUTHORIZE",
+                    "Невозможно выйти из системы");
+        }
 
         return new SuccessResultModel(true);
     }

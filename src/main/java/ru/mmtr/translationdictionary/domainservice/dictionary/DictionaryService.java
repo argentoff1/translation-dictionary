@@ -34,7 +34,8 @@ public class DictionaryService {
 
     public DictionaryModel getById(UUID id) {
         if (id == null) {
-            return null;
+            return new DictionaryModel("CA_NOT_FIND",
+                    "Невозможно найти словарь");
         }
 
         return dictionaryRepository.getById(id);

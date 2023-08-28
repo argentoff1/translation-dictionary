@@ -36,6 +36,11 @@ public class UserService {
             return new JwtResponseResultModel("CAN_NOT_AUTHORIZE");
         }
 
+        validationResult = stringValidation(model.getPassword(), 100);
+        if (validationResult.getErrorCode() != null) {
+            return new JwtResponseResultModel("CAN_NOT_AUTHORIZE");
+        }
+
         var findUser = userRepository.getByLogin(model.getLogin());
         if (findUser == null) {
             return new JwtResponseResultModel("CAN_NOT_AUTHORIZE");
@@ -48,9 +53,8 @@ public class UserService {
         return new JwtResponseResultModel(session.getAccessToken(), session.getRefreshToken());
     }
 
+    // +-
     public JwtResponseResultModel getAccessToken(@NonNull String refreshToken) {
-
-
         if (jwtProvider.validateRefreshToken(refreshToken)) {
             final Claims claims = jwtProvider.getRefreshClaims(refreshToken);
             final String login = claims.getSubject();
@@ -58,6 +62,9 @@ public class UserService {
 
             final UserModel user = userRepository.getByLogin(login);
             final String accessToken = jwtProvider.generateAccessToken(user);
+
+            //userRepository.getAccessToken();
+
             return new JwtResponseResultModel(accessToken, null);
         }
 
@@ -66,6 +73,7 @@ public class UserService {
         return new JwtResponseResultModel("CAN_NOT_GENERATE_TOKEN");
     }
 
+    // +-
     public JwtResponseResultModel refreshToken(@NonNull String refreshToken) {
         if (jwtProvider.validateRefreshToken(refreshToken)) {
             final Claims claims = jwtProvider.getRefreshClaims(refreshToken);
@@ -80,23 +88,28 @@ public class UserService {
         return new JwtResponseResultModel("CAN_NOT_GENERATE_TOKEN");
     }
 
+    // +-
     public JwtAuthentication getAuthInfo() {
         return (JwtAuthentication) SecurityContextHolder.getContext().getAuthentication();
     }
 
+    // +-
     public CollectionResultModel<UserModel> showAllUsers() {
         return userRepository.showAllUsers();
     }
 
+    // +-
     public CollectionResultModel<UserSessionModel> showAllSessions() {
         return userSessionService.showAll();
     }
 
+    // +-
     public PageResultModel<UserModel> getPageUsers(UserPageRequestModel criteria) {
 
         return userRepository.getPage(criteria);
     }
 
+    // +-
     public PageResultModel<UserSessionModel> getPageSessions(UserSessionPageRequestModel criteria) {
 
         return userSessionService.getPage(criteria);
@@ -112,12 +125,18 @@ public class UserService {
     }
 
     public UserSessionModel getSessionById(UUID id) {
+        if (id == null) {
+            return new UserSessionModel("CAN_NOT_FIND",
+                    "Не удалось найти данные. Поля должны быть корректно заполненными");
+        }
+
         return userSessionService.getById(id);
     }
 
     public UserModel getByLogin(String login) {
         if (login == null) {
-            return null;
+            return new UserModel("CA_NOT_FIND",
+                    "Невозможно найти пользователя по указанному логину");
         }
 
         return userRepository.getByLogin(login);
@@ -293,6 +312,8 @@ public class UserService {
     }
 
     public SuccessResultModel logout(JwtRequestModel model) {
+
+
         var validationResult = Validation.stringValidation(model.getLogin(), 20);
         if (validationResult.getErrorCode() != null) {
             return new SuccessResultModel("CAN_NOT_LOGOUT",
@@ -307,6 +328,6 @@ public class UserService {
 
         userSessionService.delete(findUser);
 
-        return userRepository.logout();
+        return userRepository.logout(model);
     }
 }
