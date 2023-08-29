@@ -165,7 +165,7 @@ public class UserSessionRepository {
         entity.setSessionId(UUID.randomUUID());
         entity.setAccessToken(jwtProvider.generateAccessToken(user, entity.getSessionId()));
         entity.setAccessTokenExpiredDate(LocalDateTime.now().plusMinutes(5));
-        entity.setRefreshToken(jwtProvider.generateRefreshToken(user));
+        entity.setRefreshToken(jwtProvider.generateRefreshToken(user, entity.getSessionId()));
         entity.setRefreshTokenExpiredDate(LocalDateTime.now().plusDays(1));
         entity.setUserId(user.getUserId());
         entity.setTokenCreatedAt(LocalDateTime.now());
@@ -182,7 +182,7 @@ public class UserSessionRepository {
         entity.setSessionId(UUID.randomUUID());
         entity.setAccessToken(jwtProvider.generateAccessToken(user, entity.getSessionId()));
         entity.setAccessTokenExpiredDate(LocalDateTime.now().plusMinutes(5));
-        entity.setRefreshToken(jwtProvider.generateRefreshToken(user));
+        entity.setRefreshToken(jwtProvider.generateRefreshToken(user, entity.getSessionId()));
         entity.setRefreshTokenExpiredDate(LocalDateTime.now().plusDays(1));
         entity.setUserId(user.getUserId());
         entity.setTokenCreatedAt(LocalDateTime.now());

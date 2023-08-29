@@ -86,7 +86,7 @@ public class UserService {
 
             final UserModel user = userRepository.getByLogin(login);
             final String accessToken = jwtProvider.generateAccessToken(user, id);
-            final String newRefreshToken = jwtProvider.generateRefreshToken(user);
+            final String newRefreshToken = jwtProvider.generateRefreshToken(user, id);
 
             return new JwtResponseResultModel(accessToken, refreshToken);
         }

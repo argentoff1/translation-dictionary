@@ -48,7 +48,7 @@ public class JwtProvider {
                 .compact();
     }
 
-    public String generateRefreshToken(@NonNull UserModel user) {
+    public String generateRefreshToken(@NonNull UserModel user, UUID sessionId) {
         final LocalDateTime now = LocalDateTime.now();
         final Instant refreshExpirationInstant = now.plusDays(30).atZone(ZoneId.systemDefault()).toInstant();
         final Date refreshExpiration = Date.from(refreshExpirationInstant);
@@ -61,8 +61,7 @@ public class JwtProvider {
                 .signWith(jwtRefreshSecret)
                 .claim("role", user.getRoleName())
                 .claim("userId", user.getUserId())
-                // Заглушка
-                .claim("sessionId", UUID.randomUUID())
+                .claim("sessionId", sessionId)
                 .compact();
     }
 
