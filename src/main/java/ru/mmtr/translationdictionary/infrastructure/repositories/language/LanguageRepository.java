@@ -9,6 +9,7 @@ import ru.mmtr.translationdictionary.domain.language.LanguageModel;
 import ru.mmtr.translationdictionary.domain.language.LanguagePageRequestModel;
 import ru.mmtr.translationdictionary.domain.language.LanguageSaveModel;
 import ru.mmtr.translationdictionary.domain.language.LanguageUpdateModel;
+import ru.mmtr.translationdictionary.domainservice.common.CommonUtils;
 import ru.mmtr.translationdictionary.infrastructure.repositories.user.UserEntity;
 
 import java.time.LocalDateTime;
@@ -90,6 +91,7 @@ public class LanguageRepository {
         languageEntity.setLanguageId(UUID.randomUUID());
         languageEntity.setLanguageName(model.getLanguageName());
         languageEntity.setCreatedAt(LocalDateTime.now());
+        languageEntity.setCreatedUserId(CommonUtils.getUserId());
         DB.insert(languageEntity);
 
         var resultModel = getModel(languageEntity);
@@ -113,6 +115,7 @@ public class LanguageRepository {
         DB.update(LanguageEntity.class)
                 .set(LanguageEntity.LANGUAGE_NAME, model.getLanguageName())
                 .set(LanguageEntity.LANGUAGE_MODIFIED_AT, LocalDateTime.now())
+                .set(LanguageEntity.MODIFIED_USER_ID, CommonUtils.getUserId())
                 .where()
                 .eq(LanguageEntity.LANGUAGE_ID, model.getId())
                 .update();
@@ -150,6 +153,7 @@ public class LanguageRepository {
         model.setLanguageId(entity.getLanguageId());
         model.setLanguageName(entity.getLanguageName());
         model.setCreatedAt(entity.getCreatedAt());
+        model.setCreatedUserId(entity.getCreatedUserId());
 
         return model;
     }

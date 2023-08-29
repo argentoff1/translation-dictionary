@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="add_foreign_keys_in_dictionaries_and_languages" author="parinos">
+        <addForeignKeyConstraint baseTableName="Dictionaries"
+                                 baseColumnNames="created_user_id"
+                                 constraintName="fk_created_user_id"
+                                 referencedTableName="Users"
+                                 referencedColumnNames="user_id"/>
+
+        <addForeignKeyConstraint baseTableName="Dictionaries"
+                                 baseColumnNames="modified_user_id"
+                                 constraintName="fk_modified_user_id"
+                                 referencedTableName="Users"
+                                 referencedColumnNames="user_id"/>
+
+        <addForeignKeyConstraint baseTableName="Languages"
+                                 baseColumnNames="created_user_id"
+                                 constraintName="fk_created_user_id"
+                                 referencedTableName="Users"
+                                 referencedColumnNames="user_id"/>
+
+        <addForeignKeyConstraint baseTableName="Languages"
+                                 baseColumnNames="modified_user_id"
+                                 constraintName="fk_modified_user_id"
+                                 referencedTableName="Users"
+                                 referencedColumnNames="user_id"/>
+    </changeSet>
+</databaseChangeLog>

@@ -36,6 +36,12 @@ public class DictionaryModel extends GeneralResultModel {
     @Schema(description = "Дата изменения", example = "2023-08-17 23:00:00.000")
     private LocalDateTime modifiedAt;
 
+    @Schema(description = "Идентификатор пользователя, который добавил пару слов")
+    private UUID createdUserId;
+
+    @Schema(description = "Идентификатор пользователя, который изменил пару слов")
+    private UUID modifiedUserId;
+
     public DictionaryModel(String errorCode, String errorMessage) {
         super(errorCode, errorMessage);
         dictionaryId = null;

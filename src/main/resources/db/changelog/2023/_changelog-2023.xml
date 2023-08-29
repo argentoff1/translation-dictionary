@@ -36,4 +36,7 @@
     <include file="db/changelog/2023/28082023-update-changeset-role-into-users.xml"/>
     <include file="db/changelog/2023/28082023-update-changeset-column-role-name.xml"/>
     <include file="db/changelog/2023/28082023-insert-changeset-role-name-into-users.xml"/>
+
+    <include file="db/changelog/2023/29082023-add-changeset-columns-for-export-in-dictionaries-and-languages.xml"/>
+    <include file="db/changelog/2023/29082023-add-changeset-foreign-keys-for-export-in-dictionaries-and-languages.xml"/>
 </databaseChangeLog>

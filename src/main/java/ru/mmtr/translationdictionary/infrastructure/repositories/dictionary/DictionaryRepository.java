@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
 import ru.mmtr.translationdictionary.domain.common.*;
 import ru.mmtr.translationdictionary.domain.dictionary.*;
+import ru.mmtr.translationdictionary.domainservice.common.CommonUtils;
 import ru.mmtr.translationdictionary.infrastructure.repositories.language.LanguageEntity;
 
 import java.time.LocalDateTime;
@@ -115,6 +116,7 @@ public class DictionaryRepository {
 
         return new StringResultModel(foundEntity.getTranslation());
     }
+
     // -
     public GUIDResultModel save(DictionarySaveModel model) {
         DictionaryEntity entity = new DictionaryEntity();
@@ -124,12 +126,8 @@ public class DictionaryRepository {
         entity.setFromLanguage(model.getFromLanguage());
         entity.setToLanguage(model.getToLanguage());
         entity.setCreatedAt(LocalDateTime.now());
+        entity.setCreatedUserId(CommonUtils.getUserId());
         DB.insert(entity);
-
-        if (entity == null) {
-            return new GUIDResultModel("CAN_NOT_SAVE",
-                    "Не удалось сохранить данные. Поля должны быть корректно заполненными");
-        }
 
         var resultModel = getModel(entity);
 
@@ -149,6 +147,7 @@ public class DictionaryRepository {
 
         updateQuery
                 .set(DictionaryEntity.DICTIONARY_MODIFIED_AT, LocalDateTime.now())
+                .set(DictionaryEntity.MODIFIED_USER_ID, CommonUtils.getUserId())
                 .where()
                 .eq(DictionaryEntity.DICTIONARY_ID, model.getId())
                 .update();

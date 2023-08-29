@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="create_columns_in_languages_and_dictionaries" author="parinos">
+        <addColumn tableName="Languages">
+            <column name="created_user_id" type="uuid">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+        <addColumn tableName="Languages">
+            <column name="modified_user_id" type="uuid">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+
+        <addColumn tableName="Dictionaries">
+            <column name="created_user_id" type="uuid">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+        <addColumn tableName="Dictionaries">
+            <column name="modified_user_id" type="uuid">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

@@ -13,9 +13,15 @@ public class CommonUtils {
     }
 
     public static UUID getUserId() {
-        var user = (JwtAuthentication) SecurityContextHolder.getContext().getAuthentication().getCredentials();
+        /*try {
+            var user = (JwtAuthentication) SecurityContextHolder.getContext().getAuthentication().getCredentials();
+        } catch () {
+
+        }*/
+
 
         // Проверки на null. try/catch
+        var user = (JwtAuthentication) SecurityContextHolder.getContext().getAuthentication().getCredentials();
 
         return user.getUserId();
     }

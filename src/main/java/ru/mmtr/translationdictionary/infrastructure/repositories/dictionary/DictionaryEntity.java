@@ -25,6 +25,8 @@ public class DictionaryEntity {
     public static final String TO_LANGUAGE = "to_language";
     public static final String DICTIONARY_CREATED_AT = "created_at";
     public static final String DICTIONARY_MODIFIED_AT = "modified_at";
+    public static final String CREATED_USER_ID = "created_user_id";
+    public static final String MODIFIED_USER_ID = "modified_user_id";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,4 +50,10 @@ public class DictionaryEntity {
 
     @Column(name = DICTIONARY_MODIFIED_AT)
     private LocalDateTime modifiedAt;
+
+    @Column(name = CREATED_USER_ID)
+    private UUID createdUserId;
+
+    @Column(name = MODIFIED_USER_ID)
+    private UUID modifiedUserId;
 }

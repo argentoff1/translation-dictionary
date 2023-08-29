@@ -40,6 +40,7 @@ public class LanguageService {
         return languageRepository.getById(id);
     }
 
+    // В сейве и апдейте добавлять в колонки created_user_id и modified_user_id
     public GUIDResultModel save(LanguageSaveModel model) {
         var validationResult = stringValidation(model.getLanguageName(), 15);
 
@@ -56,6 +57,8 @@ public class LanguageService {
                     "Не удалось сохранить данные. " +
                             "Поля должны быть корректно заполненными");
         }
+
+
 
         return result;
     }

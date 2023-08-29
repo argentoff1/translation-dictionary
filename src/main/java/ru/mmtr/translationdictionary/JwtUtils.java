@@ -3,7 +3,6 @@ package ru.mmtr.translationdictionary;
 import io.jsonwebtoken.Claims;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import ru.mmtr.translationdictionary.infrastructure.repositories.user.UserRole;
 
 import java.util.UUID;
 
@@ -13,8 +12,8 @@ public class JwtUtils {
         final JwtAuthentication jwtInfoToken = new JwtAuthentication();
         jwtInfoToken.setRoleName(claims.get("role", String.class));
         jwtInfoToken.setFirstName(claims.get("firstName", String.class));
-        jwtInfoToken.setUserId(claims.get("userId", UUID.class));
-        jwtInfoToken.setSessionId(claims.get("sessionId", UUID.class));
+        jwtInfoToken.setUserId(UUID.fromString(claims.get("userId", String.class)));
+        jwtInfoToken.setSessionId(UUID.fromString(claims.get("sessionId", String.class)));
         jwtInfoToken.setLogin(claims.getSubject());
         return jwtInfoToken;
     }

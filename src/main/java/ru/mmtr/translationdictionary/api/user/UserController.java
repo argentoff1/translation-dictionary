@@ -3,15 +3,15 @@ package ru.mmtr.translationdictionary.api.user;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import ru.mmtr.translationdictionary.JwtAuthentication;
+import org.springframework.web.multipart.MultipartFile;
 import ru.mmtr.translationdictionary.domain.common.*;
 import ru.mmtr.translationdictionary.domain.session.UserSessionModel;
 import ru.mmtr.translationdictionary.domain.session.UserSessionPageRequestModel;
 import ru.mmtr.translationdictionary.domain.user.*;
 import ru.mmtr.translationdictionary.domainservice.common.CommonUtils;
+import ru.mmtr.translationdictionary.domainservice.export.ExportDictionariesService;
 import ru.mmtr.translationdictionary.domainservice.user.UserService;
 
 import java.util.UUID;
@@ -21,29 +21,27 @@ import java.util.UUID;
 @Tag(name = "Пользователь", description = "Позволяет взаимодействовать с пользователями")
 public class UserController {
     private final UserService userService;
+    private final ExportDictionariesService exportDictionariesService;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, ExportDictionariesService exportDictionariesService) {
         this.userService = userService;
+        this.exportDictionariesService = exportDictionariesService;
+    }
+
+    @GetMapping(value = "/exportDictionary")
+    @Operation(
+            summary = "Экспорт словаря",
+            description = "Позволяет экспортировать данные из словаря"
+    )
+    public MultipartFile exportDictionary() {
+
+        return exportDictionariesService.exportDictionary();
     }
 
     @GetMapping(value = "/getUserId")
     public UUID getUserId() {
 
         return CommonUtils.getUserId();
-    }
-
-    //@PreAuthorize("hasAuthority('USER')")
-    @GetMapping("hello/user")
-    public ResponseEntity<String> helloUser() {
-        final JwtAuthentication authInfo = userService.getAuthInfo();
-        return ResponseEntity.ok("Hello user " + authInfo.getPrincipal() + "!");
-    }
-
-    @PreAuthorize("hasAuthority('ADMIN')")
-    @GetMapping("hello/admin")
-    public ResponseEntity<String> helloAdmin() {
-        final JwtAuthentication authInfo = userService.getAuthInfo();
-        return ResponseEntity.ok("Hello admin " + authInfo.getPrincipal() + "!");
     }
 
     @PostMapping(value = "/login")
