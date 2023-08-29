@@ -4,8 +4,11 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -13,18 +16,18 @@ public class JwtAuthentication implements Authentication {
     private boolean authenticated;
     private String login;
     private String firstName;
-    private String userId;
-    private String sessionId;
+    private UUID userId;
+    private UUID sessionId;
     private String roleName;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return List.of(new SimpleGrantedAuthority(roleName));
     }
 
     @Override
     public Object getCredentials() {
-        return null;
+        return this;
     }
 
     @Override

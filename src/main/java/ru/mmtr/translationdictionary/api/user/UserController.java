@@ -11,6 +11,7 @@ import ru.mmtr.translationdictionary.domain.common.*;
 import ru.mmtr.translationdictionary.domain.session.UserSessionModel;
 import ru.mmtr.translationdictionary.domain.session.UserSessionPageRequestModel;
 import ru.mmtr.translationdictionary.domain.user.*;
+import ru.mmtr.translationdictionary.domainservice.common.CommonUtils;
 import ru.mmtr.translationdictionary.domainservice.user.UserService;
 
 import java.util.UUID;
@@ -23,6 +24,12 @@ public class UserController {
 
     public UserController(UserService userService) {
         this.userService = userService;
+    }
+
+    @GetMapping(value = "/getUserId")
+    public UUID getUserId() {
+
+        return CommonUtils.getUserId();
     }
 
     //@PreAuthorize("hasAuthority('USER')")
@@ -52,13 +59,13 @@ public class UserController {
     @PostMapping(value = "/getNewAccessToken")
     public JwtResponseResultModel getNewAccessToken(@RequestBody RefreshJwtRequestModel model) {
 
-        return userService.getAccessToken(model.getRefreshToken());
+        return userService.getAccessToken(model.getRefreshToken(), model.getSessionId());
     }
 
     @PostMapping(value = "/getNewRefreshToken")
     public JwtResponseResultModel getNewRefreshToken(@RequestBody RefreshJwtRequestModel model) {
 
-        return userService.refreshToken(model.getRefreshToken());
+        return userService.refreshToken(model.getRefreshToken(), model.getSessionId());
     }
 
     @GetMapping("/showAllUsers")

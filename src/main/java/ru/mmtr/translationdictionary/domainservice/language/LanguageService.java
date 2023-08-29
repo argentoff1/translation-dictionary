@@ -12,7 +12,7 @@ import ru.mmtr.translationdictionary.infrastructure.repositories.language.Langua
 
 import java.util.UUID;
 
-import static ru.mmtr.translationdictionary.domainservice.Validation.stringValidation;
+import static ru.mmtr.translationdictionary.domainservice.common.Validation.stringValidation;
 
 @Slf4j
 @Service

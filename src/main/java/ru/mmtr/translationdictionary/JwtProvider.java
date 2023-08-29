@@ -31,7 +31,7 @@ public class JwtProvider {
         this.jwtRefreshSecret = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtRefreshSecret));
     }
 
-    public String generateAccessToken(@NonNull UserModel user) {
+    public String generateAccessToken(@NonNull UserModel user, UUID sessionId) {
         final LocalDateTime now = LocalDateTime.now();
         final Instant accessExpirationInstant = now.plusMinutes(5).atZone(ZoneId.systemDefault()).toInstant();
         final Date accessExpiration = Date.from(accessExpirationInstant);
@@ -44,8 +44,7 @@ public class JwtProvider {
                 .signWith(jwtAccessSecret)
                 .claim("role", user.getRoleName())
                 .claim("userId", user.getUserId())
-                // Заглушка
-                .claim("sessionId", UUID.randomUUID())
+                .claim("sessionId", sessionId)
                 .compact();
     }
 

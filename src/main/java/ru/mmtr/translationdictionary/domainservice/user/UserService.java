@@ -10,13 +10,13 @@ import ru.mmtr.translationdictionary.domain.common.*;
 import ru.mmtr.translationdictionary.domain.session.UserSessionModel;
 import ru.mmtr.translationdictionary.domain.session.UserSessionPageRequestModel;
 import ru.mmtr.translationdictionary.domain.user.*;
-import ru.mmtr.translationdictionary.domainservice.Validation;
+import ru.mmtr.translationdictionary.domainservice.common.Validation;
 import ru.mmtr.translationdictionary.domainservice.session.UserSessionService;
 import ru.mmtr.translationdictionary.infrastructure.repositories.user.UserRepository;
 
 import java.util.UUID;
 
-import static ru.mmtr.translationdictionary.domainservice.Validation.stringValidation;
+import static ru.mmtr.translationdictionary.domainservice.common.Validation.stringValidation;
 
 @Service
 public class UserService {
@@ -28,6 +28,11 @@ public class UserService {
         this.userRepository = userRepository;
         this.userSessionService = userSessionService;
         this.jwtProvider = jwtProvider;
+    }
+
+    public UUID getUserId() {
+
+        return userRepository.getUserId();
     }
 
     public JwtResponseResultModel login(JwtRequestModel model) {
@@ -54,14 +59,14 @@ public class UserService {
     }
 
     // +-
-    public JwtResponseResultModel getAccessToken(@NonNull String refreshToken) {
+    public JwtResponseResultModel getAccessToken(@NonNull String refreshToken, UUID id) {
         if (jwtProvider.validateRefreshToken(refreshToken)) {
             final Claims claims = jwtProvider.getRefreshClaims(refreshToken);
             final String login = claims.getSubject();
             //final String saveRefreshToken = refreshStorage
 
             final UserModel user = userRepository.getByLogin(login);
-            final String accessToken = jwtProvider.generateAccessToken(user);
+            final String accessToken = jwtProvider.generateAccessToken(user, id);
 
             //userRepository.getAccessToken();
 
@@ -74,13 +79,13 @@ public class UserService {
     }
 
     // +-
-    public JwtResponseResultModel refreshToken(@NonNull String refreshToken) {
+    public JwtResponseResultModel refreshToken(@NonNull String refreshToken, UUID id) {
         if (jwtProvider.validateRefreshToken(refreshToken)) {
             final Claims claims = jwtProvider.getRefreshClaims(refreshToken);
             final String login = claims.getSubject();
 
             final UserModel user = userRepository.getByLogin(login);
-            final String accessToken = jwtProvider.generateAccessToken(user);
+            final String accessToken = jwtProvider.generateAccessToken(user, id);
             final String newRefreshToken = jwtProvider.generateRefreshToken(user);
 
             return new JwtResponseResultModel(accessToken, refreshToken);

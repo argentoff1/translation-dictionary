@@ -11,7 +11,8 @@ import ru.mmtr.translationdictionary.domain.common.*;
 import ru.mmtr.translationdictionary.domain.session.UserSessionModel;
 import ru.mmtr.translationdictionary.domain.session.UserSessionSaveModel;
 import ru.mmtr.translationdictionary.domain.user.*;
-import ru.mmtr.translationdictionary.domainservice.Validation;
+import ru.mmtr.translationdictionary.domainservice.common.CommonUtils;
+import ru.mmtr.translationdictionary.domainservice.common.Validation;
 import ru.mmtr.translationdictionary.infrastructure.repositories.session.UserSessionEntity;
 import ru.mmtr.translationdictionary.infrastructure.repositories.session.UserSessionRepository;
 
@@ -28,6 +29,11 @@ public class UserRepository {
     public UserRepository(JwtProvider jwtProvider, UserSessionRepository userSessionRepository) {
         this.jwtProvider = jwtProvider;
         this.userSessionRepository = userSessionRepository;
+    }
+
+    public UUID getUserId() {
+
+        return CommonUtils.getUserId();
     }
 
     public JwtResponseResultModel login(JwtRequestModel model) {
@@ -383,7 +389,7 @@ public class UserRepository {
         return model;
     }
 
-    private UserSessionEntity getEntity(UserSessionSaveModel sessionSaveModel, UserModel userModel) {
+    /*private UserSessionEntity getEntity(UserSessionSaveModel sessionSaveModel, UserModel userModel) {
         if (sessionSaveModel == null) {
             return null;
         }
@@ -398,7 +404,7 @@ public class UserRepository {
         entity.setTokenCreatedAt(LocalDateTime.now());
 
         return entity;
-    }
+    }*/
 
     public static String hashPassword(String password) {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();

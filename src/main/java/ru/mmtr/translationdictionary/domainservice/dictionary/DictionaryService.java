@@ -5,7 +5,7 @@ import ru.mmtr.translationdictionary.domain.common.*;
 import ru.mmtr.translationdictionary.domain.dictionary.*;
 import ru.mmtr.translationdictionary.infrastructure.repositories.dictionary.DictionaryRepository;
 
-import static ru.mmtr.translationdictionary.domainservice.Validation.stringValidation;
+import static ru.mmtr.translationdictionary.domainservice.common.Validation.stringValidation;
 
 import java.util.UUID;
 

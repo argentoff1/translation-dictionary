@@ -156,35 +156,35 @@ public class UserSessionRepository {
         return model;
     }
 
-    private UserSessionEntity getAdminEntity(UserModel model) {
-        if (model == null) {
+    private UserSessionEntity getAdminEntity(UserModel user) {
+        if (user == null) {
             return null;
         }
 
         var entity = new UserSessionEntity();
         entity.setSessionId(UUID.randomUUID());
-        entity.setAccessToken(jwtProvider.generateAccessToken(model));
+        entity.setAccessToken(jwtProvider.generateAccessToken(user, entity.getSessionId()));
         entity.setAccessTokenExpiredDate(LocalDateTime.now().plusMinutes(5));
-        entity.setRefreshToken(jwtProvider.generateRefreshToken(model));
+        entity.setRefreshToken(jwtProvider.generateRefreshToken(user));
         entity.setRefreshTokenExpiredDate(LocalDateTime.now().plusDays(1));
-        entity.setUserId(model.getUserId());
+        entity.setUserId(user.getUserId());
         entity.setTokenCreatedAt(LocalDateTime.now());
 
         return entity;
     }
 
-    private UserSessionEntity getUserEntity(UserModel model) {
-        if (model == null) {
+    private UserSessionEntity getUserEntity(UserModel user) {
+        if (user == null) {
             return null;
         }
 
         var entity = new UserSessionEntity();
         entity.setSessionId(UUID.randomUUID());
-        entity.setAccessToken(jwtProvider.generateAccessToken(model));
+        entity.setAccessToken(jwtProvider.generateAccessToken(user, entity.getSessionId()));
         entity.setAccessTokenExpiredDate(LocalDateTime.now().plusMinutes(5));
-        entity.setRefreshToken(jwtProvider.generateRefreshToken(model));
+        entity.setRefreshToken(jwtProvider.generateRefreshToken(user));
         entity.setRefreshTokenExpiredDate(LocalDateTime.now().plusDays(1));
-        entity.setUserId(model.getUserId());
+        entity.setUserId(user.getUserId());
         entity.setTokenCreatedAt(LocalDateTime.now());
 
         return entity;

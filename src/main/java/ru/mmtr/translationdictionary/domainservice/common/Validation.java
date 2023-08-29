@@ -1,11 +1,11 @@
-package ru.mmtr.translationdictionary.domainservice;
+package ru.mmtr.translationdictionary.domainservice.common;
 
 import org.apache.commons.lang3.StringUtils;
 import ru.mmtr.translationdictionary.domain.common.SuccessResultModel;
 
 import java.time.LocalDateTime;
 
-public abstract class Validation {
+public class Validation {
     public static SuccessResultModel stringValidation(String str, int countChars) {
         if (StringUtils.isBlank(str)) {
             return new SuccessResultModel("FIELD_MUST_BE_FILLED",

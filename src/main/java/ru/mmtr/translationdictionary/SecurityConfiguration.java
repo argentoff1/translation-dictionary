@@ -64,7 +64,7 @@ public class SecurityConfiguration {
                         .authenticationEntryPoint(new BasicAuthenticationEntryPoint()));
 
         httpSecurity.authorizeHttpRequests((authorize) -> authorize
-                .requestMatchers("/api/users/login", "/api/users/getNewAccessToken",
+                .requestMatchers("/api/users/login", "/api/users/getNewAccessToken", "/api/users/getNewRefreshToken",
                         "/swagger-ui/.html", "/swagger-resources/**", "/v2/api-docs").permitAll()
                 .anyRequest().authenticated()
                 .and()
