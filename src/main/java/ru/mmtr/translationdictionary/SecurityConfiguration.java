@@ -19,16 +19,10 @@ import ru.mmtr.translationdictionary.domainservice.user.UserService;
         jsr250Enabled = true*/)
 public class SecurityConfiguration {
     private JwtFilter jwtFilter;
-    private UserService userService;
 
     @Autowired
     public void setJwtFilter(JwtFilter jwtFilter) {
         this.jwtFilter = jwtFilter;
-    }
-
-    @Autowired
-    public void setUserService(UserService userService) {
-        this.userService = userService;
     }
 
     @Bean
@@ -47,7 +41,6 @@ public class SecurityConfiguration {
 
         httpSecurity
                 .exceptionHandling((exceptionHandling) -> exceptionHandling
-                        // Заглушка
                         .authenticationEntryPoint(new BasicAuthenticationEntryPoint()));
 
         httpSecurity.authorizeHttpRequests((authorize) -> authorize

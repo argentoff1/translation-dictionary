@@ -38,14 +38,7 @@ public class UserController {
         return exportDictionariesService.exportDictionary();
     }
 
-    @GetMapping(value = "/getUserId")
-    public UUID getUserId() {
-
-        return CommonUtils.getUserId();
-    }
-
     @PostMapping(value = "/login")
-    //@PreAuthorize("hasAuthority('USER')")
     @Operation(
             summary = "Вход пользователя в систему",
             description = "Позволяет пользователю авторизоваться"
