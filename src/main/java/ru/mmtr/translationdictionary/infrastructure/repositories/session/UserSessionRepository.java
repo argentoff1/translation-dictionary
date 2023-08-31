@@ -189,7 +189,7 @@ public class UserSessionRepository {
         return entity;
     }
 
-    private UserModel getModel(UserEntity entity) {
+    /*private UserModel getModel(UserEntity entity) {
         if (entity == null) {
             return null;
         }
@@ -208,5 +208,5 @@ public class UserSessionRepository {
         model.setArchiveDate(entity.getArchiveDate());
 
         return model;
-    }
+    }*/
 }

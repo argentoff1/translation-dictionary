@@ -6,14 +6,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
-import ru.mmtr.translationdictionary.JwtProvider;
 import ru.mmtr.translationdictionary.domain.common.*;
 import ru.mmtr.translationdictionary.domain.session.UserSessionModel;
 import ru.mmtr.translationdictionary.domain.user.*;
-import ru.mmtr.translationdictionary.domainservice.common.CommonUtils;
 import ru.mmtr.translationdictionary.domainservice.common.Validation;
 import ru.mmtr.translationdictionary.infrastructure.repositories.session.UserSessionEntity;
-import ru.mmtr.translationdictionary.infrastructure.repositories.session.UserSessionRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -22,14 +19,6 @@ import java.util.stream.Collectors;
 
 @Repository
 public class UserRepository {
-    private final JwtProvider jwtProvider;
-    private final UserSessionRepository userSessionRepository;
-
-    public UserRepository(JwtProvider jwtProvider, UserSessionRepository userSessionRepository) {
-        this.jwtProvider = jwtProvider;
-        this.userSessionRepository = userSessionRepository;
-    }
-
     public JwtResponseResultModel login(JwtRequestModel model) {
         var foundUserEntity = DB.find(UserEntity.class)
                 .where()

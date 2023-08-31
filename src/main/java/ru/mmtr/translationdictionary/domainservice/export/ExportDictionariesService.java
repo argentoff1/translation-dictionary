@@ -8,6 +8,7 @@ import ru.mmtr.translationdictionary.domain.dictionary.DictionaryPageRequestMode
 import ru.mmtr.translationdictionary.domain.export.ExportDictionariesModel;
 import ru.mmtr.translationdictionary.domain.language.LanguageModel;
 import ru.mmtr.translationdictionary.domain.user.UserModel;
+import ru.mmtr.translationdictionary.domainservice.common.FileUtils;
 import ru.mmtr.translationdictionary.domainservice.common.WriteListToFile;
 import ru.mmtr.translationdictionary.domainservice.dictionary.DictionaryService;
 import ru.mmtr.translationdictionary.domainservice.language.LanguageService;
@@ -18,9 +19,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.UUID;
-
-import static ru.mmtr.translationdictionary.domainservice.common.FileUtils.convertDataFromListToFile;
-import static ru.mmtr.translationdictionary.domainservice.common.FileUtils.saveMultipartFile;
 
 @Service
 public class ExportDictionariesService {
@@ -71,7 +69,7 @@ public class ExportDictionariesService {
             }
         } while (page.getResultList().size() == PAGE_SIZE);
 
-        // Добавление данных в список для экспорта. Цикл приоритетнее
+        // Добавление данных в список для экспорта
         exportDictionariesModelList.addAll(getLanguagesList(fromLanguageList));
         exportDictionariesModelList.addAll(getLanguagesList(toLanguageList));
         exportDictionariesModelList.addAll(wordsList);
@@ -83,9 +81,9 @@ public class ExportDictionariesService {
 
         // Запись + конвертация в файл
         try {
-            multipartFile = convertDataFromListToFile(exportDictionariesModelList);
+            multipartFile = FileUtils.convertDataFromListToFile(exportDictionariesModelList);
 
-            saveMultipartFile(multipartFile, "C:\\Users\\parinos.ma.kst\\Export\\data.txt");
+            FileUtils.saveMultipartFile(multipartFile, "C:\\Users\\parinos.ma.kst\\Export\\data.txt");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -96,20 +94,10 @@ public class ExportDictionariesService {
             e.printStackTrace();
         }
 
-         /*Преобразование списка в модель для экспорта
+        /*// Преобразование списка в модель для экспорта
         return getModel(exportDictionariesModelList);*/
 
         return null;
-    }
-
-    private ArrayList<String> addDataToResultList(ArrayList<String> dataList) {
-        ArrayList<String> exportDictionariesModelList = new ArrayList<>();
-
-        for (String item : dataList) {
-            exportDictionariesModelList.add(item);
-        }
-
-        return exportDictionariesModelList;
     }
 
     private ArrayList<String> addDateTimeToResultList(ArrayList<LocalDateTime> dataList) {

@@ -21,7 +21,7 @@ public class WriteListToFile {
         } else if (fileName.endsWith("xls")) {
             workbook = new HSSFWorkbook();
         } else {
-            throw new Exception("invalid file name, should be xls or xlsx");
+            throw new Exception("Недопустимое расширение файла, необходимо xls или xlsx");
         }
 
         Sheet sheet = workbook.createSheet("Export");
@@ -32,6 +32,7 @@ public class WriteListToFile {
         while (iterator.hasNext()) {
             ExportDictionariesModel exportDictionariesModel = iterator.next();
             Row row = sheet.createRow(rowIndex++);
+
             Cell cell0 = row.createCell(0);
             cell0.setCellValue(exportDictionariesModel.getFromLanguage());
 
