@@ -7,7 +7,13 @@ import java.util.UUID;
 
 public class CommonUtils {
     public static String getRole() {
-        var user = (JwtAuthentication) SecurityContextHolder.getContext().getAuthentication().getCredentials();
+        var user = new JwtAuthentication();
+
+        try {
+            user = (JwtAuthentication) SecurityContextHolder.getContext().getAuthentication().getCredentials();
+        } catch (NullPointerException e) {
+            e.getMessage();
+        }
 
         return user.getRoleName();
     }
@@ -21,19 +27,29 @@ public class CommonUtils {
             e.getMessage();
         }
 
-        //var user = (JwtAuthentication) SecurityContextHolder.getContext().getAuthentication().getCredentials();
-
         return user.getUserId();
     }
 
     public static UUID getSessionId() {
-        var user = (JwtAuthentication) SecurityContextHolder.getContext().getAuthentication().getCredentials();
+        var user = new JwtAuthentication();
+
+        try {
+            user = (JwtAuthentication) SecurityContextHolder.getContext().getAuthentication().getCredentials();
+        } catch (NullPointerException e) {
+            e.getMessage();
+        }
 
         return user.getSessionId();
     }
 
     public static String getSubject() {
-        var user = (JwtAuthentication) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        var user = new JwtAuthentication();
+
+        try {
+            user = (JwtAuthentication) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        } catch (NullPointerException e) {
+            e.getMessage();
+        }
 
         return user.getLogin();
     }

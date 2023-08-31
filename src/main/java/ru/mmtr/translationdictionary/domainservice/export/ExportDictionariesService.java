@@ -8,6 +8,7 @@ import ru.mmtr.translationdictionary.domain.dictionary.DictionaryPageRequestMode
 import ru.mmtr.translationdictionary.domain.export.ExportDictionariesModel;
 import ru.mmtr.translationdictionary.domain.language.LanguageModel;
 import ru.mmtr.translationdictionary.domain.user.UserModel;
+import ru.mmtr.translationdictionary.domainservice.common.WriteListToFile;
 import ru.mmtr.translationdictionary.domainservice.dictionary.DictionaryService;
 import ru.mmtr.translationdictionary.domainservice.language.LanguageService;
 import ru.mmtr.translationdictionary.domainservice.user.UserService;
@@ -70,8 +71,6 @@ public class ExportDictionariesService {
             }
         } while (page.getResultList().size() == PAGE_SIZE);
 
-
-
         // Добавление данных в список для экспорта. Цикл приоритетнее
         exportDictionariesModelList.addAll(getLanguagesList(fromLanguageList));
         exportDictionariesModelList.addAll(getLanguagesList(toLanguageList));
@@ -87,8 +86,13 @@ public class ExportDictionariesService {
             multipartFile = convertDataFromListToFile(exportDictionariesModelList);
 
             saveMultipartFile(multipartFile, "C:\\Users\\parinos.ma.kst\\Export\\data.txt");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        catch (IOException e) {
+
+        try {
+            WriteListToFile.writeExportListToFile("Export", exportDictionariesModelList);
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
