@@ -9,7 +9,6 @@ import ru.mmtr.translationdictionary.domain.session.UserSessionModel;
 import ru.mmtr.translationdictionary.domain.session.UserSessionPageRequestModel;
 import ru.mmtr.translationdictionary.domain.user.UserModel;
 import ru.mmtr.translationdictionary.infrastructure.repositories.user.UserEntity;
-import ru.mmtr.translationdictionary.infrastructure.repositories.user.UserRole;
 
 import java.time.LocalDateTime;
 import java.util.List;

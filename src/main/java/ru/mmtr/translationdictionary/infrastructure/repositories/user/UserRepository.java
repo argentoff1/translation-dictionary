@@ -53,11 +53,6 @@ public class UserRepository {
             return new JwtResponseResultModel("CAN_NOT_AUTHORIZE");
         }
 
-        /*String accessToken = jwtUtil.generateAccessToken(UserRole.USER.getRoleName(), model.getUserId(), model.getSessionId());
-        String refreshToken = jwtUtil.generateRefreshToken(UserRole.REFRESH_TOKEN.getRoleName(), model.getUserId(), model.getSessionId());*/
-
-        //userSessionRepository.save()
-
         return new JwtResponseResultModel(null, null);
     }
 

@@ -7,10 +7,8 @@ import org.springframework.stereotype.Repository;
 import ru.mmtr.translationdictionary.domain.common.*;
 import ru.mmtr.translationdictionary.domain.dictionary.*;
 import ru.mmtr.translationdictionary.domainservice.common.CommonUtils;
-import ru.mmtr.translationdictionary.infrastructure.repositories.language.LanguageEntity;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
