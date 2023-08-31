@@ -30,11 +30,6 @@ public class UserRepository {
         this.userSessionRepository = userSessionRepository;
     }
 
-    public UUID getUserId() {
-
-        return CommonUtils.getUserId();
-    }
-
     public JwtResponseResultModel login(JwtRequestModel model) {
         var foundUserEntity = DB.find(UserEntity.class)
                 .where()
@@ -382,23 +377,6 @@ public class UserRepository {
 
         return model;
     }
-
-    /*private UserSessionEntity getEntity(UserSessionSaveModel sessionSaveModel, UserModel userModel) {
-        if (sessionSaveModel == null) {
-            return null;
-        }
-
-        var entity = new UserSessionEntity();
-        entity.setSessionId(UUID.randomUUID());
-        entity.setAccessToken(jwtProvider.generateAccessToken(userModel));
-        entity.setAccessTokenExpiredDate(LocalDateTime.now().plusMinutes(5));
-        entity.setRefreshToken(jwtProvider.generateRefreshToken(userModel));
-        entity.setRefreshTokenExpiredDate(LocalDateTime.now().plusDays(1));
-        entity.setUserId(sessionSaveModel.getUserId());
-        entity.setTokenCreatedAt(LocalDateTime.now());
-
-        return entity;
-    }*/
 
     public static String hashPassword(String password) {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();

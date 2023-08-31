@@ -7,6 +7,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.mmtr.translationdictionary.domain.common.*;
+import ru.mmtr.translationdictionary.domain.export.ExportDictionariesModel;
 import ru.mmtr.translationdictionary.domain.session.UserSessionModel;
 import ru.mmtr.translationdictionary.domain.session.UserSessionPageRequestModel;
 import ru.mmtr.translationdictionary.domain.user.*;
@@ -33,7 +34,7 @@ public class UserController {
             summary = "Экспорт словаря",
             description = "Позволяет экспортировать данные из словаря"
     )
-    public MultipartFile exportDictionary() {
+    public ExportDictionariesModel exportDictionary() {
 
         return exportDictionariesService.exportDictionary();
     }

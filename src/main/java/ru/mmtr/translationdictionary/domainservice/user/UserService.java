@@ -30,11 +30,6 @@ public class UserService {
         this.jwtProvider = jwtProvider;
     }
 
-    public UUID getUserId() {
-
-        return userRepository.getUserId();
-    }
-
     public JwtResponseResultModel login(JwtRequestModel model) {
         var validationResult = stringValidation(model.getLogin(), 20);
         if (validationResult.getErrorCode() != null) {
