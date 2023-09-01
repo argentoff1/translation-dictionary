@@ -14,7 +14,9 @@ import ru.mmtr.translationdictionary.domain.language.LanguageUpdateModel;
 import ru.mmtr.translationdictionary.domainservice.common.CommonUtils;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -28,6 +30,20 @@ public class LanguageRepository {
         return new CollectionResultModel<>(
                 entities.stream().map(this::getModel).collect(Collectors.toList())
         );
+    }
+
+    public Map<UUID, LanguageModel> getByIds(List<UUID> idList) {
+        Map<UUID, LanguageModel> resultMap = new HashMap<>();
+
+        for (LanguageEntity languageEntity : DB
+                .find(LanguageEntity.class)
+                .where()
+                .in(LanguageEntity.LANGUAGE_ID, idList)
+                .findList()) {
+            LanguageModel languageModel = getModel(languageEntity);
+            resultMap.put(languageModel.getLanguageId(), languageModel);
+        }
+        return resultMap;
     }
 
     public PageResultModel<LanguageModel> getPage(LanguagePageRequestModel criteria) {

@@ -1,7 +1,6 @@
 package ru.mmtr.translationdictionary.domainservice.user;
 
 import io.jsonwebtoken.Claims;
-import lombok.NonNull;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import ru.mmtr.translationdictionary.JwtAuthentication;
@@ -15,6 +14,7 @@ import ru.mmtr.translationdictionary.domainservice.session.UserSessionService;
 import ru.mmtr.translationdictionary.infrastructure.repositories.user.UserRepository;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import static ru.mmtr.translationdictionary.domainservice.common.Validation.stringValidation;
@@ -54,9 +54,9 @@ public class UserService {
         return new JwtResponseResultModel(session.getAccessToken(), session.getRefreshToken());
     }
 
-    public List<UserModel> getUsersListByIds(List<UUID> idList) {
+    public Map<UUID, UserModel> getUsersListByIds(List<UUID> idList) {
 
-        return userRepository.getUsersListByIds(idList);
+        return userRepository.getByIds(idList);
     }
 
     // +-

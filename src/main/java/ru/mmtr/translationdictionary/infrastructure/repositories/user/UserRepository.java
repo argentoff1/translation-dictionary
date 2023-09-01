@@ -13,9 +13,7 @@ import ru.mmtr.translationdictionary.domainservice.common.Validation;
 import ru.mmtr.translationdictionary.infrastructure.repositories.session.UserSessionEntity;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Repository
@@ -41,8 +39,8 @@ public class UserRepository {
         return new JwtResponseResultModel(null, null);
     }
 
-    public List<UserModel> getUsersListByIds(List<UUID> idList) {
-        List<UserModel> resultModels = new ArrayList<>();
+    public Map<UUID, UserModel> getByIds(List<UUID> idList) {
+        Map<UUID, UserModel> resultModels = new HashMap<>();
 
         for (UserEntity userEntity : DB
                 .find(UserEntity.class)
@@ -50,7 +48,7 @@ public class UserRepository {
                 .in(UserEntity.USER_ID, idList)
                 .findList()) {
             UserModel userModel = getModel(userEntity);
-            resultModels.add(userModel);
+            resultModels.put(userModel.getUserId(), userModel);
         }
 
         return resultModels;

@@ -24,9 +24,9 @@ public class DictionaryService {
         return dictionaryRepository.showAll();
     }
 
-    public Map<UUID, DictionaryModel> getDictionariesByIds(List<UUID> idList) {
+    public Map<UUID, DictionaryModel> getByIds(List<UUID> idList) {
 
-        return dictionaryRepository.getDictionariesByIds(idList);
+        return dictionaryRepository.getByIds(idList);
     }
 
     public CollectionResultModel<DictionaryWordAndTranslationModel> getAllByIds(DictionaryIdsCollectionModel<UUID> model) {
@@ -68,14 +68,12 @@ public class DictionaryService {
 
     public GUIDResultModel save(DictionarySaveModel model) {
         var validationResult = stringValidation(model.getWord(), 100);
-
         if (validationResult.getErrorCode() != null) {
             return new GUIDResultModel("CAN_NOT_SAVE",
                     "Не удалось сохранить данные. Поля должны быть заполненными");
         }
 
         validationResult = stringValidation(model.getTranslation(), 100);
-
         if (validationResult.getErrorCode() != null) {
             return new GUIDResultModel("CAN_NOT_SAVE",
                     "Не удалось сохранить данные. Поля должны быть заполненными");

@@ -9,10 +9,7 @@ import ru.mmtr.translationdictionary.domain.dictionary.*;
 import ru.mmtr.translationdictionary.domainservice.common.CommonUtils;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Repository
@@ -27,8 +24,8 @@ public class DictionaryRepository {
         );
     }
 
-    public Map<UUID, DictionaryModel> getDictionariesByIds(List<UUID> idList) {
-        Map<UUID, DictionaryModel> resultModels = new HashMap<>();
+    public Map<UUID, DictionaryModel> getByIds(List<UUID> idList) {
+        Map<UUID, DictionaryModel> resultMap = new HashMap<>();
 
         for (DictionaryEntity dictionaryEntity : DB
                 .find(DictionaryEntity.class)
@@ -36,9 +33,9 @@ public class DictionaryRepository {
                 .in(DictionaryEntity.DICTIONARY_ID, idList)
                 .findList()) {
             DictionaryModel dictionaryModel = getModel(dictionaryEntity);
-            resultModels.put(dictionaryModel.getDictionaryId(), dictionaryModel);
+            resultMap.put(dictionaryModel.getDictionaryId(), dictionaryModel);
         }
-        return resultModels;
+        return resultMap;
     }
 
     public CollectionResultModel<DictionaryWordAndTranslationModel> getAllByIds(DictionaryIdsCollectionModel<UUID> model) {

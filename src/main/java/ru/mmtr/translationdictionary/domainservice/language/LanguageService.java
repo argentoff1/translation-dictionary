@@ -10,6 +10,8 @@ import ru.mmtr.translationdictionary.domain.language.LanguageSaveModel;
 import ru.mmtr.translationdictionary.domain.language.LanguageUpdateModel;
 import ru.mmtr.translationdictionary.infrastructure.repositories.language.LanguageRepository;
 
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import static ru.mmtr.translationdictionary.domainservice.common.Validation.stringValidation;
@@ -26,6 +28,11 @@ public class LanguageService {
 
     public CollectionResultModel<LanguageModel> showAll() {
         return languageRepository.showAll();
+    }
+
+    public Map<UUID, LanguageModel> getByIds(List<UUID> idList) {
+
+        return languageRepository.getByIds(idList);
     }
 
     public PageResultModel<LanguageModel> getPage(LanguagePageRequestModel criteria) {

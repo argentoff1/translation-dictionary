@@ -1,6 +1,5 @@
 package ru.mmtr.translationdictionary.domainservice.common;
 
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -9,30 +8,29 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import ru.mmtr.translationdictionary.domain.export.ExportDictionariesModel;
 
 import java.io.FileOutputStream;
+import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
 import java.util.List;
 
 public class WriteListToFile {
     public static void writeExportListToFile(String fileName, List<ExportDictionariesModel> modelList) throws Exception {
-        Workbook workbook;
-        ExportDictionariesModel exportDictionariesModel1 = new ExportDictionariesModel();
+        Workbook workbook = new XSSFWorkbook();;
 
-        if (fileName.endsWith("xlsx")) {
-            workbook = new XSSFWorkbook();
-        } else if (fileName.endsWith("xls")) {
-            workbook = new HSSFWorkbook();
-        } else {
-            throw new Exception("Недопустимое расширение файла, необходимо xls или xlsx");
-        }
+        ExportDictionariesModel exportDictionariesModel = new ExportDictionariesModel();
 
-        Sheet sheet = workbook.createSheet(exportDictionariesModel1.getFromLanguage() + "-" +
-                exportDictionariesModel1.getToLanguage() + ".xlsx");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
+
+        Iterator<ExportDictionariesModel> iterator = modelList.iterator();
+
+        exportDictionariesModel = iterator.next();
+        Sheet sheet = workbook.createSheet(exportDictionariesModel.getFromLanguage() + "-" +
+                exportDictionariesModel.getToLanguage());
 
         Row headerRow = sheet.createRow(0);
         Cell headerCell0 = headerRow.createCell(0);
-        headerCell0.setCellValue("Английский");
+        headerCell0.setCellValue(exportDictionariesModel.getFromLanguage());
         Cell headerCell1 = headerRow.createCell(1);
-        headerCell1.setCellValue("Русский");
+        headerCell1.setCellValue(exportDictionariesModel.getToLanguage());
         Cell headerCell2 = headerRow.createCell(2);
         headerCell2.setCellValue("Добавил");
         Cell headerCell3 = headerRow.createCell(3);
@@ -42,33 +40,28 @@ public class WriteListToFile {
         Cell headerCell5 = headerRow.createCell(5);
         headerCell5.setCellValue("Дата изменения");
 
-        Iterator<ExportDictionariesModel> iterator = modelList.iterator();
-
         int rowIndex = 1;
         while (iterator.hasNext()) {
-            ExportDictionariesModel exportDictionariesModel = iterator.next();
+            exportDictionariesModel = iterator.next();
             Row row = sheet.createRow(rowIndex++);
 
             Cell cell0 = row.createCell(0);
-            cell0.setCellValue(exportDictionariesModel.getFromLanguage());
+            cell0.setCellValue(exportDictionariesModel.getWord());
 
             Cell cell1 = row.createCell(1);
-            cell1.setCellValue(exportDictionariesModel.getToLanguage());
+            cell1.setCellValue(exportDictionariesModel.getTranslation());
 
             Cell cell2 = row.createCell(2);
             cell2.setCellValue(exportDictionariesModel.getFullName());
 
             Cell cell3 = row.createCell(3);
-            cell3.setCellValue(exportDictionariesModel.getEmail());
+            cell3.setCellValue(exportDictionariesModel.getCreatedAt().format(formatter));
 
             Cell cell4 = row.createCell(4);
-            cell4.setCellValue(exportDictionariesModel.getCreatedAt());
+            cell4.setCellValue(exportDictionariesModel.getFullName());
 
             Cell cell5 = row.createCell(5);
-            cell5.setCellValue(exportDictionariesModel.getFullName());
-
-            Cell cell6 = row.createCell(6);
-            cell6.setCellValue(exportDictionariesModel.getModifiedAt());
+            cell5.setCellValue(exportDictionariesModel.getModifiedAt().format(formatter));
         }
 
         FileOutputStream fos = new FileOutputStream(fileName);
