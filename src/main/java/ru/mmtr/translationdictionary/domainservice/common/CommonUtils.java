@@ -1,7 +1,7 @@
 package ru.mmtr.translationdictionary.domainservice.common;
 
 import org.springframework.security.core.context.SecurityContextHolder;
-import ru.mmtr.translationdictionary.JwtAuthentication;
+import ru.mmtr.translationdictionary.infrastructure.security.JwtAuthentication;
 
 import java.util.UUID;
 

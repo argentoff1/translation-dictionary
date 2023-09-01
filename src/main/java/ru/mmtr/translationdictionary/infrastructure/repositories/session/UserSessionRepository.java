@@ -3,12 +3,11 @@ package ru.mmtr.translationdictionary.infrastructure.repositories.session;
 import io.ebean.DB;
 import io.ebean.ExpressionList;
 import org.springframework.stereotype.Repository;
-import ru.mmtr.translationdictionary.JwtProvider;
+import ru.mmtr.translationdictionary.infrastructure.security.JwtProvider;
 import ru.mmtr.translationdictionary.domain.common.*;
 import ru.mmtr.translationdictionary.domain.session.UserSessionModel;
 import ru.mmtr.translationdictionary.domain.session.UserSessionPageRequestModel;
 import ru.mmtr.translationdictionary.domain.user.UserModel;
-import ru.mmtr.translationdictionary.infrastructure.repositories.user.UserEntity;
 
 import java.time.LocalDateTime;
 import java.util.List;

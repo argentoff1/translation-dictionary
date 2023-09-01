@@ -1,4 +1,4 @@
-package ru.mmtr.translationdictionary;
+package ru.mmtr.translationdictionary.infrastructure.security;
 
 import io.jsonwebtoken.Claims;
 import lombok.AccessLevel;
