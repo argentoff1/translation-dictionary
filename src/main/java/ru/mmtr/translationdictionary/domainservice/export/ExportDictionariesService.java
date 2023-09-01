@@ -18,6 +18,7 @@ import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -35,22 +36,27 @@ public class ExportDictionariesService {
 
     public ExportDictionariesModel exportDictionary() {
         MultipartFile multipartFile;
+        ExportDictionariesModel exportDictionariesModel = new ExportDictionariesModel();
 
         var dictionaryCriteria = new DictionaryPageRequestModel();
         dictionaryCriteria.setPageNum(0);
         dictionaryCriteria.setPageSize(PAGE_SIZE);
         PageResultModel<DictionaryModel> page;
 
-        ArrayList<String> exportDictionariesModelList = new ArrayList<>();
+        List<ExportDictionariesModel> exportDictionariesModels = new ArrayList<>();
 
-        ArrayList<UUID> fromLanguageList = new ArrayList<>();
-        ArrayList<UUID> toLanguageList = new ArrayList<>();
-        ArrayList<String> wordsList = new ArrayList<>();
-        ArrayList<String> translationsList = new ArrayList<>();
-        ArrayList<UUID> createdUserIdsList = new ArrayList<>();
-        ArrayList<LocalDateTime> createdAtList = new ArrayList<>();
-        ArrayList<UUID> modifiedUserIdsList = new ArrayList<>();
-        ArrayList<LocalDateTime> modifiedAtList = new ArrayList<>();
+
+
+        List<String> exportDictionariesModelList = new ArrayList<>();
+
+        List<UUID> fromLanguageList = new ArrayList<>();
+        List<UUID> toLanguageList = new ArrayList<>();
+        List<String> wordsList = new ArrayList<>();
+        List<String> translationsList = new ArrayList<>();
+        List<UUID> createdUserIdsList = new ArrayList<>();
+        List<LocalDateTime> createdAtList = new ArrayList<>();
+        List<UUID> modifiedUserIdsList = new ArrayList<>();
+        List<LocalDateTime> modifiedAtList = new ArrayList<>();
 
         // Обогащение данными из модели
         do {
@@ -70,26 +76,49 @@ public class ExportDictionariesService {
         } while (page.getResultList().size() == PAGE_SIZE);
 
         // Добавление данных в список для экспорта
-        exportDictionariesModelList.addAll(getLanguagesList(fromLanguageList));
+        for (int i = 0; i < createdUserIdsList.size(); i++) {
+            var model = new ExportDictionariesModel();
+
+            model.setFromLanguage(getLanguagesList(fromLanguageList).get(i));
+            model.setToLanguage(getLanguagesList(toLanguageList).get(i));
+            model.setWord(wordsList.get(i));
+            model.setTranslation(translationsList.get(i));
+            model.setFullName(getUsersList(createdUserIdsList).get(i));
+            model.setCreatedUserId(createdUserIdsList.get(i));
+            model.setCreatedAt(createdAtList.get(i));
+            model.setModifiedUserId(modifiedUserIdsList.get(i));
+            model.setModifiedAt(modifiedAtList.get(i));
+
+            exportDictionariesModels.add(model);
+        }
+
+        /*for (String item : getLanguagesList(fromLanguageList)) {
+            exportDictionariesModel.setFromLanguage(item);
+        }*/
+        //exportDictionariesModels.add(userService.getUsersListByIds(createdUserIdsList));
+
+
+
+        /*exportDictionariesModelList.addAll(getLanguagesList(fromLanguageList));
         exportDictionariesModelList.addAll(getLanguagesList(toLanguageList));
         exportDictionariesModelList.addAll(wordsList);
         exportDictionariesModelList.addAll(translationsList);
         exportDictionariesModelList.addAll(getUsersList(createdUserIdsList));
         exportDictionariesModelList.addAll(addDateTimeToResultList(createdAtList));
         exportDictionariesModelList.addAll(getUsersList(modifiedUserIdsList));
-        exportDictionariesModelList.addAll(addDateTimeToResultList(modifiedAtList));
+        exportDictionariesModelList.addAll(addDateTimeToResultList(modifiedAtList));*/
 
         // Запись + конвертация в файл
-        try {
+        /*try {
             multipartFile = FileUtils.convertDataFromListToFile(exportDictionariesModelList);
 
             FileUtils.saveMultipartFile(multipartFile, "C:\\Users\\parinos.ma.kst\\Export\\data.txt");
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
 
         try {
-            WriteListToFile.writeExportListToFile("Export", exportDictionariesModelList);
+            WriteListToFile.writeExportListToFile("C:\\Users\\parinos.ma.kst\\Export\\ExportData.xlsx", exportDictionariesModels);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -100,8 +129,8 @@ public class ExportDictionariesService {
         return null;
     }
 
-    private ArrayList<String> addDateTimeToResultList(ArrayList<LocalDateTime> dataList) {
-        ArrayList<String> exportDictionariesModelList = new ArrayList<>();
+    private List<String> addDateTimeToResultList(List<LocalDateTime> dataList) {
+        List<String> exportDictionariesModelList = new ArrayList<>();
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
 
@@ -118,8 +147,8 @@ public class ExportDictionariesService {
         return exportDictionariesModelList;
     }
 
-    private ArrayList<String> getUsersList(ArrayList<UUID> userIdsArrayList) {
-        ArrayList<String> usersList = new ArrayList<>();
+    private List<String> getUsersList(List<UUID> userIdsArrayList) {
+        List<String> usersList = new ArrayList<>();
 
         for (UUID item : userIdsArrayList) {
             UserModel user = userService.getUserById(item);
@@ -130,8 +159,8 @@ public class ExportDictionariesService {
         return usersList;
     }
 
-    private ArrayList<String> getLanguagesList(ArrayList<UUID> languageIdsArrayList) {
-        ArrayList<String> languagesList = new ArrayList<>();
+    private List<String> getLanguagesList(List<UUID> languageIdsArrayList) {
+        List<String> languagesList = new ArrayList<>();
 
         for (UUID item : languageIdsArrayList) {
             LanguageModel language = languageService.getById(item);
@@ -142,7 +171,7 @@ public class ExportDictionariesService {
         return languagesList;
     }
 
-    private ExportDictionariesModel getModel(ArrayList<String> dataList) {
+    private ExportDictionariesModel getModel(List<String> dataList) {
         var model = new ExportDictionariesModel();
         /*model.setFromLanguage(dataList.get());
         model.setToLanguage(dataList.get());

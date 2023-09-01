@@ -20,6 +20,12 @@ public class ExportDictionariesModel {
     @Schema(description = "Язык переведенного слова", accessMode = Schema.AccessMode.READ_ONLY)
     private String toLanguage;
 
+    @Schema(description = "Слово для перевода")
+    private String word;
+
+    @Schema(description = "Перевод слова")
+    private String translation;
+
     @Schema(description = "ФИО пользователя")
     private String fullName;
 

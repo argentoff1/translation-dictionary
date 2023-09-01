@@ -7,6 +7,8 @@ import ru.mmtr.translationdictionary.infrastructure.repositories.dictionary.Dict
 
 import static ru.mmtr.translationdictionary.domainservice.common.Validation.stringValidation;
 
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -20,6 +22,11 @@ public class DictionaryService {
     public CollectionResultModel<DictionaryModel> showAll() {
 
         return dictionaryRepository.showAll();
+    }
+
+    public Map<UUID, DictionaryModel> getDictionariesByIds(List<UUID> idList) {
+
+        return dictionaryRepository.getDictionariesByIds(idList);
     }
 
     public CollectionResultModel<DictionaryWordAndTranslationModel> getAllByIds(DictionaryIdsCollectionModel<UUID> model) {

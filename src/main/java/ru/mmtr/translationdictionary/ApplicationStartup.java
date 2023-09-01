@@ -28,7 +28,7 @@ public class ApplicationStartup implements ApplicationListener<ContextRefreshedE
     @Value("${liquibase.schema-name}")
     private String liquibaseSchemaName;
 
-    private DatabaseConfiguration serverConfig;
+    private final DatabaseConfiguration serverConfig;
 
     @Autowired
     public ApplicationStartup(DatabaseConfiguration serverConfig) {

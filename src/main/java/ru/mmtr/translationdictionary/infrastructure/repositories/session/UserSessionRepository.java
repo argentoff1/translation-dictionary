@@ -55,27 +55,21 @@ public class UserSessionRepository {
         if (criteria.getTokenCreatedAtFromFilter() != null) {
             expression = expression.ge(UserSessionEntity.TOKEN_CREATED_AT, criteria.getTokenCreatedAtFromFilter());
         }
-
         if (criteria.getTokenCreatedAtToFilter() != null) {
             expression = expression.le(UserSessionEntity.TOKEN_CREATED_AT, criteria.getTokenCreatedAtToFilter());
         }
-
         if (criteria.getAccessTokenExpiredDateFromFilter() != null) {
             expression = expression.ge(UserSessionEntity.ACCESS_TOKEN_EXPIRED_DATE, criteria.getAccessTokenExpiredDateFromFilter());
         }
-
         if (criteria.getTokenCreatedAtToFilter() != null) {
             expression = expression.le(UserSessionEntity.ACCESS_TOKEN_EXPIRED_DATE, criteria.getAccessTokenExpiredDateToFilter());
         }
-
         if (criteria.getRefreshTokenExpiredDateFromFilter() != null) {
             expression = expression.ge(UserSessionEntity.REFRESH_TOKEN_EXPIRED_DATE, criteria.getRefreshTokenExpiredDateFromFilter());
         }
-
         if (criteria.getRefreshTokenExpiredDateToFilter() != null) {
             expression = expression.le(UserSessionEntity.REFRESH_TOKEN_EXPIRED_DATE, criteria.getRefreshTokenExpiredDateToFilter());
         }
-
         return expression;
     }
 
@@ -98,22 +92,12 @@ public class UserSessionRepository {
         var userSessionEntity = getAdminEntity(model);
         DB.insert(userSessionEntity);
 
-        if (userSessionEntity == null) {
-            return new UserSessionModel("CAN_NOT_SAVE",
-                    "Не удалось сохранить данные. Поля должны быть корректно заполненными");
-        }
-
         return getModel(userSessionEntity);
     }
 
     public UserSessionModel saveUser(UserModel model) {
         var userSessionEntity = getUserEntity(model);
         DB.insert(userSessionEntity);
-
-        if (userSessionEntity == null) {
-            return new UserSessionModel("CAN_NOT_SAVE",
-                    "Не удалось сохранить данные. Поля должны быть корректно заполненными");
-        }
 
         return getModel(userSessionEntity);
     }
@@ -188,25 +172,4 @@ public class UserSessionRepository {
 
         return entity;
     }
-
-    /*private UserModel getModel(UserEntity entity) {
-        if (entity == null) {
-            return null;
-        }
-
-        var model = new UserModel();
-        model.setUserId(entity.getUserId());
-        model.setLogin(entity.getLogin());
-        model.setPassword(entity.getPassword());
-        model.setLastName(entity.getLastName());
-        model.setFirstName(entity.getFirstName());
-        model.setFatherName(entity.getFatherName());
-        model.setEmail(entity.getEmail());
-        model.setPhoneNumber(entity.getPhoneNumber());
-        model.setCreatedAt(entity.getCreatedAt());
-        model.setModifiedAt(entity.getModifiedAt());
-        model.setArchiveDate(entity.getArchiveDate());
-
-        return model;
-    }*/
 }

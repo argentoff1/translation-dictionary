@@ -9,7 +9,9 @@ import ru.mmtr.translationdictionary.domain.dictionary.*;
 import ru.mmtr.translationdictionary.domainservice.common.CommonUtils;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -23,6 +25,20 @@ public class DictionaryRepository {
         return new CollectionResultModel<>(
                 entities.stream().map(this::getModel).collect(Collectors.toList())
         );
+    }
+
+    public Map<UUID, DictionaryModel> getDictionariesByIds(List<UUID> idList) {
+        Map<UUID, DictionaryModel> resultModels = new HashMap<>();
+
+        for (DictionaryEntity dictionaryEntity : DB
+                .find(DictionaryEntity.class)
+                .where()
+                .in(DictionaryEntity.DICTIONARY_ID, idList)
+                .findList()) {
+            DictionaryModel dictionaryModel = getModel(dictionaryEntity);
+            resultModels.put(dictionaryModel.getDictionaryId(), dictionaryModel);
+        }
+        return resultModels;
     }
 
     public CollectionResultModel<DictionaryWordAndTranslationModel> getAllByIds(DictionaryIdsCollectionModel<UUID> model) {
@@ -59,23 +75,18 @@ public class DictionaryRepository {
         if (criteria.getWordFilter() != null) {
             expression = expression.ilike(DictionaryEntity.WORD, "%" + criteria.getWordFilter() + "%");
         }
-
         if (criteria.getTranslationFilter() != null) {
             expression = expression.ilike(DictionaryEntity.TRANSLATION, "%" + criteria.getTranslationFilter() + "%");
         }
-
         if (criteria.getCreateDateFromFilter() != null) {
             expression = expression.ge(DictionaryEntity.DICTIONARY_CREATED_AT, criteria.getCreateDateFromFilter());
         }
-
         if (criteria.getCreateDateToFilter() != null) {
             expression = expression.le(DictionaryEntity.DICTIONARY_CREATED_AT, criteria.getCreateDateToFilter());
         }
-
         if (criteria.getModifyDateFromFilter() != null) {
             expression = expression.ge(DictionaryEntity.DICTIONARY_MODIFIED_AT, criteria.getModifyDateFromFilter());
         }
-
         if (criteria.getModifyDateToFilter() != null) {
             expression = expression.le(DictionaryEntity.DICTIONARY_MODIFIED_AT, criteria.getModifyDateToFilter());
         }
@@ -149,11 +160,6 @@ public class DictionaryRepository {
                 .where()
                 .eq(DictionaryEntity.DICTIONARY_ID, model.getId())
                 .update();
-
-        if (updateQuery == null) {
-            return new SuccessResultModel("CAN_NOT_UPDATE",
-                    "Не удалось обновить данные. Поля должны быть корректно заполненными");
-        }
 
         return new SuccessResultModel(true);
     }

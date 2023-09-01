@@ -52,19 +52,15 @@ public class LanguageRepository {
         if (criteria.getLanguageFilter() != null) {
             expression = expression.ilike(LanguageEntity.LANGUAGE_NAME, "%" + criteria.getLanguageFilter() + "%");
         }
-
         if (criteria.getCreateDateFromFilter() != null) {
             expression = expression.ge(LanguageEntity.LANGUAGE_CREATED_AT, criteria.getCreateDateFromFilter());
         }
-
         if (criteria.getCreateDateToFilter() != null) {
             expression = expression.le(LanguageEntity.LANGUAGE_CREATED_AT, criteria.getCreateDateToFilter());
         }
-
         if (criteria.getModifyDateFromFilter() != null) {
             expression = expression.ge(LanguageEntity.LANGUAGE_MODIFIED_AT, criteria.getModifyDateFromFilter());
         }
-
         if (criteria.getModifyDateToFilter() != null) {
             expression = expression.le(LanguageEntity.LANGUAGE_MODIFIED_AT, criteria.getModifyDateToFilter());
         }

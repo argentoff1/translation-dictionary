@@ -13,6 +13,7 @@ import ru.mmtr.translationdictionary.domainservice.common.Validation;
 import ru.mmtr.translationdictionary.infrastructure.repositories.session.UserSessionEntity;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -38,6 +39,21 @@ public class UserRepository {
         }
 
         return new JwtResponseResultModel(null, null);
+    }
+
+    public List<UserModel> getUsersListByIds(List<UUID> idList) {
+        List<UserModel> resultModels = new ArrayList<>();
+
+        for (UserEntity userEntity : DB
+                .find(UserEntity.class)
+                .where()
+                .in(UserEntity.USER_ID, idList)
+                .findList()) {
+            UserModel userModel = getModel(userEntity);
+            resultModels.add(userModel);
+        }
+
+        return resultModels;
     }
 
     public Integer getAccessToken(UserSessionModel model) {
@@ -79,51 +95,39 @@ public class UserRepository {
         if (criteria.getLoginFilter() != null) {
             expression = expression.ilike(UserEntity.LOGIN, "%" + criteria.getLoginFilter() + "%");
         }
-
         if (criteria.getPasswordFilter() != null) {
             expression = expression.ilike(UserEntity.PASSWORD, "%" + criteria.getPasswordFilter() + "%");
         }
-
         if (criteria.getLastNameFilter() != null) {
             expression = expression.ilike(UserEntity.LAST_NAME, "%" + criteria.getLastNameFilter() + "%");
         }
-
         if (criteria.getFirstNameFilter() != null) {
             expression = expression.ilike(UserEntity.FIRST_NAME, "%" + criteria.getFirstNameFilter() + "%");
         }
-
         if (criteria.getFatherNameFilter() != null) {
             expression = expression.ilike(UserEntity.FATHER_NAME, "%" + criteria.getFatherNameFilter() + "%");
         }
-
         if (criteria.getEmailFilter() != null) {
             expression = expression.ilike(UserEntity.EMAIL, "%" + criteria.getEmailFilter() + "%");
         }
-
         if (criteria.getPhoneNumberFilter() != null) {
             expression = expression.ilike(UserEntity.PHONE_NUMBER, "%" + criteria.getPhoneNumberFilter() + "%");
         }
-
         if (criteria.getCreateDateFromFilter() != null) {
             expression = expression.ge(UserEntity.CREATED_AT, criteria.getCreateDateFromFilter());
         }
-
         if (criteria.getCreateDateToFilter() != null) {
             expression = expression.le(UserEntity.CREATED_AT, criteria.getCreateDateToFilter());
         }
-
         if (criteria.getModifyDateFromFilter() != null) {
             expression = expression.ge(UserEntity.MODIFIED_AT, criteria.getModifyDateFromFilter());
         }
-
         if (criteria.getModifyDateToFilter() != null) {
             expression = expression.le(UserEntity.MODIFIED_AT, criteria.getModifyDateToFilter());
         }
-
         if (criteria.getArchiveDateFromFilter() != null) {
             expression = expression.ge(UserEntity.ARCHIVE_DATE, criteria.getArchiveDateFromFilter());
         }
-
         if (criteria.getArchiveDateToFilter() != null) {
             expression = expression.ge(UserEntity.ARCHIVE_DATE, criteria.getArchiveDateToFilter());
         }

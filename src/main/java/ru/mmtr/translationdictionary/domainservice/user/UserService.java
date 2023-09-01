@@ -14,6 +14,7 @@ import ru.mmtr.translationdictionary.domainservice.common.Validation;
 import ru.mmtr.translationdictionary.domainservice.session.UserSessionService;
 import ru.mmtr.translationdictionary.infrastructure.repositories.user.UserRepository;
 
+import java.util.List;
 import java.util.UUID;
 
 import static ru.mmtr.translationdictionary.domainservice.common.Validation.stringValidation;
@@ -53,28 +54,28 @@ public class UserService {
         return new JwtResponseResultModel(session.getAccessToken(), session.getRefreshToken());
     }
 
+    public List<UserModel> getUsersListByIds(List<UUID> idList) {
+
+        return userRepository.getUsersListByIds(idList);
+    }
+
     // +-
-    public JwtResponseResultModel getAccessToken(@NonNull String refreshToken, UUID id) {
+    public JwtResponseResultModel getAccessToken(String refreshToken, UUID id) {
         if (jwtProvider.validateRefreshToken(refreshToken)) {
             final Claims claims = jwtProvider.getRefreshClaims(refreshToken);
             final String login = claims.getSubject();
-            //final String saveRefreshToken = refreshStorage
 
             final UserModel user = userRepository.getByLogin(login);
             final String accessToken = jwtProvider.generateAccessToken(user, id);
 
-            //userRepository.getAccessToken();
-
             return new JwtResponseResultModel(accessToken, null);
         }
-
-        //userRepository.getAccessToken()
 
         return new JwtResponseResultModel("CAN_NOT_GENERATE_TOKEN");
     }
 
     // +-
-    public JwtResponseResultModel refreshToken(@NonNull String refreshToken, UUID id) {
+    public JwtResponseResultModel refreshToken(String refreshToken, UUID id) {
         if (jwtProvider.validateRefreshToken(refreshToken)) {
             final Claims claims = jwtProvider.getRefreshClaims(refreshToken);
             final String login = claims.getSubject();
@@ -315,6 +316,12 @@ public class UserService {
 
 
         var validationResult = Validation.stringValidation(model.getLogin(), 20);
+        if (validationResult.getErrorCode() != null) {
+            return new SuccessResultModel("CAN_NOT_LOGOUT",
+                    "Не удалось выйти из системы. Поля должны быть корректно заполненными");
+        }
+
+        validationResult = Validation.stringValidation(model.getPassword(), 100);
         if (validationResult.getErrorCode() != null) {
             return new SuccessResultModel("CAN_NOT_LOGOUT",
                     "Не удалось выйти из системы. Поля должны быть корректно заполненными");
