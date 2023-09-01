@@ -54,7 +54,7 @@ public class UserService {
         return new JwtResponseResultModel(session.getAccessToken(), session.getRefreshToken());
     }
 
-    public Map<UUID, UserModel> getUsersListByIds(List<UUID> idList) {
+    public Map<UUID, UserModel> getByIds(List<UUID> idList) {
 
         return userRepository.getByIds(idList);
     }

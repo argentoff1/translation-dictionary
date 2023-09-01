@@ -48,9 +48,14 @@ public class ExportDictionariesService {
                 // Переложить все поля в модель из dictionaryModel в exportDictionaryModel
                 return exportDictionaryModel;
             }).collect(Collectors.toList());
-            var userIds = internalPage.stream().map(ExportDictionariesModel::getCreatedUserId).collect(Collectors.toSet());
+            var userIds = internalPage.stream().map(ExportDictionariesModel::getCreatedUserId).distinct().collect(Collectors.toList());
             // вызывать метод из репозитория, который вернет модели. на вход список guid
+            var langaugeMap = languageService.getByIds(userIds);
+            // Получить все остальные сущности, остальные ID
+            var userMap = userService.getByIds(userIds);
+            internalPage.forEach(asd -> {
 
+            });
         } while (page.getResultList().size() == PAGE_SIZE);
 
         try {

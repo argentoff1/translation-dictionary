@@ -61,6 +61,7 @@ public class UserController {
     }
 
     @GetMapping("/showAllUsers")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(
             summary = "Отображение всех пользователей",
             description = "Позволяет отобразить всех пользователей"
