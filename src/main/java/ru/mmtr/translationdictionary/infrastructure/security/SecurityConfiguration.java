@@ -3,10 +3,8 @@ package ru.mmtr.translationdictionary.infrastructure.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
@@ -24,7 +22,10 @@ import ru.mmtr.translationdictionary.infrastructure.repositories.user.UserRole;
 public class SecurityConfiguration {
     private static final String ENCODED_PASSWORD = "$2a$10$AIUufK8g6EFhBcumRRV2L.AQNz3Bjp7oDQVFiO5JJMBFZQ6x2/R/2";
     private static final String[] AUTH_WHITELIST = {
-            "/api/users/login", "/api/users/getNewAccessToken", "/api/users/getNewRefreshToken",
+            "/api/users/login",
+            "/api/users/getNewAccessToken",
+            "/api/users/getNewRefreshToken",
+            "/api/users/exportDictionary",
             "/v2/api-docs",
             "/swagger-resources",
             "/swagger-resources/**",
@@ -32,7 +33,6 @@ public class SecurityConfiguration {
             "/configuration/security",
             "/swagger-ui.html",
             "/webjars/**",
-            // Swagger UI v3 (OpenAPI)
             "/v3/api-docs/**",
             "/swagger-ui/**"
     };

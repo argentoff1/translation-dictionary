@@ -28,8 +28,6 @@ public class ExportDictionariesService {
     }
 
     public ExportDictionariesModel exportDictionary() {
-        //MultipartFile multipartFile;
-
         var dictionaryCriteria = new DictionaryPageRequestModel();
         dictionaryCriteria.setPageNum(0);
         dictionaryCriteria.setPageSize(PAGE_SIZE);
@@ -41,7 +39,7 @@ public class ExportDictionariesService {
         do {
             page = dictionaryService.getPage(dictionaryCriteria);
             dictionaryCriteria.setPageNum(dictionaryCriteria.getPageNum() + 1);
-
+            // Экспорт данных из пагинации в модель
             var internalPage = page.getResultList().stream().map(dictionaryModel -> {
 
                 var exportDictionaryModel = new ExportDictionariesModel();
@@ -53,9 +51,11 @@ public class ExportDictionariesService {
             // вызывать метод из репозитория, который вернет модели. на вход список guid
             var languageMap = languageService.getByIds(userCreatorsIds);
             // Получить все остальные сущности, остальные ID
-            var userMap = userService.getByIds(userCreatorsIds);
-            internalPage.forEach(asd -> {
-
+            var userCreatorsMap = userService.getByIds(userCreatorsIds);
+            var userModifiedMap = userService.getByIds(userModifiersIds);
+            // Засунуть мапы в модель
+            internalPage.forEach(exportDictionariesModel -> {
+                internalPage.stream().map(ExportDictionariesModel::getFromLanguage).collect(Collectors.toList());
             });
         } while (page.getResultList().size() == PAGE_SIZE);
 

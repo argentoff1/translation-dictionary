@@ -1,18 +1,17 @@
 package ru.mmtr.translationdictionary.domainservice.user;
 
 import io.jsonwebtoken.Claims;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
-import ru.mmtr.translationdictionary.domainservice.common.CommonUtils;
-import ru.mmtr.translationdictionary.infrastructure.security.JwtAuthentication;
-import ru.mmtr.translationdictionary.infrastructure.security.JwtProvider;
 import ru.mmtr.translationdictionary.domain.common.*;
 import ru.mmtr.translationdictionary.domain.session.UserSessionModel;
 import ru.mmtr.translationdictionary.domain.session.UserSessionPageRequestModel;
 import ru.mmtr.translationdictionary.domain.user.*;
+import ru.mmtr.translationdictionary.domainservice.common.CommonUtils;
 import ru.mmtr.translationdictionary.domainservice.common.Validation;
 import ru.mmtr.translationdictionary.domainservice.session.UserSessionService;
 import ru.mmtr.translationdictionary.infrastructure.repositories.user.UserRepository;
+import ru.mmtr.translationdictionary.infrastructure.security.JwtProvider;
 
 import java.util.List;
 import java.util.Map;
@@ -33,24 +32,38 @@ public class UserService {
     }
 
     public JwtResponseResultModel login(JwtRequestModel model) {
+        // Проверка логина
         var validationResult = stringValidation(model.getLogin(), 20);
         if (validationResult.getErrorCode() != null) {
             return new JwtResponseResultModel("CAN_NOT_AUTHORIZE");
         }
+        UserModel findUser = userRepository.getByLogin(model.getLogin());
+        if (findUser == null) {
+            return new JwtResponseResultModel("CAN_NOT_AUTHORIZE");
+        }
 
+
+        if (!Validation.checkingForArchiving(findUser.getArchiveDate())) {
+            return new JwtResponseResultModel("CAN_NOT_AUTHORIZE");
+        }
+
+
+        // Проверка пароля
         validationResult = stringValidation(model.getPassword(), 100);
         if (validationResult.getErrorCode() != null) {
             return new JwtResponseResultModel("CAN_NOT_AUTHORIZE");
         }
-
-        var findUser = userRepository.getByLogin(model.getLogin());
+        if (!BCrypt.checkpw(model.getPassword(), findUser.getPassword())) {
+            return new JwtResponseResultModel("CAN_NOT_AUTHORIZE");
+        }
+        findUser = userRepository.getByPassword(model.getPassword());
         if (findUser == null) {
             return new JwtResponseResultModel("CAN_NOT_AUTHORIZE");
         }
 
         userRepository.login(model);
 
-        var session = userSessionService.saveUser(findUser);
+        UserSessionModel session = userSessionService.saveUser(findUser);
 
         return new JwtResponseResultModel(session.getAccessToken(), session.getRefreshToken());
     }

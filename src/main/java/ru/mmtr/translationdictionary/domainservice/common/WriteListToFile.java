@@ -14,9 +14,9 @@ import java.util.List;
 
 public class WriteListToFile {
     public static void writeExportListToFile(String fileName, List<ExportDictionariesModel> modelList) throws Exception {
-        Workbook workbook = new XSSFWorkbook();;
+        Workbook workbook = new XSSFWorkbook();
 
-        ExportDictionariesModel exportDictionariesModel = new ExportDictionariesModel();
+        ExportDictionariesModel exportDictionariesModel;
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
 
@@ -25,6 +25,24 @@ public class WriteListToFile {
         exportDictionariesModel = iterator.next();
         Sheet sheet = workbook.createSheet(exportDictionariesModel.getFromLanguage() + "-" +
                 exportDictionariesModel.getToLanguage());
+
+        /*if (workbook.getSheet(sheet.getSheetName()) == null) {
+            Row headerRow = sheet.createRow(0);
+            Cell headerCell0 = headerRow.createCell(0);
+            headerCell0.setCellValue(exportDictionariesModel.getFromLanguage());
+            Cell headerCell1 = headerRow.createCell(1);
+            headerCell1.setCellValue(exportDictionariesModel.getToLanguage());
+            Cell headerCell2 = headerRow.createCell(2);
+            headerCell2.setCellValue("Добавил");
+            Cell headerCell3 = headerRow.createCell(3);
+            headerCell3.setCellValue("Дата добавления");
+            Cell headerCell4 = headerRow.createCell(4);
+            headerCell4.setCellValue("Изменил");
+            Cell headerCell5 = headerRow.createCell(5);
+            headerCell5.setCellValue("Дата изменения");
+        } else {
+
+        }*/
 
         Row headerRow = sheet.createRow(0);
         Cell headerCell0 = headerRow.createCell(0);

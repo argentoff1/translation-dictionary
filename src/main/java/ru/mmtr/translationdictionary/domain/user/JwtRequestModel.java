@@ -7,12 +7,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class JwtRequestModel {
-    /*@Parameter(description = "Идентификатор пользователя")
-    private UUID userId;
-
-    @Parameter(description = "Идентификатор сессии")
-    private UUID sessionId;*/
-
     @Parameter(description = "Логин", example = "alexx")
     private String login;
 
