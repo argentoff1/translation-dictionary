@@ -3,6 +3,7 @@ package ru.mmtr.translationdictionary.domainservice.user;
 import io.jsonwebtoken.Claims;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import ru.mmtr.translationdictionary.domainservice.common.CommonUtils;
 import ru.mmtr.translationdictionary.infrastructure.security.JwtAuthentication;
 import ru.mmtr.translationdictionary.infrastructure.security.JwtProvider;
 import ru.mmtr.translationdictionary.domain.common.*;
@@ -60,13 +61,13 @@ public class UserService {
     }
 
     // +-
-    public JwtResponseResultModel getAccessToken(String refreshToken, UUID id) {
+    public JwtResponseResultModel getAccessToken(String refreshToken) {
         if (jwtProvider.validateRefreshToken(refreshToken)) {
             final Claims claims = jwtProvider.getRefreshClaims(refreshToken);
             final String login = claims.getSubject();
 
             final UserModel user = userRepository.getByLogin(login);
-            final String accessToken = jwtProvider.generateAccessToken(user, id);
+            final String accessToken = jwtProvider.generateAccessToken(user, CommonUtils.getSessionId());
 
             return new JwtResponseResultModel(accessToken, null);
         }
@@ -75,23 +76,18 @@ public class UserService {
     }
 
     // +-
-    public JwtResponseResultModel refreshToken(String refreshToken, UUID id) {
+    public JwtResponseResultModel refreshToken(String refreshToken) {
         if (jwtProvider.validateRefreshToken(refreshToken)) {
             final Claims claims = jwtProvider.getRefreshClaims(refreshToken);
             final String login = claims.getSubject();
 
             final UserModel user = userRepository.getByLogin(login);
-            final String accessToken = jwtProvider.generateAccessToken(user, id);
-            final String newRefreshToken = jwtProvider.generateRefreshToken(user, id);
+            final String accessToken = jwtProvider.generateAccessToken(user, CommonUtils.getSessionId());
+            final String newRefreshToken = jwtProvider.generateRefreshToken(user, CommonUtils.getSessionId());
 
-            return new JwtResponseResultModel(accessToken, refreshToken);
+            return new JwtResponseResultModel(accessToken, newRefreshToken);
         }
         return new JwtResponseResultModel("CAN_NOT_GENERATE_TOKEN");
-    }
-
-    // +-
-    public JwtAuthentication getAuthInfo() {
-        return (JwtAuthentication) SecurityContextHolder.getContext().getAuthentication();
     }
 
     // +-

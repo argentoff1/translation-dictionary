@@ -7,13 +7,14 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
 import ru.mmtr.translationdictionary.domain.common.*;
-import ru.mmtr.translationdictionary.domain.session.UserSessionModel;
 import ru.mmtr.translationdictionary.domain.user.*;
 import ru.mmtr.translationdictionary.domainservice.common.Validation;
-import ru.mmtr.translationdictionary.infrastructure.repositories.session.UserSessionEntity;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Repository
@@ -52,13 +53,6 @@ public class UserRepository {
         }
 
         return resultModels;
-    }
-
-    public Integer getAccessToken(UserSessionModel model) {
-
-        return DB
-                .update(UserSessionEntity.class)
-                .set(UserSessionEntity.ACCESS_TOKEN, model.getAccessToken()).update();
     }
 
     public CollectionResultModel<UserModel> showAllUsers() {

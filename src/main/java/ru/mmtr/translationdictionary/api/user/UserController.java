@@ -5,13 +5,11 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import ru.mmtr.translationdictionary.domain.common.*;
 import ru.mmtr.translationdictionary.domain.export.ExportDictionariesModel;
 import ru.mmtr.translationdictionary.domain.session.UserSessionModel;
 import ru.mmtr.translationdictionary.domain.session.UserSessionPageRequestModel;
 import ru.mmtr.translationdictionary.domain.user.*;
-import ru.mmtr.translationdictionary.domainservice.common.CommonUtils;
 import ru.mmtr.translationdictionary.domainservice.export.ExportDictionariesService;
 import ru.mmtr.translationdictionary.domainservice.user.UserService;
 
@@ -51,13 +49,13 @@ public class UserController {
     @PostMapping(value = "/getNewAccessToken")
     public JwtResponseResultModel getNewAccessToken(@RequestBody RefreshJwtRequestModel model) {
 
-        return userService.getAccessToken(model.getRefreshToken(), model.getSessionId());
+        return userService.getAccessToken(model.getRefreshToken());
     }
 
-    @PostMapping(value = "/getNewRefreshToken")
-    public JwtResponseResultModel getNewRefreshToken(@RequestBody RefreshJwtRequestModel model) {
+    @PostMapping(value = "/refreshToken")
+    public JwtResponseResultModel refreshToken(@RequestBody RefreshJwtRequestModel model) {
 
-        return userService.refreshToken(model.getRefreshToken(), model.getSessionId());
+        return userService.refreshToken(model.getRefreshToken());
     }
 
     @GetMapping("/showAllUsers")
@@ -81,6 +79,7 @@ public class UserController {
     }
 
     @PostMapping(value = "/getPageUsers")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(
             summary = "Отображение всех пользователей постранично",
             description = "Позволяет отобразить всех пользователей постранично"
@@ -100,6 +99,7 @@ public class UserController {
     }
 
     @GetMapping(value = "/getUserById/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(
             summary = "Получение пользователя",
             description = "Позволяет получить одного пользователя"
@@ -119,6 +119,7 @@ public class UserController {
     }
 
     @PostMapping(value = "/save")
+    @PreAuthorize("hasAuthority('USER')")
     @Operation(
             summary = "Регистрация",
             description = "Позволяет зарегистрировать пользователя"
@@ -128,6 +129,7 @@ public class UserController {
     }
 
     @PutMapping(value = "/updateUser")
+    @PreAuthorize("hasAuthority('USER')")
     @Operation(
             summary = "Обновление данных",
             description = "Позволяет обновить личные данные"
@@ -137,6 +139,7 @@ public class UserController {
     }
 
     @PutMapping(value = "/updateLogin")
+    @PreAuthorize("hasAuthority('USER')")
     @Operation(
             summary = "Обновление логина",
             description = "Позволяет обновить логин пользователя"
@@ -146,6 +149,7 @@ public class UserController {
     }
 
     @PutMapping(value = "/updatePassword")
+    @PreAuthorize("hasAuthority('USER')")
     @Operation(
             summary = "Обновление пароля",
             description = "Позволяет обновить пароль"
@@ -175,6 +179,7 @@ public class UserController {
     }
 
     @PostMapping(value = "/logout")
+    @PreAuthorize("hasAuthority('USER')")
     @Operation(
             summary = "Выход пользователя из системы ",
             description = "Позволяет пользователю выйти из системы"

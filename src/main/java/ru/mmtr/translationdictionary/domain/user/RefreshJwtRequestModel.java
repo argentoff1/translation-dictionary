@@ -11,7 +11,4 @@ import java.util.UUID;
 public class RefreshJwtRequestModel {
     @Parameter(description = "Обновленный токен доступа")
     private String refreshToken;
-
-    @Parameter(description = "Идентификатор сессии")
-    private UUID sessionId;
 }

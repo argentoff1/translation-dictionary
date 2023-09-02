@@ -15,7 +15,6 @@ import java.util.UUID;
 public class JwtAuthentication implements Authentication {
     private boolean authenticated;
     private String login;
-    private String firstName;
     private UUID userId;
     private UUID sessionId;
     private String roleName;
@@ -52,6 +51,6 @@ public class JwtAuthentication implements Authentication {
 
     @Override
     public String getName() {
-        return firstName;
+        return null;
     }
 }

@@ -48,11 +48,12 @@ public class ExportDictionariesService {
                 // Переложить все поля в модель из dictionaryModel в exportDictionaryModel
                 return exportDictionaryModel;
             }).collect(Collectors.toList());
-            var userIds = internalPage.stream().map(ExportDictionariesModel::getCreatedUserId).distinct().collect(Collectors.toList());
+            var userCreatorsIds = internalPage.stream().map(ExportDictionariesModel::getCreatedUserId).distinct().collect(Collectors.toList());
+            var userModifiersIds = internalPage.stream().map(ExportDictionariesModel::getModifiedUserId).distinct().collect(Collectors.toList());
             // вызывать метод из репозитория, который вернет модели. на вход список guid
-            var langaugeMap = languageService.getByIds(userIds);
+            var languageMap = languageService.getByIds(userCreatorsIds);
             // Получить все остальные сущности, остальные ID
-            var userMap = userService.getByIds(userIds);
+            var userMap = userService.getByIds(userCreatorsIds);
             internalPage.forEach(asd -> {
 
             });

@@ -6,6 +6,11 @@ import ru.mmtr.translationdictionary.infrastructure.security.JwtAuthentication;
 import java.util.UUID;
 
 public class CommonUtils {
+
+    public static JwtAuthentication getAuthInfo() {
+        return (JwtAuthentication) SecurityContextHolder.getContext().getAuthentication();
+    }
+
     public static String getRole() {
         var user = new JwtAuthentication();
 
