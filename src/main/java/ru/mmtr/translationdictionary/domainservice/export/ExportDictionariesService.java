@@ -55,6 +55,7 @@ public class ExportDictionariesService {
             var userModifiedMap = userService.getByIds(userModifiersIds);
             // Засунуть мапы в модель
             internalPage.forEach(exportDictionariesModel -> {
+                // Мб не так
                 internalPage.stream().map(ExportDictionariesModel::getFromLanguage).collect(Collectors.toList());
             });
         } while (page.getResultList().size() == PAGE_SIZE);
