@@ -173,16 +173,4 @@ public class DictionaryRepository {
 
         return model;
     }
-
-    private DictionaryWordAndTranslationModel getWordAndTranslationModel(DictionaryEntity entity) {
-        if (entity == null) {
-            return null;
-        }
-
-        var model = new DictionaryWordAndTranslationModel();
-        model.setWord(entity.getWord());
-        model.setTranslation(entity.getTranslation());
-
-        return model;
-    }
 }

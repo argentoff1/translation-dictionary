@@ -1,7 +1,6 @@
 package ru.mmtr.translationdictionary.domainservice.user;
 
 import io.jsonwebtoken.Claims;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import ru.mmtr.translationdictionary.domain.common.*;
@@ -91,6 +90,7 @@ public class UserService {
             final String login = claims.getSubject();
 
             final UserModel user = userRepository.getByLogin(login);
+
             final String accessToken = jwtProvider.generateAccessToken(user, CommonUtils.getSessionId());
             final String newRefreshToken = jwtProvider.generateRefreshToken(user, CommonUtils.getSessionId());
 
@@ -311,30 +311,27 @@ public class UserService {
         return repositoryResult;
     }
 
-    public SuccessResultModel logout(JwtRequestModel model) {
-        var findUser = userRepository.getByLogin(model.getLogin());
+    public SuccessResultModel logout() {
+        var findUser = userRepository.getByLogin(CommonUtils.getSubject());
 
-        var validationResult = Validation.stringValidation(model.getLogin(), 20);
+        var validationResult = Validation.stringValidation(findUser.getLogin(), 20);
         if (validationResult.getErrorCode() != null) {
             return new SuccessResultModel("CAN_NOT_LOGOUT",
                     "Не удалось выйти из системы. Поля должны быть корректно заполненными");
         }
 
-        validationResult = stringValidation(model.getPassword(), 100);
+        validationResult = stringValidation(findUser.getPassword(), 100);
         if (validationResult.getErrorCode() != null) {
             return new SuccessResultModel("CAN_NOT_LOGOUT", "Не удалось выйти из системы");
         }
-        if (!BCrypt.checkpw(model.getPassword(), findUser.getPassword())) {
-            return new SuccessResultModel("CAN_NOT_LOGOUT", "Не удалось выйти из системы");
-        }
 
-        if (findUser == null) {
+        /*if (findUser == null) {
             return new SuccessResultModel("CAN_NOT_LOGOUT",
                     "Не удалось выйти из системы. Пользователь не найден");
-        }
+        }*/
 
         userSessionService.delete(findUser);
 
-        return userRepository.logout(model);
+        return userRepository.logout();
     }
 }

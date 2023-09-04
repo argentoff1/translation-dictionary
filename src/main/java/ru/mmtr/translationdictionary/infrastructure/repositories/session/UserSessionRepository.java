@@ -100,14 +100,7 @@ public class UserSessionRepository {
         return getModel(foundEntity);
     }
 
-    public UserSessionModel saveAdmin(UserModel model) {
-        var userSessionEntity = getAdminEntity(model);
-        DB.insert(userSessionEntity);
-
-        return getModel(userSessionEntity);
-    }
-
-    public UserSessionModel saveUser(UserModel model) {
+    public UserSessionModel save(UserModel model) {
         var userSessionEntity = getUserEntity(model);
         DB.insert(userSessionEntity);
 
@@ -149,23 +142,6 @@ public class UserSessionRepository {
         model.setUserId(entity.getUserId());
 
         return model;
-    }
-
-    private UserSessionEntity getAdminEntity(UserModel user) {
-        if (user == null) {
-            return null;
-        }
-
-        var entity = new UserSessionEntity();
-        entity.setSessionId(UUID.randomUUID());
-        entity.setAccessToken(jwtProvider.generateAccessToken(user, entity.getSessionId()));
-        entity.setAccessTokenExpiredDate(LocalDateTime.now().plusMinutes(60));
-        entity.setRefreshToken(jwtProvider.generateRefreshToken(user, entity.getSessionId()));
-        entity.setRefreshTokenExpiredDate(LocalDateTime.now().plusDays(1));
-        entity.setUserId(user.getUserId());
-        entity.setTokenCreatedAt(LocalDateTime.now());
-
-        return entity;
     }
 
     private UserSessionEntity getUserEntity(UserModel user) {

@@ -2,6 +2,7 @@ package ru.mmtr.translationdictionary.infrastructure.repositories.language;
 
 import io.ebean.DB;
 import io.ebean.ExpressionList;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
 import ru.mmtr.translationdictionary.domain.common.CollectionResultModel;
 import ru.mmtr.translationdictionary.domain.common.GUIDResultModel;
@@ -124,8 +125,12 @@ public class LanguageRepository {
                     "Не удалось обновить данные. Поля должны быть корректно заполненными");
         }
 
-        DB.update(LanguageEntity.class)
-                .set(LanguageEntity.LANGUAGE_NAME, model.getLanguageName())
+        var updateQuery = DB.update(LanguageEntity.class);
+        if (StringUtils.isNotBlank(model.getLanguageName())) {
+            updateQuery = updateQuery.set(LanguageEntity.LANGUAGE_NAME, model.getLanguageName());
+        }
+
+        updateQuery
                 .set(LanguageEntity.LANGUAGE_MODIFIED_AT, LocalDateTime.now())
                 .set(LanguageEntity.MODIFIED_USER_ID, CommonUtils.getUserId())
                 .where()

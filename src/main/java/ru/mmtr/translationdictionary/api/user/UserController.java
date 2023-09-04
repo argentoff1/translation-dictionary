@@ -14,7 +14,6 @@ import ru.mmtr.translationdictionary.domainservice.common.CommonUtils;
 import ru.mmtr.translationdictionary.domainservice.export.ExportDictionariesService;
 import ru.mmtr.translationdictionary.domainservice.user.UserService;
 
-import java.security.Principal;
 import java.util.UUID;
 
 @RestController
@@ -56,7 +55,7 @@ public class UserController {
         return userService.getAccessToken(model.getRefreshToken());
     }
 
-    @GetMapping(value = "/refreshToken")
+    @GetMapping(value = "/refresh")
     @Operation(
             summary = "Генерация новых access и refresh токенов",
             description = "Позволяет сгенерировать новые access и refresh токены"
@@ -191,7 +190,7 @@ public class UserController {
             summary = "Выход пользователя из системы ",
             description = "Позволяет пользователю выйти из системы"
     )
-    public SuccessResultModel logout(JwtRequestModel model) {
-        return userService.logout(model);
+    public SuccessResultModel logout() {
+        return userService.logout();
     }
 }

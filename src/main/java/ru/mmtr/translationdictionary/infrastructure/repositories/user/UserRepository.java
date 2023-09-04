@@ -8,6 +8,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
 import ru.mmtr.translationdictionary.domain.common.*;
 import ru.mmtr.translationdictionary.domain.user.*;
+import ru.mmtr.translationdictionary.domainservice.common.CommonUtils;
 import ru.mmtr.translationdictionary.domainservice.common.Validation;
 
 import java.time.LocalDateTime;
@@ -337,16 +338,20 @@ public class UserRepository {
         return new SuccessResultModel(true);
     }
 
-    public SuccessResultModel logout(JwtRequestModel model) {
+    public SuccessResultModel logout() {
         var foundUserEntity = DB.find(UserEntity.class)
                 .where()
-                .eq(UserEntity.LOGIN, model.getLogin())
+                .eq(UserEntity.LOGIN, CommonUtils.getSubject())
                 .findOne();
 
         if (foundUserEntity == null) {
             return new SuccessResultModel("CAN_NOT_AUTHORIZE",
                     "Невозможно выйти из системы");
         }
+
+        /*if (!BCrypt.checkpw(model.getPassword(), foundUserEntity.getPassword())) {
+            return new JwtResponseResultModel("CAN_NOT_AUTHORIZE");
+        }*/
 
         if (!Validation.checkingForArchiving(foundUserEntity.getArchiveDate())) {
             return new SuccessResultModel("CAN_NOT_AUTHORIZE",
