@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import ru.mmtr.translationdictionary.domain.common.GeneralResultModel;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -13,12 +14,18 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ExportDictionariesModel {
-    @Schema(description = "Язык исходного слова", accessMode = Schema.AccessMode.READ_ONLY)
-    private UUID fromLanguage;
+public class ExportDictionariesModel extends GeneralResultModel {
+    @Schema(description = "Наименование языка исходного слова", accessMode = Schema.AccessMode.READ_ONLY)
+    private String fromLanguageName;
 
-    @Schema(description = "Язык переведенного слова", accessMode = Schema.AccessMode.READ_ONLY)
-    private UUID toLanguage;
+    @Schema(description = "Идентификатор языка исходного слова")
+    private UUID fromLanguageUUID;
+
+    @Schema(description = "Наименование языка переведенного слова", accessMode = Schema.AccessMode.READ_ONLY)
+    private String toLanguageName;
+
+    @Schema(description = "Идентификатор языка переведенного слова")
+    private UUID toLanguageUUID;
 
     @Schema(description = "Слово для перевода")
     private String word;
@@ -43,4 +50,20 @@ public class ExportDictionariesModel {
 
     @Schema(description = "Дата изменения пары слов")
     private LocalDateTime modifiedAt;
+
+    public ExportDictionariesModel(String errorCode, String errorMessage) {
+        super(errorCode, errorMessage);
+        fromLanguageName = null;
+        fromLanguageUUID = null;
+        toLanguageName = null;
+        toLanguageUUID = null;
+        word = null;
+        translation = null;
+        fullName = null;
+        email = null;
+        createdUserId = null;
+        createdAt = null;
+        modifiedUserId = null;
+        modifiedAt = null;
+    }
 }

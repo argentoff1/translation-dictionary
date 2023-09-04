@@ -23,8 +23,8 @@ public class WriteListToFile {
         Iterator<ExportDictionariesModel> iterator = modelList.iterator();
 
         exportDictionariesModel = iterator.next();
-        Sheet sheet = workbook.createSheet(exportDictionariesModel.getFromLanguage() + "-" +
-                exportDictionariesModel.getToLanguage());
+        Sheet sheet = workbook.createSheet(exportDictionariesModel.getFromLanguageName() + "-" +
+                exportDictionariesModel.getToLanguageName());
 
         /*if (workbook.getSheet(sheet.getSheetName()) == null) {
             Row headerRow = sheet.createRow(0);
@@ -46,9 +46,9 @@ public class WriteListToFile {
 
         Row headerRow = sheet.createRow(0);
         Cell headerCell0 = headerRow.createCell(0);
-        headerCell0.setCellValue(String.valueOf(exportDictionariesModel.getFromLanguage()));
+        headerCell0.setCellValue(exportDictionariesModel.getFromLanguageName());
         Cell headerCell1 = headerRow.createCell(1);
-        headerCell1.setCellValue(String.valueOf(exportDictionariesModel.getToLanguage()));
+        headerCell1.setCellValue(exportDictionariesModel.getToLanguageName());
         Cell headerCell2 = headerRow.createCell(2);
         headerCell2.setCellValue("Добавил");
         Cell headerCell3 = headerRow.createCell(3);
