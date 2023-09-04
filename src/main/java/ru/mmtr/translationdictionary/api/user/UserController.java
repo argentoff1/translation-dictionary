@@ -10,9 +10,11 @@ import ru.mmtr.translationdictionary.domain.export.ExportDictionariesModel;
 import ru.mmtr.translationdictionary.domain.session.UserSessionModel;
 import ru.mmtr.translationdictionary.domain.session.UserSessionPageRequestModel;
 import ru.mmtr.translationdictionary.domain.user.*;
+import ru.mmtr.translationdictionary.domainservice.common.CommonUtils;
 import ru.mmtr.translationdictionary.domainservice.export.ExportDictionariesService;
 import ru.mmtr.translationdictionary.domainservice.user.UserService;
 
+import java.security.Principal;
 import java.util.UUID;
 
 @RestController
@@ -33,7 +35,6 @@ public class UserController {
             description = "Позволяет экспортировать данные из словаря"
     )
     public ExportDictionariesModel exportDictionary() {
-
         return exportDictionariesService.exportDictionary();
     }
 
@@ -52,18 +53,16 @@ public class UserController {
             description = "Позволяет сгенерировать новый access токен"
     )
     public JwtResponseResultModel getNewAccessToken(@RequestBody RefreshJwtRequestModel model) {
-
         return userService.getAccessToken(model.getRefreshToken());
     }
 
-    @PostMapping(value = "/refreshToken")
+    @GetMapping(value = "/refreshToken")
     @Operation(
             summary = "Генерация новых access и refresh токенов",
             description = "Позволяет сгенерировать новые access и refresh токены"
     )
-    public JwtResponseResultModel refreshToken(@RequestBody RefreshJwtRequestModel model) {
-
-        return userService.refreshToken(model.getRefreshToken());
+    public JwtResponseResultModel refresh() {
+        return userService.refreshToken(CommonUtils.getSubject());
     }
 
     @GetMapping("/showAllUsers")

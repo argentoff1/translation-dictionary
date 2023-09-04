@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.apache.commons.lang3.StringUtils;
 
 @Getter
 @Setter
@@ -20,9 +19,5 @@ public class GeneralResultModel {
 
     public GeneralResultModel(String errorCode) {
         this.errorCode = errorCode;
-    }
-
-    public boolean isError() {
-        return StringUtils.isNotBlank(errorCode) || StringUtils.isNotBlank(errorMessage);
     }
 }

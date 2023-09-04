@@ -28,11 +28,9 @@ public class WriteListToFile {
 
         Row headerRow = sheet.createRow(0);
         Cell headerCell0 = headerRow.createCell(0);
-        headerCell0.setCellValue("Английский");
-        //headerCell0.setCellValue(exportDictionariesModel.getFromLanguageName());
+        headerCell0.setCellValue(exportDictionariesModel.getFromLanguageName());
         Cell headerCell1 = headerRow.createCell(1);
-        headerCell1.setCellValue("Русский");
-        //headerCell1.setCellValue(exportDictionariesModel.getToLanguageName());
+        headerCell1.setCellValue(exportDictionariesModel.getToLanguageName());
         Cell headerCell2 = headerRow.createCell(2);
         headerCell2.setCellValue("Добавил");
         Cell headerCell3 = headerRow.createCell(3);

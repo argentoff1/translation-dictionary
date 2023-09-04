@@ -3,6 +3,7 @@ package ru.mmtr.translationdictionary.api.dictionary;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.mmtr.translationdictionary.domain.common.*;
 import ru.mmtr.translationdictionary.domain.dictionary.*;
@@ -26,27 +27,18 @@ public class DictionaryController {
             description = "Позволяет отобразить все словари"
     )
     public CollectionResultModel<DictionaryModel> showAll() {
-
         return dictionaryService.showAll();
     }
 
-    @PostMapping(value = "/getAllByIds")
-    @Operation(
-            summary = "Отображение слов и переводов",
-            description = "Позволяет отобразить слова и переводы"
-    )
-    public CollectionResultModel<DictionaryWordAndTranslationModel> getAllByIds(DictionaryIdsCollectionModel<UUID> model) {
 
-        return dictionaryService.getAllByIds(model);
-    }
 
     @PostMapping(value = "/getPage")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(
             summary = "Отображение всех словарей постранично",
             description = "Позволяет отобразить все словари постранично"
     )
     public PageResultModel<DictionaryModel> getPage(@RequestBody DictionaryPageRequestModel criteria) {
-
         return dictionaryService.getPage(criteria);
     }
 
@@ -56,14 +48,14 @@ public class DictionaryController {
             description = "Позволяет получить один словарь"
     )
     public DictionaryModel getById(@PathVariable @Parameter(description = "Идентификатор") UUID id) {
-
         return dictionaryService.getById(id);
     }
 
     @PostMapping(value = "/getTranslatedWord")
     @Operation(
             summary = "Получение переведенного слова",
-            description = "Позволяет получить переведенное слово с помощью исходного слова, языка искомого слова, и языка переводимого слова"
+            description = "Позволяет получить переведенное слово с помощью исходного слова, " +
+                    "языка искомого слова, и языка переводимого слова"
     )
     public StringResultModel getTranslatedWord(@RequestBody DictionaryTranslateModel model) {
 

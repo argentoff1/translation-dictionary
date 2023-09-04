@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-// Фильтры по подстроке, по дате добавления / модификации
 @Getter
 @Setter
 @NoArgsConstructor

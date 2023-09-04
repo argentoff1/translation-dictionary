@@ -20,12 +20,10 @@ import ru.mmtr.translationdictionary.infrastructure.repositories.user.UserRole;
 @Configuration
 @EnableMethodSecurity
 public class SecurityConfiguration {
-    private static final String ENCODED_PASSWORD = "$2a$10$AIUufK8g6EFhBcumRRV2L.AQNz3Bjp7oDQVFiO5JJMBFZQ6x2/R/2";
     private static final String[] AUTH_WHITELIST = {
             "/api/users/login",
             "/api/users/getNewAccessToken",
             "/api/users/getNewRefreshToken",
-            "/api/users/exportDictionary",
             "/v2/api-docs",
             "/swagger-resources",
             "/swagger-resources/**",
@@ -68,15 +66,6 @@ public class SecurityConfiguration {
 
         return httpSecurity.build();
     }
-
-    /*@Bean
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication()
-                .passwordEncoder(passwordEncoder())
-                .withUser("admin")
-                .password(ENCODED_PASSWORD)
-                .roles(UserRole.ADMIN.getRoleName());
-    }*/
 
     @Bean
     public InMemoryUserDetailsManager userDetailsService() {

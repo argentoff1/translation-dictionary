@@ -3,6 +3,7 @@ package ru.mmtr.translationdictionary.api.language;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.mmtr.translationdictionary.domain.common.*;
 import ru.mmtr.translationdictionary.domain.language.LanguageModel;
@@ -29,17 +30,16 @@ public class LanguageController {
             description = "Позволяет отобразить все языки"
     )
     public CollectionResultModel<LanguageModel> showAll() {
-
         return languageService.showAll();
     }
 
     @PostMapping(value = "/getPage")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(
             summary = "Отображение всех языков постранично",
             description = "Позволяет отобразить все языки постранично"
     )
     public PageResultModel<LanguageModel> getPage(LanguagePageRequestModel criteria) {
-
         return languageService.getPage(criteria);
     }
 
@@ -49,7 +49,6 @@ public class LanguageController {
             description = "Позволяет получить язык по его идентификатору"
     )
     public LanguageModel getById(@PathVariable @Parameter(description = "Идентификатор языка") UUID id) {
-
         return languageService.getById(id);
     }
 
@@ -59,7 +58,6 @@ public class LanguageController {
             description = "Позволяет сохранить один язык"
     )
     public GUIDResultModel save(@RequestBody LanguageSaveModel model) {
-
         return languageService.save(model);
     }
 
@@ -69,7 +67,6 @@ public class LanguageController {
             description = "Позволяет обновить один язык"
     )
     public SuccessResultModel update(@RequestBody LanguageUpdateModel model) {
-
         return languageService.update(model);
     }
 
@@ -79,7 +76,6 @@ public class LanguageController {
             description = "Позволяет удалить один язык"
     )
     public SuccessResultModel delete(@PathVariable @Parameter(description = "Идентификатор языка") UUID id) {
-
         return languageService.delete(id);
     }
 }

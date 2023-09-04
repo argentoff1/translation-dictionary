@@ -112,7 +112,6 @@ public class LanguageRepository {
         return new GUIDResultModel(resultModel.getLanguageId());
     }
 
-    // -
     public SuccessResultModel update(LanguageUpdateModel model) {
         LanguageEntity foundEntity = DB
                 .find(LanguageEntity.class)
@@ -136,7 +135,6 @@ public class LanguageRepository {
         return new SuccessResultModel(true);
     }
 
-    // -
     public SuccessResultModel delete(UUID id) {
         LanguageEntity foundEntity = DB
                 .find(LanguageEntity.class)
@@ -167,6 +165,8 @@ public class LanguageRepository {
         model.setLanguageName(entity.getLanguageName());
         model.setCreatedAt(entity.getCreatedAt());
         model.setCreatedUserId(entity.getCreatedUserId());
+        model.setModifiedAt(entity.getModifiedAt());
+        model.setModifiedUserId(entity.getModifiedUserId());
 
         return model;
     }

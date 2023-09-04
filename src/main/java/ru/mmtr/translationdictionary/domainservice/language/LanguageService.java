@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static ru.mmtr.translationdictionary.domainservice.common.Validation.isValidUUID;
 import static ru.mmtr.translationdictionary.domainservice.common.Validation.stringValidation;
 
 @Slf4j
@@ -31,7 +32,6 @@ public class LanguageService {
     }
 
     public Map<UUID, LanguageModel> getByIds(List<UUID> idList) {
-
         return languageRepository.getByIds(idList);
     }
 
@@ -40,14 +40,14 @@ public class LanguageService {
     }
 
     public LanguageModel getById(UUID id) {
-        if (id == null) {
-            return null;
+        if (!isValidUUID(String.valueOf(id))) {
+            return new LanguageModel("CAN_NOT_UPDATE",
+                    "Не удалось обновить данные. Поля должны быть корректно заполнены");
         }
 
         return languageRepository.getById(id);
     }
 
-    // В сейве и апдейте добавлять в колонки created_user_id и modified_user_id
     public GUIDResultModel save(LanguageSaveModel model) {
         var validationResult = stringValidation(model.getLanguageName(), 15);
 
@@ -57,43 +57,33 @@ public class LanguageService {
                             "Поля должны быть корректно заполненными");
         }
 
-        var result = languageRepository.save(model);
-
-        if (result == null) {
-            return new GUIDResultModel("CAN_NOT_SAVE",
-                    "Не удалось сохранить данные. " +
-                            "Поля должны быть корректно заполненными");
-        }
-
-
-
-        return result;
+        return languageRepository.save(model);
     }
 
     public SuccessResultModel update(LanguageUpdateModel model) {
+        if (!isValidUUID(String.valueOf(model.getId()))) {
+            return new SuccessResultModel("CAN_NOT_UPDATE",
+                    "Не удалось обновить данные. Поля должны быть корректно заполнены");
+        }
+
         var validationResult = stringValidation(model.getLanguageName(), 15);
 
         if (validationResult.getErrorCode() != null) {
             return validationResult;
         }
 
-        var repositoryResult = languageRepository.update(model);
-
-        if (repositoryResult == null) {
-            return new SuccessResultModel("CAN_NOT_UPDATE",
-                    "Не удалось сохранить данные. Поля должны быть заполненными");
-        }
+        languageRepository.update(model);
 
         return new SuccessResultModel(true);
     }
 
     public SuccessResultModel delete(UUID id) {
-        var repositoryResult = languageRepository.delete(id);
-
-        if (repositoryResult == null) {
-            return new SuccessResultModel("CAN_NOT_DELETE",
-                    "Не удалось удалить данные. Поля должны быть заполненными");
+        if (!isValidUUID(String.valueOf(id))) {
+            return new SuccessResultModel("CAN_NOT_UPDATE",
+                    "Не удалось обновить данные. Поля должны быть корректно заполнены");
         }
+
+        languageRepository.delete(id);
 
         return new SuccessResultModel(true);
     }

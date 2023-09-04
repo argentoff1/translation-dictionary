@@ -5,6 +5,7 @@ import ru.mmtr.translationdictionary.domain.common.*;
 import ru.mmtr.translationdictionary.domain.dictionary.*;
 import ru.mmtr.translationdictionary.infrastructure.repositories.dictionary.DictionaryRepository;
 
+import static ru.mmtr.translationdictionary.domainservice.common.Validation.isValidUUID;
 import static ru.mmtr.translationdictionary.domainservice.common.Validation.stringValidation;
 
 import java.util.List;
@@ -20,29 +21,17 @@ public class DictionaryService {
     }
 
     public CollectionResultModel<DictionaryModel> showAll() {
-
         return dictionaryRepository.showAll();
     }
 
-    public Map<UUID, DictionaryModel> getByIds(List<UUID> idList) {
-
-        return dictionaryRepository.getByIds(idList);
-    }
-
-    public CollectionResultModel<DictionaryWordAndTranslationModel> getAllByIds(DictionaryIdsCollectionModel<UUID> model) {
-
-        return dictionaryRepository.getAllByIds(model);
-    }
-
     public PageResultModel<DictionaryModel> getPage(DictionaryPageRequestModel criteria) {
-
         return dictionaryRepository.getPage(criteria);
     }
 
     public DictionaryModel getById(UUID id) {
-        if (id == null) {
-            return new DictionaryModel("CA_NOT_FIND",
-                    "Невозможно найти словарь");
+        if (!isValidUUID(String.valueOf(id))) {
+            return new DictionaryModel("CAN_NOT_FIND",
+                    "Не удалось найти словарь");
         }
 
         return dictionaryRepository.getById(id);
@@ -56,14 +45,12 @@ public class DictionaryService {
                     "Не удалось найти данные. Поля должны быть корректно заполненными");
         }
 
-        var result = dictionaryRepository.getTranslatedWord(model);
-
-        if (result == null) {
-            return new StringResultModel("TRANSLATION_NOT_FOUND",
-                    "Не удалось найти перевод данного слова");
+        if (model.getFromLanguage() == null || model.getToLanguage() == null) {
+            return new StringResultModel("CAN_NOT_FIND",
+                    "Не удалось найти данные. Поля должны быть корректно заполненными");
         }
 
-        return result;
+        return dictionaryRepository.getTranslatedWord(model);
     }
 
     public GUIDResultModel save(DictionarySaveModel model) {
@@ -79,17 +66,20 @@ public class DictionaryService {
                     "Не удалось сохранить данные. Поля должны быть заполненными");
         }
 
-        var result = dictionaryRepository.save(model);
-
-        if (result == null) {
-            return new GUIDResultModel("CAN_NOT_SAVE",
-                    "Не удалось сохранить данные. Поля должны быть корректно заполненными");
+        if (model.getFromLanguage() == null || model.getToLanguage() == null) {
+            return new GUIDResultModel("CAN_NOT_FIND",
+                    "Не удалось найти данные. Поля должны быть корректно заполненными");
         }
 
-        return result;
+        return dictionaryRepository.save(model);
     }
 
     public SuccessResultModel update(DictionaryUpdateModel model) {
+        if (!isValidUUID(String.valueOf(model.getId()))) {
+            return new SuccessResultModel("CAN_NOT_UPDATE",
+                    "Не удалось обновить данные. Поля должны быть корректно заполнены");
+        }
+
         var validationResult = stringValidation(model.getWord(), 100);
 
         if (validationResult.getErrorCode() != null) {
@@ -113,12 +103,12 @@ public class DictionaryService {
     }
 
     public SuccessResultModel delete(UUID id) {
-        var repositoryResult = dictionaryRepository.delete(id);
-
-        if (repositoryResult == null) {
-            return new SuccessResultModel("CAN_NOT_DELETE",
-                    "Не удалось удалить данные. Поля должны быть корректно заполненными");
+        if (!isValidUUID(String.valueOf(id))) {
+            return new SuccessResultModel("CAN_NOT_UPDATE",
+                    "Не удалось обновить данные. Поля должны быть корректно заполнены");
         }
+
+        dictionaryRepository.delete(id);
 
         return new SuccessResultModel(true);
     }

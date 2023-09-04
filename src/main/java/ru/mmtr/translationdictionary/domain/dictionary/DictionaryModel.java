@@ -44,14 +44,5 @@ public class DictionaryModel extends GeneralResultModel {
 
     public DictionaryModel(String errorCode, String errorMessage) {
         super(errorCode, errorMessage);
-        dictionaryId = null;
-        word = null;
-        translation = null;
-        fromLanguage = null;
-        toLanguage = null;
-        createdAt = null;
-        modifiedAt = null;
-        createdUserId = null;
-        modifiedUserId = null;
     }
 }

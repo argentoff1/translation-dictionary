@@ -1,6 +1,7 @@
 package ru.mmtr.translationdictionary.domainservice.user;
 
 import io.jsonwebtoken.Claims;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import ru.mmtr.translationdictionary.domain.common.*;
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static ru.mmtr.translationdictionary.domainservice.common.Validation.isValidUUID;
 import static ru.mmtr.translationdictionary.domainservice.common.Validation.stringValidation;
 
 @Service
@@ -42,11 +44,10 @@ public class UserService {
             return new JwtResponseResultModel("CAN_NOT_AUTHORIZE");
         }
 
-
+        // Проверка на архивацию
         if (!Validation.checkingForArchiving(findUser.getArchiveDate())) {
             return new JwtResponseResultModel("CAN_NOT_AUTHORIZE");
         }
-
 
         // Проверка пароля
         validationResult = stringValidation(model.getPassword(), 100);
@@ -65,11 +66,9 @@ public class UserService {
     }
 
     public Map<UUID, UserModel> getByIds(List<UUID> idList) {
-
         return userRepository.getByIds(idList);
     }
 
-    // +-
     public JwtResponseResultModel getAccessToken(String refreshToken) {
         if (jwtProvider.validateRefreshToken(refreshToken)) {
             final Claims claims = jwtProvider.getRefreshClaims(refreshToken);
@@ -84,10 +83,11 @@ public class UserService {
         return new JwtResponseResultModel("CAN_NOT_GENERATE_TOKEN");
     }
 
-    // +-
     public JwtResponseResultModel refreshToken(String refreshToken) {
-        if (jwtProvider.validateRefreshToken(refreshToken)) {
-            final Claims claims = jwtProvider.getRefreshClaims(refreshToken);
+        var token = userSessionService.getRefreshToken(refreshToken);
+
+        if (jwtProvider.validateRefreshToken(token)) {
+            final Claims claims = jwtProvider.getRefreshClaims(token);
             final String login = claims.getSubject();
 
             final UserModel user = userRepository.getByLogin(login);
@@ -99,41 +99,35 @@ public class UserService {
         return new JwtResponseResultModel("CAN_NOT_GENERATE_TOKEN");
     }
 
-    // +-
     public CollectionResultModel<UserModel> showAllUsers() {
         return userRepository.showAllUsers();
     }
 
-    // +-
     public CollectionResultModel<UserSessionModel> showAllSessions() {
         return userSessionService.showAll();
     }
 
-    // +-
     public PageResultModel<UserModel> getPageUsers(UserPageRequestModel criteria) {
-
         return userRepository.getPage(criteria);
     }
 
-    // +-
     public PageResultModel<UserSessionModel> getPageSessions(UserSessionPageRequestModel criteria) {
-
         return userSessionService.getPage(criteria);
     }
 
     public UserModel getUserById(UUID id) {
-        if (id == null) {
+        if (!isValidUUID(String.valueOf(id))) {
             return new UserModel("CAN_NOT_FIND",
-                    "Не удалось найти данные. Поля должны быть корректно заполненными");
+                    "Не удалось найти данные. Поля должны быть корректно заполнены");
         }
 
         return userRepository.getById(id);
     }
 
     public UserSessionModel getSessionById(UUID id) {
-        if (id == null) {
+        if (!isValidUUID(String.valueOf(id))) {
             return new UserSessionModel("CAN_NOT_FIND",
-                    "Не удалось найти данные. Поля должны быть корректно заполненными");
+                    "Не удалось найти данные. Поля должны быть корректно заполнены");
         }
 
         return userSessionService.getById(id);
@@ -318,7 +312,7 @@ public class UserService {
     }
 
     public SuccessResultModel logout(JwtRequestModel model) {
-
+        var findUser = userRepository.getByLogin(model.getLogin());
 
         var validationResult = Validation.stringValidation(model.getLogin(), 20);
         if (validationResult.getErrorCode() != null) {
@@ -326,13 +320,14 @@ public class UserService {
                     "Не удалось выйти из системы. Поля должны быть корректно заполненными");
         }
 
-        validationResult = Validation.stringValidation(model.getPassword(), 100);
+        validationResult = stringValidation(model.getPassword(), 100);
         if (validationResult.getErrorCode() != null) {
-            return new SuccessResultModel("CAN_NOT_LOGOUT",
-                    "Не удалось выйти из системы. Поля должны быть корректно заполненными");
+            return new SuccessResultModel("CAN_NOT_LOGOUT", "Не удалось выйти из системы");
+        }
+        if (!BCrypt.checkpw(model.getPassword(), findUser.getPassword())) {
+            return new SuccessResultModel("CAN_NOT_LOGOUT", "Не удалось выйти из системы");
         }
 
-        var findUser = userRepository.getByLogin(model.getLogin());
         if (findUser == null) {
             return new SuccessResultModel("CAN_NOT_LOGOUT",
                     "Не удалось выйти из системы. Пользователь не найден");

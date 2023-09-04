@@ -32,6 +32,19 @@ public class UserSessionRepository {
         );
     }
 
+    public String getRefreshToken(String subject) {
+        var result = DB
+                .find(UserSessionEntity.class)
+                .where()
+                .ilike(UserSessionEntity.REFRESH_TOKEN, "%" + subject + "%")
+                .findOne();
+
+        if (result != null) {
+            return result.getRefreshToken();
+        }
+        return null;
+    }
+
     public PageResultModel<UserSessionModel> getPageSessions(UserSessionPageRequestModel criteria) {
         var expression = DB
                 .find(UserSessionEntity.class)
@@ -146,7 +159,7 @@ public class UserSessionRepository {
         var entity = new UserSessionEntity();
         entity.setSessionId(UUID.randomUUID());
         entity.setAccessToken(jwtProvider.generateAccessToken(user, entity.getSessionId()));
-        entity.setAccessTokenExpiredDate(LocalDateTime.now().plusMinutes(5));
+        entity.setAccessTokenExpiredDate(LocalDateTime.now().plusMinutes(60));
         entity.setRefreshToken(jwtProvider.generateRefreshToken(user, entity.getSessionId()));
         entity.setRefreshTokenExpiredDate(LocalDateTime.now().plusDays(1));
         entity.setUserId(user.getUserId());
@@ -163,7 +176,7 @@ public class UserSessionRepository {
         var entity = new UserSessionEntity();
         entity.setSessionId(UUID.randomUUID());
         entity.setAccessToken(jwtProvider.generateAccessToken(user, entity.getSessionId()));
-        entity.setAccessTokenExpiredDate(LocalDateTime.now().plusMinutes(5));
+        entity.setAccessTokenExpiredDate(LocalDateTime.now().plusMinutes(60));
         entity.setRefreshToken(jwtProvider.generateRefreshToken(user, entity.getSessionId()));
         entity.setRefreshTokenExpiredDate(LocalDateTime.now().plusDays(1));
         entity.setUserId(user.getUserId());

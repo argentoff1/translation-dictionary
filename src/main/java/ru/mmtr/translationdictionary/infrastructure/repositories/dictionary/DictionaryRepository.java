@@ -24,32 +24,6 @@ public class DictionaryRepository {
         );
     }
 
-    public Map<UUID, DictionaryModel> getByIds(List<UUID> idList) {
-        Map<UUID, DictionaryModel> resultMap = new HashMap<>();
-
-        for (DictionaryEntity dictionaryEntity : DB
-                .find(DictionaryEntity.class)
-                .where()
-                .in(DictionaryEntity.DICTIONARY_ID, idList)
-                .findList()) {
-            DictionaryModel dictionaryModel = getModel(dictionaryEntity);
-            resultMap.put(dictionaryModel.getDictionaryId(), dictionaryModel);
-        }
-        return resultMap;
-    }
-
-    public CollectionResultModel<DictionaryWordAndTranslationModel> getAllByIds(DictionaryIdsCollectionModel<UUID> model) {
-        List<DictionaryEntity> wordAndTranslation = DB
-                .find(DictionaryEntity.class)
-                .where()
-                .eq(DictionaryEntity.DICTIONARY_ID, model.getCollectionIds())
-                .findList();
-
-        return new CollectionResultModel<>(
-                wordAndTranslation.stream().map(this::getWordAndTranslationModel).collect(Collectors.toList())
-        );
-    }
-
     public PageResultModel<DictionaryModel> getPage(DictionaryPageRequestModel criteria) {
         var expression = DB
                 .find(DictionaryEntity.class)
@@ -192,6 +166,10 @@ public class DictionaryRepository {
         model.setTranslation(entity.getTranslation());
         model.setFromLanguage(entity.getFromLanguage());
         model.setToLanguage(entity.getToLanguage());
+        model.setCreatedAt(entity.getCreatedAt());
+        model.setCreatedUserId(entity.getCreatedUserId());
+        model.setModifiedAt(entity.getModifiedAt());
+        model.setModifiedUserId(entity.getModifiedUserId());
 
         return model;
     }

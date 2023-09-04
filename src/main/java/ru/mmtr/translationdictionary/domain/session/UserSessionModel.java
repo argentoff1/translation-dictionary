@@ -38,12 +38,5 @@ public class UserSessionModel extends GeneralResultModel {
 
     public UserSessionModel(String errorCode, String errorMessage) {
         super(errorCode, errorMessage);
-        sessionId = null;
-        accessToken = null;
-        refreshToken = null;
-        tokenCreatedAt = null;
-        accessTokenExpiredDate = null;
-        refreshTokenExpiredDate = null;
-        userId = null;
     }
 }

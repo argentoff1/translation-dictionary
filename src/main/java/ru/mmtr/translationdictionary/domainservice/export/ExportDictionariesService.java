@@ -52,7 +52,9 @@ public class ExportDictionariesService {
                 exportDictionaryModel.setWord(dictionaryModel.getWord());
                 exportDictionaryModel.setTranslation(dictionaryModel.getTranslation());
                 exportDictionaryModel.setCreatedUserId(dictionaryModel.getCreatedUserId());
+                exportDictionaryModel.setCreatedAt(dictionaryModel.getCreatedAt());
                 exportDictionaryModel.setModifiedUserId(dictionaryModel.getModifiedUserId());
+                exportDictionaryModel.setModifiedAt(dictionaryModel.getModifiedAt());
 
                 return exportDictionaryModel;
             }).toList();
@@ -98,12 +100,12 @@ public class ExportDictionariesService {
 
             // Засунуть мапы в модель
             for (var exportDictionariesModel : internalPage) {
-                var fromLanguageName =  fromLanguageNamesMap.get(exportDictionariesModel.getFromLanguageName());
+                var fromLanguageName =  fromLanguageNamesMap.get(exportDictionariesModel.getFromLanguageUUID());
                 if (fromLanguageName != null) {
                     exportDictionariesModel.setFromLanguageName(fromLanguageName.getLanguageName());
                 }
 
-                var toLanguageName = toLanguageNamesMap.get(exportDictionariesModel.getToLanguageName());
+                var toLanguageName = toLanguageNamesMap.get(exportDictionariesModel.getToLanguageUUID());
                 if (toLanguageName != null) {
                     exportDictionariesModel.setToLanguageName(toLanguageName.getLanguageName());
                 }
@@ -111,13 +113,13 @@ public class ExportDictionariesService {
                 var userCreator = userCreatorsMap.get(exportDictionariesModel.getCreatedUserId());
                 if (userCreator != null) {
                     exportDictionariesModel.setFullName(userCreator.getLastName() + " "
-                            + userCreator.getFatherName() + " " + userCreator.getFirstName());
+                            + userCreator.getFirstName() + " " + userCreator.getFatherName());
                 }
 
                 var userModifier = userModifiersMap.get(exportDictionariesModel.getModifiedUserId());
                 if (userModifier != null) {
                     exportDictionariesModel.setFullName(userModifier.getLastName() + " "
-                    + userModifier.getFatherName() + " " + userModifier.getFirstName());
+                    + userModifier.getFirstName() + " " + userModifier.getLastName());
                 }
             }
 

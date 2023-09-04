@@ -58,4 +58,16 @@ public class CommonUtils {
 
         return user.getLogin();
     }
+
+    public static String getRefreshToken() {
+        var user = new JwtAuthentication();
+
+        try {
+            user = (JwtAuthentication) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        } catch (NullPointerException e) {
+            e.getMessage();
+        }
+
+        return user.getLogin();
+    }
 }

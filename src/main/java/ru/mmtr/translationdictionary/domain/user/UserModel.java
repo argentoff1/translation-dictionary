@@ -6,10 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ru.mmtr.translationdictionary.domain.common.GeneralResultModel;
-import ru.mmtr.translationdictionary.infrastructure.repositories.user.UserRole;
 
 import java.time.LocalDateTime;
-import java.util.Set;
 import java.util.UUID;
 
 @Getter
@@ -55,17 +53,5 @@ public class UserModel extends GeneralResultModel {
 
     public UserModel(String errorCode, String errorMessage) {
         super(errorCode, errorMessage);
-        userId = null;
-        login = null;
-        password = null;
-        lastName = null;
-        firstName = null;
-        fatherName = null;
-        email = null;
-        phoneNumber = null;
-        createdAt = null;
-        modifiedAt = null;
-        archiveDate = null;
-        roleName = null;
     }
 }

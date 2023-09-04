@@ -35,11 +35,5 @@ public class LanguageModel extends GeneralResultModel {
 
     public LanguageModel(String errorCode, String errorMessage) {
         super(errorCode, errorMessage);
-        languageId = null;
-        languageName = null;
-        createdAt = null;
-        modifiedAt = null;
-        createdUserId = null;
-        modifiedUserId = null;
     }
 }
