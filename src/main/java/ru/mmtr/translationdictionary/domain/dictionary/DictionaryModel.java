@@ -51,5 +51,7 @@ public class DictionaryModel extends GeneralResultModel {
         toLanguage = null;
         createdAt = null;
         modifiedAt = null;
+        createdUserId = null;
+        modifiedUserId = null;
     }
 }

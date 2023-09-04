@@ -96,12 +96,6 @@ public class ExportDictionariesService {
                 userModifiersMap = userService.getByIds(userModifiersIds);
             }
 
-            /*Map<UUID, LanguageModel> shit1 = new HashMap<>();
-            if (!CollectionUtils.isEmpty(shit1)) {
-                shit1 = languageService.getByIds(shit1);
-            }
-            var languageModifiersMap = languageService.getByIds(languageToIds);*/
-
             // Засунуть мапы в модель
             for (var exportDictionariesModel : internalPage) {
                 var fromLanguageName =  fromLanguageNamesMap.get(exportDictionariesModel.getFromLanguageName());
@@ -120,28 +114,12 @@ public class ExportDictionariesService {
                             + userCreator.getFatherName() + " " + userCreator.getFirstName());
                 }
 
-                var userModfier = userModifiersMap.get(exportDictionariesModel.getModifiedUserId());
-                if (userModfier != null) {
-                    exportDictionariesModel.setFullName(userModfier.getLastName() + " "
-                    + userModfier.getFatherName() + " " + userModfier.getFirstName());
+                var userModifier = userModifiersMap.get(exportDictionariesModel.getModifiedUserId());
+                if (userModifier != null) {
+                    exportDictionariesModel.setFullName(userModifier.getLastName() + " "
+                    + userModifier.getFatherName() + " " + userModifier.getFirstName());
                 }
             }
-
-            /*internalPage.forEach(exportDictionariesModel -> {
-
-             internalPage.stream().map(ExportDictionariesModel::getFromLanguage)
-                        .flatMap(map -> toLanguageCreatorsMap.values()
-                                .stream()).collect(Collectors.toList());
-                internalPage.stream().map(ExportDictionariesModel::getToLanguage)
-                        .flatMap(map -> languageModifiersMap.values()
-                                .stream()).collect(Collectors.toList());
-                internalPage.stream().map(ExportDictionariesModel::getCreatedUserId)
-                        .flatMap(map -> userCreatorsMap.values()
-                                .stream()).collect(Collectors.toList());
-                internalPage.stream().map(ExportDictionariesModel::getModifiedUserId)
-                        .flatMap(map -> userModifiersMap.values()
-                                .stream()).collect(Collectors.toList());
-            });*/
 
             try {
                 WriteListToFile.writeExportListToFile("ExportData.xlsx", internalPage);
@@ -152,21 +130,15 @@ public class ExportDictionariesService {
             }
         } while (page.getResultList().size() == PAGE_SIZE);
 
-        /*try {
-            WriteListToFile.writeExportListToFile("ExportData.xlsx", exportDictionariesModels);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }*/
-
         return null;
 
         // Преобразование списка в модель для экспорта
-        //return getModel(exportDictionariesModels);
+        //return getModel();
     }
 
     /*private ExportDictionariesModel getModel(List<ExportDictionariesModel> dataList) {
         var model = new ExportDictionariesModel();
-        model.setFromLanguage(dataList.get);
+        model.setFromLanguage(dataList.get());
         model.setToLanguage(dataList.get());
         model.setFullName(dataList.get());
         model.setEmail(dataList.get());

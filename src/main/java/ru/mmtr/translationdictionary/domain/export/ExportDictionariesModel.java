@@ -53,17 +53,5 @@ public class ExportDictionariesModel extends GeneralResultModel {
 
     public ExportDictionariesModel(String errorCode, String errorMessage) {
         super(errorCode, errorMessage);
-        fromLanguageName = null;
-        fromLanguageUUID = null;
-        toLanguageName = null;
-        toLanguageUUID = null;
-        word = null;
-        translation = null;
-        fullName = null;
-        email = null;
-        createdUserId = null;
-        createdAt = null;
-        modifiedUserId = null;
-        modifiedAt = null;
     }
 }

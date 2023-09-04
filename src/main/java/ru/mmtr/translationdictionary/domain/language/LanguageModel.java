@@ -39,5 +39,7 @@ public class LanguageModel extends GeneralResultModel {
         languageName = null;
         createdAt = null;
         modifiedAt = null;
+        createdUserId = null;
+        modifiedUserId = null;
     }
 }

@@ -26,29 +26,13 @@ public class WriteListToFile {
         Sheet sheet = workbook.createSheet(exportDictionariesModel.getFromLanguageName() + "-" +
                 exportDictionariesModel.getToLanguageName());
 
-        /*if (workbook.getSheet(sheet.getSheetName()) == null) {
-            Row headerRow = sheet.createRow(0);
-            Cell headerCell0 = headerRow.createCell(0);
-            headerCell0.setCellValue(exportDictionariesModel.getFromLanguage());
-            Cell headerCell1 = headerRow.createCell(1);
-            headerCell1.setCellValue(exportDictionariesModel.getToLanguage());
-            Cell headerCell2 = headerRow.createCell(2);
-            headerCell2.setCellValue("Добавил");
-            Cell headerCell3 = headerRow.createCell(3);
-            headerCell3.setCellValue("Дата добавления");
-            Cell headerCell4 = headerRow.createCell(4);
-            headerCell4.setCellValue("Изменил");
-            Cell headerCell5 = headerRow.createCell(5);
-            headerCell5.setCellValue("Дата изменения");
-        } else {
-
-        }*/
-
         Row headerRow = sheet.createRow(0);
         Cell headerCell0 = headerRow.createCell(0);
-        headerCell0.setCellValue(exportDictionariesModel.getFromLanguageName());
+        headerCell0.setCellValue("Английский");
+        //headerCell0.setCellValue(exportDictionariesModel.getFromLanguageName());
         Cell headerCell1 = headerRow.createCell(1);
-        headerCell1.setCellValue(exportDictionariesModel.getToLanguageName());
+        headerCell1.setCellValue("Русский");
+        //headerCell1.setCellValue(exportDictionariesModel.getToLanguageName());
         Cell headerCell2 = headerRow.createCell(2);
         headerCell2.setCellValue("Добавил");
         Cell headerCell3 = headerRow.createCell(3);
@@ -73,13 +57,21 @@ public class WriteListToFile {
             cell2.setCellValue(exportDictionariesModel.getFullName());
 
             Cell cell3 = row.createCell(3);
-            cell3.setCellValue(exportDictionariesModel.getCreatedAt().format(formatter));
+            if (exportDictionariesModel.getCreatedAt() == null) {
+                cell3.setCellValue("");
+            } else {
+                cell3.setCellValue(exportDictionariesModel.getCreatedAt().format(formatter));
+            }
 
             Cell cell4 = row.createCell(4);
             cell4.setCellValue(exportDictionariesModel.getFullName());
 
             Cell cell5 = row.createCell(5);
-            cell5.setCellValue(exportDictionariesModel.getModifiedAt().format(formatter));
+            if (exportDictionariesModel.getModifiedAt() == null) {
+                cell5.setCellValue("");
+            } else {
+                cell5.setCellValue(exportDictionariesModel.getModifiedAt().format(formatter));
+            }
         }
 
         FileOutputStream fos = new FileOutputStream(fileName);
