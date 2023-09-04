@@ -56,10 +56,6 @@ public class UserService {
         if (!BCrypt.checkpw(model.getPassword(), findUser.getPassword())) {
             return new JwtResponseResultModel("CAN_NOT_AUTHORIZE");
         }
-        findUser = userRepository.getByPassword(model.getPassword());
-        if (findUser == null) {
-            return new JwtResponseResultModel("CAN_NOT_AUTHORIZE");
-        }
 
         userRepository.login(model);
 

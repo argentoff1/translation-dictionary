@@ -15,10 +15,10 @@ import java.util.UUID;
 @AllArgsConstructor
 public class ExportDictionariesModel {
     @Schema(description = "Язык исходного слова", accessMode = Schema.AccessMode.READ_ONLY)
-    private String fromLanguage;
+    private UUID fromLanguage;
 
     @Schema(description = "Язык переведенного слова", accessMode = Schema.AccessMode.READ_ONLY)
-    private String toLanguage;
+    private UUID toLanguage;
 
     @Schema(description = "Слово для перевода")
     private String word;

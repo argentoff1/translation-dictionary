@@ -48,23 +48,45 @@ public class ExportDictionariesService {
             }).collect(Collectors.toList());
             var userCreatorsIds = internalPage.stream().map(ExportDictionariesModel::getCreatedUserId).distinct().collect(Collectors.toList());
             var userModifiersIds = internalPage.stream().map(ExportDictionariesModel::getModifiedUserId).distinct().collect(Collectors.toList());
+            var languageFromIds = internalPage.stream().map(ExportDictionariesModel::getFromLanguage).distinct().collect(Collectors.toList());
+            var languageToIds = internalPage.stream().map(ExportDictionariesModel::getToLanguage).distinct().collect(Collectors.toList());
+
+
             // вызывать метод из репозитория, который вернет модели. на вход список guid
-            var languageMap = languageService.getByIds(userCreatorsIds);
+            var languageCreatorsMap = languageService.getByIds(languageFromIds);
+            var languageModifiersMap = languageService.getByIds(languageToIds);
             // Получить все остальные сущности, остальные ID
             var userCreatorsMap = userService.getByIds(userCreatorsIds);
             var userModifiedMap = userService.getByIds(userModifiersIds);
             // Засунуть мапы в модель
             internalPage.forEach(exportDictionariesModel -> {
-                // Мб не так
-                internalPage.stream().map(ExportDictionariesModel::getFromLanguage).collect(Collectors.toList());
+                internalPage.stream().map(ExportDictionariesModel::getFromLanguage)
+                        .flatMap(map -> languageCreatorsMap.values()
+                                .stream()).collect(Collectors.toList());
+                internalPage.stream().map(ExportDictionariesModel::getToLanguage)
+                        .flatMap(map -> languageModifiersMap.values()
+                                .stream()).collect(Collectors.toList());
+                internalPage.stream().map(ExportDictionariesModel::getCreatedUserId)
+                        .flatMap(map -> userCreatorsMap.values()
+                                .stream()).collect(Collectors.toList());
+                internalPage.stream().map(ExportDictionariesModel::getModifiedUserId)
+                        .flatMap(map -> userModifiedMap.values()
+                                .stream()).collect(Collectors.toList());
             });
+
+            // Из-за потоков надо записывать в файл внутри цикла
+            try {
+                WriteListToFile.writeExportListToFile("ExportData.xlsx", exportDictionariesModels);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         } while (page.getResultList().size() == PAGE_SIZE);
 
-        try {
+        /*try {
             WriteListToFile.writeExportListToFile("ExportData.xlsx", exportDictionariesModels);
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
 
         return null;
 
