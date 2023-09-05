@@ -34,10 +34,9 @@ public class DatabaseConfiguration {
         hikariConfig.setUsername(username);
         hikariConfig.setPassword(password);
         hikariConfig.setJdbcUrl(databaseUrl);
+        hikariConfig.setJdbcUrl(databaseUrl);
 
-        HikariDataSource hikariDataSource = new HikariDataSource(hikariConfig);
-
-        return hikariDataSource;
+        return new HikariDataSource(hikariConfig);
     }
 
     @Bean

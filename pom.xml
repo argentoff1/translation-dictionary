@@ -51,11 +51,17 @@
 			<version>12.2.4</version>
 			<scope>provided</scope>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.avaje.ebeanorm/avaje-ebeanorm -->
+		<!-- https://mvnrepository.com/artifact/io.avaje/avaje-inject -->
 		<dependency>
-			<groupId>org.avaje.ebeanorm</groupId>
-			<artifactId>avaje-ebeanorm</artifactId>
-			<version>6.8.1</version>
+			<groupId>io.avaje</groupId>
+			<artifactId>avaje-inject</artifactId>
+			<version>4.1</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.avaje/avaje-classpath-scanner-api -->
+		<dependency>
+			<groupId>org.avaje</groupId>
+			<artifactId>avaje-classpath-scanner-api</artifactId>
+			<version>2.2</version>
 		</dependency>
 
 		<dependency>

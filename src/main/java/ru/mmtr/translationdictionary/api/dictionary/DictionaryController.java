@@ -32,8 +32,6 @@ public class DictionaryController {
         return dictionaryService.showAll();
     }
 
-
-
     @PostMapping(value = "/getPage")
     @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(
