@@ -2,6 +2,7 @@ package ru.mmtr.translationdictionary.api.user;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +20,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping(value = "/api/users")
 @Tag(name = "Пользователь", description = "Позволяет взаимодействовать с пользователями")
+@SecurityRequirement(name = "JWT")
 public class UserController {
     private final UserService userService;
     private final ExportDictionariesService exportDictionariesService;
@@ -184,7 +186,7 @@ public class UserController {
         return userService.unarchiveById(id);
     }
 
-    @PostMapping(value = "/logout")
+    @GetMapping(value = "/logout")
     @PreAuthorize("hasAuthority('USER')")
     @Operation(
             summary = "Выход пользователя из системы ",

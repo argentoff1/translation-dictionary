@@ -26,6 +26,8 @@ public class WriteListToFile {
         Sheet sheet = workbook.createSheet(exportDictionariesModel.getFromLanguageName() + "-" +
                 exportDictionariesModel.getToLanguageName());
 
+        sheet.setDefaultColumnWidth(17);
+
         Row headerRow = sheet.createRow(0);
         Cell headerCell0 = headerRow.createCell(0);
         headerCell0.setCellValue(exportDictionariesModel.getFromLanguageName());

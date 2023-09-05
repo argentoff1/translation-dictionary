@@ -113,13 +113,13 @@ public class ExportDictionariesService {
                 var userCreator = userCreatorsMap.get(exportDictionariesModel.getCreatedUserId());
                 if (userCreator != null) {
                     exportDictionariesModel.setFullName(userCreator.getLastName() + " "
-                            + userCreator.getFirstName() + " " + userCreator.getFatherName());
+                            + userCreator.getFirstName());
                 }
 
                 var userModifier = userModifiersMap.get(exportDictionariesModel.getModifiedUserId());
                 if (userModifier != null) {
                     exportDictionariesModel.setFullName(userModifier.getLastName() + " "
-                    + userModifier.getFirstName() + " " + userModifier.getLastName());
+                    + userModifier.getFirstName());
                 }
             }
 
