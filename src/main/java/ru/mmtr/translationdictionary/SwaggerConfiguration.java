@@ -31,9 +31,9 @@ import java.util.List;
         )
 )
 @Configuration
-@EnableSwagger2
-public class SwaggerConfig {
-    @Bean
+//@EnableSwagger2
+public class SwaggerConfiguration {
+    /*@Bean
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
@@ -64,5 +64,5 @@ public class SwaggerConfig {
         var authorizationScopes = new AuthorizationScope[1];
         authorizationScopes[0] = authorizationScope;
         return List.of(new SecurityReference("apiKey", authorizationScopes));
-    }
+    }*/
 }

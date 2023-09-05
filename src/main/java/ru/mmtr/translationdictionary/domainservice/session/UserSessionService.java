@@ -19,11 +19,9 @@ import static ru.mmtr.translationdictionary.domainservice.common.Validation.isVa
 @Service
 public class UserSessionService {
     private final UserSessionRepository userSessionRepository;
-    private final UserService userService;
 
-    public UserSessionService(UserSessionRepository userSessionRepository, UserService userService) {
+    public UserSessionService(UserSessionRepository userSessionRepository) {
         this.userSessionRepository = userSessionRepository;
-        this.userService = userService;
     }
 
     public CollectionResultModel<UserSessionModel> showAll() {
@@ -34,7 +32,7 @@ public class UserSessionService {
         return userSessionRepository.getPageSessions(criteria);
     }
 
-    public JwtResponseResultModel getRefreshToken(String subject) {
+    /*public JwtResponseResultModel getRefreshToken(String subject) {
         var result = userSessionRepository.getRefreshToken(subject);
         if (result == null) {
             return new JwtResponseResultModel("CAN_NOT_FIND_REFRESH_TOKEN");
@@ -47,7 +45,7 @@ public class UserSessionService {
         return new JwtResponseResultModel(tokens.getAccessToken(), tokens.getRefreshToken());
 
         //return result;
-    }
+    }*/
 
     public UserSessionModel getById(UUID id) {
         if (!isValidUUID(String.valueOf(id))) {
