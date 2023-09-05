@@ -34,30 +34,32 @@ public class UserSessionService {
         return userSessionRepository.getPageSessions(criteria);
     }
 
-    public String getRefreshToken(String subject) {
+    public JwtResponseResultModel getRefreshToken(String subject) {
         var result = userSessionRepository.getRefreshToken(subject);
         if (result == null) {
-            return null;
+            return new JwtResponseResultModel("CAN_NOT_FIND_REFRESH_TOKEN");
         }
-        return result;
-        /*UserModel foundUser = userService.getUserById(CommonUtils.getUserId());
 
-        var tokens = userSessionRepository.saveUser(foundUser);
+        UserModel foundUser = userService.getUserById(CommonUtils.getUserId());
 
-        return new JwtResponseResultModel(tokens.getAccessToken(), tokens.getRefreshToken());*/
+        var tokens = userSessionRepository.save(foundUser);
+
+        return new JwtResponseResultModel(tokens.getAccessToken(), tokens.getRefreshToken());
+
+        //return result;
     }
 
     public UserSessionModel getById(UUID id) {
         if (!isValidUUID(String.valueOf(id))) {
-            return new UserSessionModel("CAN_NOT_UPDATE",
-                    "Не удалось обновить данные. Поля должны быть корректно заполнены");
+            return new UserSessionModel("CAN_NOT_FIND",
+                    "Не удалось найти данные. Поля должны быть корректно заполнены");
         }
 
         return userSessionRepository.getById(id);
     }
 
-    public UserSessionModel saveUser(UserModel model) {
-        var result = userSessionRepository.saveUser(model);
+    public UserSessionModel save(UserModel model) {
+        var result = userSessionRepository.save(model);
 
         if (result == null) {
             return new UserSessionModel("CAN_NOT_SAVE",
@@ -65,6 +67,17 @@ public class UserSessionService {
         }
 
         return result;
+    }
+
+    public SuccessResultModel updateTokens(UserModel user, String accessToken, String refreshToken) {
+        var result = userSessionRepository.updateTokens(user, accessToken, refreshToken);
+
+        if (result == null) {
+            return new SuccessResultModel("CAN_NOT_UPDATE",
+                    "Не удалось обновить токены");
+        }
+
+        return new SuccessResultModel(true);
     }
 
     public SuccessResultModel delete(UserModel model) {

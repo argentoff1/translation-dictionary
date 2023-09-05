@@ -1,10 +1,12 @@
 package ru.mmtr.translationdictionary.domainservice.common;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import ru.mmtr.translationdictionary.infrastructure.security.JwtAuthentication;
 
 import java.util.UUID;
 
+@Slf4j
 public class CommonUtils {
 
     public static JwtAuthentication getAuthInfo() {
@@ -17,7 +19,7 @@ public class CommonUtils {
         try {
             user = (JwtAuthentication) SecurityContextHolder.getContext().getAuthentication().getCredentials();
         } catch (NullPointerException e) {
-            e.getMessage();
+            log.error(e.getMessage(), e);
         }
 
         return user.getRoleName();
@@ -29,7 +31,7 @@ public class CommonUtils {
         try {
             user = (JwtAuthentication) SecurityContextHolder.getContext().getAuthentication().getCredentials();
         } catch (NullPointerException e) {
-            e.getMessage();
+            log.error(e.getMessage(), e);
         }
 
         return user.getUserId();
@@ -41,7 +43,7 @@ public class CommonUtils {
         try {
             user = (JwtAuthentication) SecurityContextHolder.getContext().getAuthentication().getCredentials();
         } catch (NullPointerException e) {
-            e.getMessage();
+            log.error(e.getMessage(), e);
         }
 
         return user.getSessionId();
@@ -53,7 +55,7 @@ public class CommonUtils {
         try {
             user = (JwtAuthentication) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         } catch (NullPointerException e) {
-            e.getMessage();
+            log.error(e.getMessage(), e);
         }
 
         return user.getLogin();
@@ -65,7 +67,7 @@ public class CommonUtils {
         try {
             user = (JwtAuthentication) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         } catch (NullPointerException e) {
-            e.getMessage();
+            log.error(e.getMessage(), e);
         }
 
         return user.getLogin();

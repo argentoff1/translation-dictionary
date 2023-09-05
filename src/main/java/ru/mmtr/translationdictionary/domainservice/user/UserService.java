@@ -59,9 +59,31 @@ public class UserService {
 
         userRepository.login(model);
 
-        UserSessionModel session = userSessionService.saveUser(findUser);
+        UserSessionModel session = userSessionService.save(findUser);
 
         return new JwtResponseResultModel(session.getAccessToken(), session.getRefreshToken());
+    }
+
+    public JwtResponseResultModel refreshToken(String refreshToken) {
+        //var tokenModel = userSessionService.getRefreshToken(subject);
+
+        if (jwtProvider.validateRefreshToken(refreshToken)) {
+            final Claims claims = jwtProvider.getRefreshClaims(refreshToken);
+            final String login = claims.getSubject();
+
+            UserModel user = userRepository.getByLogin(login);
+
+            final String newAccessToken = jwtProvider.generateAccessToken(user, CommonUtils.getSessionId());
+            final String newRefreshToken = jwtProvider.generateRefreshToken(user, CommonUtils.getSessionId());
+
+            var result = new JwtResponseResultModel(newAccessToken, newRefreshToken);
+
+            userSessionService.updateTokens(user, result.getAccessToken(), result.getRefreshToken());
+
+            return result;
+        }
+
+        return new JwtResponseResultModel("CAN_NOT_GENERATE_TOKEN");
     }
 
     public Map<UUID, UserModel> getByIds(List<UUID> idList) {
@@ -79,23 +101,6 @@ public class UserService {
             return new JwtResponseResultModel(accessToken, null);
         }
 
-        return new JwtResponseResultModel("CAN_NOT_GENERATE_TOKEN");
-    }
-
-    public JwtResponseResultModel refreshToken(String refreshToken) {
-        var token = userSessionService.getRefreshToken(refreshToken);
-
-        if (jwtProvider.validateRefreshToken(token)) {
-            final Claims claims = jwtProvider.getRefreshClaims(token);
-            final String login = claims.getSubject();
-
-            final UserModel user = userRepository.getByLogin(login);
-
-            final String accessToken = jwtProvider.generateAccessToken(user, CommonUtils.getSessionId());
-            final String newRefreshToken = jwtProvider.generateRefreshToken(user, CommonUtils.getSessionId());
-
-            return new JwtResponseResultModel(accessToken, newRefreshToken);
-        }
         return new JwtResponseResultModel("CAN_NOT_GENERATE_TOKEN");
     }
 
