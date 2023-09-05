@@ -64,14 +64,17 @@ public class UserService {
         return new JwtResponseResultModel(session.getAccessToken(), session.getRefreshToken());
     }
 
-    public JwtResponseResultModel refreshToken(String refreshToken) {
-        //var tokenModel = userSessionService.getRefreshToken(subject);
+    // Вот тут проблема
+    public JwtResponseResultModel refreshToken(String subject) {
+        UserModel user = userRepository.getByLogin(subject);
 
-        if (jwtProvider.validateRefreshToken(refreshToken)) {
-            final Claims claims = jwtProvider.getRefreshClaims(refreshToken);
+        UserSessionModel session = userSessionService.getByUserId(user.getUserId());
+
+        if (jwtProvider.validateRefreshToken(session.getRefreshToken())) {
+            final Claims claims = jwtProvider.getRefreshClaims(session.getRefreshToken());
             final String login = claims.getSubject();
 
-            UserModel user = userRepository.getByLogin(login);
+            user = userRepository.getByLogin(login);
 
             final String newAccessToken = jwtProvider.generateAccessToken(user, CommonUtils.getSessionId());
             final String newRefreshToken = jwtProvider.generateRefreshToken(user, CommonUtils.getSessionId());
@@ -135,7 +138,7 @@ public class UserService {
                     "Не удалось найти данные. Поля должны быть корректно заполнены");
         }
 
-        return userSessionService.getById(id);
+        return userSessionService.getBySessionId(id);
     }
 
     public UserModel getByLogin(String login) {

@@ -53,7 +53,13 @@ public class CommonUtils {
         var user = new JwtAuthentication();
 
         try {
-            user = (JwtAuthentication) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            user = (JwtAuthentication) SecurityContextHolder.getContext().getAuthentication();
+
+            Object principal = user.getPrincipal();
+
+            if (principal instanceof String) {
+                return user.getLogin();
+            }
         } catch (NullPointerException e) {
             log.error(e.getMessage(), e);
         }

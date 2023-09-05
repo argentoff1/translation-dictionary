@@ -2,14 +2,11 @@ package ru.mmtr.translationdictionary.domainservice.session;
 
 import org.springframework.stereotype.Service;
 import ru.mmtr.translationdictionary.domain.common.CollectionResultModel;
-import ru.mmtr.translationdictionary.domain.common.JwtResponseResultModel;
 import ru.mmtr.translationdictionary.domain.common.PageResultModel;
 import ru.mmtr.translationdictionary.domain.common.SuccessResultModel;
 import ru.mmtr.translationdictionary.domain.session.UserSessionModel;
 import ru.mmtr.translationdictionary.domain.session.UserSessionPageRequestModel;
 import ru.mmtr.translationdictionary.domain.user.UserModel;
-import ru.mmtr.translationdictionary.domainservice.common.CommonUtils;
-import ru.mmtr.translationdictionary.domainservice.user.UserService;
 import ru.mmtr.translationdictionary.infrastructure.repositories.session.UserSessionRepository;
 
 import java.util.UUID;
@@ -47,13 +44,22 @@ public class UserSessionService {
         //return result;
     }*/
 
-    public UserSessionModel getById(UUID id) {
+    public UserSessionModel getByUserId(UUID id) {
         if (!isValidUUID(String.valueOf(id))) {
             return new UserSessionModel("CAN_NOT_FIND",
                     "Не удалось найти данные. Поля должны быть корректно заполнены");
         }
 
-        return userSessionRepository.getById(id);
+        return userSessionRepository.getByUserId(id);
+    }
+
+    public UserSessionModel getBySessionId(UUID id) {
+        if (!isValidUUID(String.valueOf(id))) {
+            return new UserSessionModel("CAN_NOT_FIND",
+                    "Не удалось найти данные. Поля должны быть корректно заполнены");
+        }
+
+        return userSessionRepository.getBySessionId(id);
     }
 
     public UserSessionModel save(UserModel model) {

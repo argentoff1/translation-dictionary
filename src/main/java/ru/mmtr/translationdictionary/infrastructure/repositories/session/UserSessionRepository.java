@@ -3,7 +3,6 @@ package ru.mmtr.translationdictionary.infrastructure.repositories.session;
 import io.ebean.DB;
 import io.ebean.ExpressionList;
 import org.springframework.stereotype.Repository;
-import ru.mmtr.translationdictionary.domain.user.JwtRequestModel;
 import ru.mmtr.translationdictionary.infrastructure.repositories.user.UserEntity;
 import ru.mmtr.translationdictionary.infrastructure.security.JwtProvider;
 import ru.mmtr.translationdictionary.domain.common.*;
@@ -115,7 +114,22 @@ public class UserSessionRepository {
         return expression;
     }
 
-    public UserSessionModel getById(UUID id) {
+    public UserSessionModel getByUserId(UUID id) {
+        UserSessionEntity foundEntity = DB
+                .find(UserSessionEntity.class)
+                .where()
+                .eq(UserSessionEntity.USER_ID, id)
+                .findOne();
+
+        if (foundEntity == null) {
+            return new UserSessionModel("CAN_NOT_FIND",
+                    "Не удалось найти данные. Поля должны быть корректно заполненными");
+        }
+
+        return getModel(foundEntity);
+    }
+
+    public UserSessionModel getBySessionId(UUID id) {
         UserSessionEntity foundEntity = DB
                 .find(UserSessionEntity.class)
                 .where()
