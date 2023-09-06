@@ -47,8 +47,11 @@ public class ExportDictionariesService {
         PageResultModel<DictionaryModel> page;
         UUID dictionaryExportFileUUID;
 
+        // Создание файла. Создание нуджных колонок для данных
+
         // Обогащение пагинации данными из модели
         do {
+            // Открытие файла, выбор нужной вкладки и класть страницу
             page = dictionaryService.getPage(dictionaryCriteria);
             dictionaryCriteria.setPageNum(dictionaryCriteria.getPageNum() + 1);
 
@@ -135,7 +138,7 @@ public class ExportDictionariesService {
 
             try {
                 dictionaryExportFileUUID = UUID.randomUUID();
-                // Полный путь до директории
+
                 WriteListToFile.writeExportListToFile("C:\\Users\\parinos.ma.kst\\" +
                         "IdeaProjects\\" + "translation-dictionary\\src\\main\\resources\\export\\"
                         + dictionaryExportFileUUID + ".xlsx", exportDictionariesModels);
