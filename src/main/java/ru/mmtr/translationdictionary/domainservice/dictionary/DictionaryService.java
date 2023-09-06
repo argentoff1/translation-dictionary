@@ -8,8 +8,6 @@ import ru.mmtr.translationdictionary.infrastructure.repositories.dictionary.Dict
 import static ru.mmtr.translationdictionary.domainservice.common.Validation.isValidUUID;
 import static ru.mmtr.translationdictionary.domainservice.common.Validation.stringValidation;
 
-import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 @Service

@@ -86,8 +86,6 @@ public class JwtProvider {
             log.error("Unsupported jwt", unsEx);
         } catch (MalformedJwtException mjEx) {
             log.error("Malformed jwt", mjEx);
-        } catch (SignatureException sEx) {
-            log.error("Invalid signature", sEx);
         } catch (Exception e) {
             log.error("invalid token", e);
         }

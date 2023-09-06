@@ -3,7 +3,6 @@ package ru.mmtr.translationdictionary.infrastructure.repositories.session;
 import io.ebean.DB;
 import io.ebean.ExpressionList;
 import org.springframework.stereotype.Repository;
-import ru.mmtr.translationdictionary.infrastructure.repositories.user.UserEntity;
 import ru.mmtr.translationdictionary.infrastructure.security.JwtProvider;
 import ru.mmtr.translationdictionary.domain.common.*;
 import ru.mmtr.translationdictionary.domain.session.UserSessionModel;
@@ -31,30 +30,6 @@ public class UserSessionRepository {
         return new CollectionResultModel<>(
                 entities.stream().map(this::getModel).collect(Collectors.toList())
         );
-    }
-
-    public JwtResponseResultModel getRefreshToken(String subject) {
-        UserEntity foundUser = DB
-                .find(UserEntity.class)
-                .where()
-                .ilike(UserEntity.LOGIN, "%" + subject + "%")
-                .findOne();
-
-        if (foundUser == null) {
-            return new JwtResponseResultModel("CAN_NOT_FIND_USER_BY_LOGIN");
-        }
-
-        var result = DB
-                .find(UserSessionEntity.class)
-                .where()
-                .ilike(UserSessionEntity.USER_ID, "%" + foundUser.getUserId() + "%")
-                .findOne();
-
-        if (result == null) {
-            return new JwtResponseResultModel("CAN_NOT_FIND_REFRESH_TOKEN");
-        }
-
-        return new JwtResponseResultModel(null, result.getRefreshToken());
     }
 
     public SuccessResultModel updateTokens(UserModel user, String accessToken, String refreshToken) {

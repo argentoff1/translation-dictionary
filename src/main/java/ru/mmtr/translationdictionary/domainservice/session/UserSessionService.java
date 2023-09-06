@@ -29,21 +29,6 @@ public class UserSessionService {
         return userSessionRepository.getPageSessions(criteria);
     }
 
-    /*public JwtResponseResultModel getRefreshToken(String subject) {
-        var result = userSessionRepository.getRefreshToken(subject);
-        if (result == null) {
-            return new JwtResponseResultModel("CAN_NOT_FIND_REFRESH_TOKEN");
-        }
-
-        UserModel foundUser = userService.getUserById(CommonUtils.getUserId());
-
-        var tokens = userSessionRepository.save(foundUser);
-
-        return new JwtResponseResultModel(tokens.getAccessToken(), tokens.getRefreshToken());
-
-        //return result;
-    }*/
-
     public UserSessionModel getByUserId(UUID id) {
         if (!isValidUUID(String.valueOf(id))) {
             return new UserSessionModel("CAN_NOT_FIND",
@@ -73,15 +58,17 @@ public class UserSessionService {
         return result;
     }
 
-    public SuccessResultModel updateTokens(UserModel user, String accessToken, String refreshToken) {
+    // void - так как return value метода нигде не используется
+    public void updateTokens(UserModel user, String accessToken, String refreshToken) {
         var result = userSessionRepository.updateTokens(user, accessToken, refreshToken);
 
         if (result == null) {
-            return new SuccessResultModel("CAN_NOT_UPDATE",
+            new SuccessResultModel("CAN_NOT_UPDATE",
                     "Не удалось обновить токены");
+            return;
         }
 
-        return new SuccessResultModel(true);
+        new SuccessResultModel(true);
     }
 
     public SuccessResultModel delete(UserModel model) {

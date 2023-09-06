@@ -44,7 +44,7 @@ public class UserController {
             summary = "Получение Excel файла с данными",
             description = "Позволяет получить Excel файл, в который были записаны данные"
     )
-    public ExportDictionariesModel getExportDictionary(@PathVariable @Parameter(description = "Идентификатор файла словаря") UUID id) {
+    public CollectionResultModel<ExportDictionariesModel> getExportDictionary(@PathVariable @Parameter(description = "Идентификатор файла словаря") UUID id) {
         return exportDictionariesService.getExportDictionary(id);
     }
 
@@ -123,6 +123,16 @@ public class UserController {
     )
     public UserModel getUserById(@PathVariable @Parameter(description = "Идентификатор") UUID id) {
         return userService.getUserById(id);
+    }
+
+    @GetMapping(value = "/getUserByLogin/{login}")
+    @PreAuthorize("hasAuthority('USER')")
+    @Operation(
+            summary = "Получение пользователя",
+            description = "Позволяет получить пользователя по логину"
+    )
+    public UserModel getUserByLogin(@PathVariable @Parameter(description = "Логин") String login) {
+        return userService.getByLogin(login);
     }
 
     @GetMapping(value = "/getSessionById/{id}")

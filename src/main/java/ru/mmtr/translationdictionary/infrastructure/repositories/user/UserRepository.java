@@ -158,21 +158,6 @@ public class UserRepository {
         return getModel(foundEntity);
     }
 
-    public UserModel getByPassword(String password) {
-        UserEntity foundEntity = DB
-                .find(UserEntity.class)
-                .where()
-                .eq(UserEntity.PASSWORD, password)
-                .findOne();
-
-        if (foundEntity == null) {
-            return new UserModel("CAN_NOT_FIND",
-                    "Не удалось найти данные. Поля должны быть корректно заполненными");
-        }
-
-        return getModel(foundEntity);
-    }
-
     public GUIDResultModel save(UserSaveModel model) {
         UserEntity entity = new UserEntity();
         entity.setUserId(UUID.randomUUID());
@@ -348,10 +333,6 @@ public class UserRepository {
             return new SuccessResultModel("CAN_NOT_AUTHORIZE",
                     "Невозможно выйти из системы");
         }
-
-        /*if (!BCrypt.checkpw(model.getPassword(), foundUserEntity.getPassword())) {
-            return new JwtResponseResultModel("CAN_NOT_AUTHORIZE");
-        }*/
 
         if (!Validation.checkingForArchiving(foundUserEntity.getArchiveDate())) {
             return new SuccessResultModel("CAN_NOT_AUTHORIZE",

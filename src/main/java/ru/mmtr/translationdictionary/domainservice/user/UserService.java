@@ -333,11 +333,6 @@ public class UserService {
             return new SuccessResultModel("CAN_NOT_LOGOUT", "Не удалось выйти из системы");
         }
 
-        /*if (findUser == null) {
-            return new SuccessResultModel("CAN_NOT_LOGOUT",
-                    "Не удалось выйти из системы. Пользователь не найден");
-        }*/
-
         userSessionService.delete(findUser);
 
         return userRepository.logout();

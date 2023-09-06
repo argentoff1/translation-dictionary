@@ -4,9 +4,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import ru.mmtr.translationdictionary.domain.common.CollectionResultModel;
 import ru.mmtr.translationdictionary.domain.common.GUIDResultModel;
 import ru.mmtr.translationdictionary.domain.common.PageResultModel;
-import ru.mmtr.translationdictionary.domain.common.SuccessResultModel;
 import ru.mmtr.translationdictionary.domain.dictionary.DictionaryModel;
 import ru.mmtr.translationdictionary.domain.dictionary.DictionaryPageRequestModel;
 import ru.mmtr.translationdictionary.domain.export.ExportDictionariesModel;
@@ -28,12 +28,10 @@ import static ru.mmtr.translationdictionary.domainservice.common.Validation.isVa
 @Service
 @Slf4j
 public class ExportDictionariesService {
-    private final Integer PAGE_SIZE = 100;
     private final LanguageService languageService;
     private final DictionaryService dictionaryService;
     private final UserService userService;
-    private UUID dictionaryExportFileUUID;
-    private String dictionaryExportFileName;
+    private List<ExportDictionariesModel> exportDictionariesModels;
 
     public ExportDictionariesService(LanguageService languageService, DictionaryService dictionaryService, UserService userService) {
         this.languageService = languageService;
@@ -44,8 +42,10 @@ public class ExportDictionariesService {
     public GUIDResultModel exportDictionary() {
         var dictionaryCriteria = new DictionaryPageRequestModel();
         dictionaryCriteria.setPageNum(0);
+        Integer PAGE_SIZE = 100;
         dictionaryCriteria.setPageSize(PAGE_SIZE);
         PageResultModel<DictionaryModel> page;
+        UUID dictionaryExportFileUUID;
 
         // Обогащение пагинации данными из модели
         do {
@@ -53,7 +53,7 @@ public class ExportDictionariesService {
             dictionaryCriteria.setPageNum(dictionaryCriteria.getPageNum() + 1);
 
             // Экспорт данных из пагинации в модель
-            var internalPage = page.getResultList().stream().map(dictionaryModel -> {
+            exportDictionariesModels = page.getResultList().stream().map(dictionaryModel -> {
 
                 var exportDictionaryModel = new ExportDictionariesModel();
                 // Переложить все поля в модель из dictionaryModel
@@ -69,25 +69,25 @@ public class ExportDictionariesService {
                 return exportDictionaryModel;
             }).toList();
 
-            var languageFromIds = internalPage.stream()
+            var languageFromIds = exportDictionariesModels.stream()
                     .map(ExportDictionariesModel::getFromLanguageUUID)
                     .distinct().filter(Objects::nonNull)
                     .collect(Collectors.toList());
-            var languageToIds = internalPage.stream()
+            var languageToIds = exportDictionariesModels.stream()
                     .map(ExportDictionariesModel::getToLanguageUUID)
                     .distinct().filter(Objects::nonNull)
                     .collect(Collectors.toList());
-            var userCreatorsIds = internalPage.stream()
+            var userCreatorsIds = exportDictionariesModels.stream()
                     .map(ExportDictionariesModel::getCreatedUserId)
                     .distinct().filter(Objects::nonNull)
                     .collect(Collectors.toList());
-            var userModifiersIds = internalPage.stream()
+            var userModifiersIds = exportDictionariesModels.stream()
                     .map(ExportDictionariesModel::getModifiedUserId)
                     .distinct().filter(Objects::nonNull)
                     .collect(Collectors.toList());
 
-            // вызывать метод из репозитория, который вернет модели. на вход список guid
-            // Получить все остальные сущности, остальные ID
+            // Вызывать метод из репозитория, который вернет модели. На вход список guid
+            // получить все остальные сущности, остальные ID
             Map<UUID, LanguageModel> fromLanguageNamesMap = new HashMap<>();
             if (!CollectionUtils.isEmpty(languageFromIds)) {
                 fromLanguageNamesMap = languageService.getByIds(languageFromIds);
@@ -108,8 +108,8 @@ public class ExportDictionariesService {
                 userModifiersMap = userService.getByIds(userModifiersIds);
             }
 
-            // Засунуть мапы в модель
-            for (var exportDictionariesModel : internalPage) {
+            // Засунуть Map в модель
+            for (var exportDictionariesModel : exportDictionariesModels) {
                 var fromLanguageName = fromLanguageNamesMap.get(exportDictionariesModel.getFromLanguageUUID());
                 if (fromLanguageName != null) {
                     exportDictionariesModel.setFromLanguageName(fromLanguageName.getLanguageName());
@@ -136,8 +136,9 @@ public class ExportDictionariesService {
             try {
                 dictionaryExportFileUUID = UUID.randomUUID();
                 // Полный путь до директории
-                //WriteListToFile.writeExportListToFile("resources\\export\\" + dictionaryExportFileUUID + ".xlsx", internalPage);
-                WriteListToFile.writeExportListToFile("C:\\Users\\parinos.ma.kst\\IdeaProjects\\translation-dictionary\\src\\main\\resources\\export\\" + dictionaryExportFileUUID + ".xlsx", internalPage);
+                WriteListToFile.writeExportListToFile("C:\\Users\\parinos.ma.kst\\" +
+                        "IdeaProjects\\" + "translation-dictionary\\src\\main\\resources\\export\\"
+                        + dictionaryExportFileUUID + ".xlsx", exportDictionariesModels);
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
                 return new GUIDResultModel("CAN_NOT_EXPORT",
@@ -145,21 +146,20 @@ public class ExportDictionariesService {
             }
         } while (page.getResultList().size() == PAGE_SIZE);
 
-        // Преобразование списка в модель для экспорта
-        // GUID - название файла
         return new GUIDResultModel(dictionaryExportFileUUID);
     }
 
+    // return type - CollectionResultModel, где каждый элемент - модель с данными
     // Проверка названия файла до точки
-    public ExportDictionariesModel getExportDictionary(UUID id) {
+    public CollectionResultModel<ExportDictionariesModel> getExportDictionary(UUID id) {
         if (!isValidUUID(String.valueOf(id))) {
-            return new ExportDictionariesModel("CAN_NOT_UPDATE",
+            return new CollectionResultModel<>("CAN_NOT_UPDATE",
                     "Не удалось обновить данные. Поля должны быть корректно заполнены");
         }
 
         File file = new File("./" + id + ".xlsx");
         if (file == null) {
-            return new ExportDictionariesModel("CAN_NOT_FIND_FILE",
+            return new CollectionResultModel<>("CAN_NOT_FIND_FILE",
                     "Не удалось найти файл по данному идентификатору");
         }
 
@@ -167,7 +167,9 @@ public class ExportDictionariesService {
              Workbook workbook = WorkbookFactory.create(fileInputStream)) {
             Sheet sheet = workbook.getSheetAt(0);
 
-            for (Row row : sheet) {
+
+
+            /*for (Row row : sheet) {
                 for (Cell cell : row) {
                     CellType cellType = cell.getCellType();
                     if (cellType == CellType.STRING) {
@@ -179,27 +181,30 @@ public class ExportDictionariesService {
                     }
                 }
                 System.out.println();
-            }
+            }*/
         } catch (IOException e) {
             log.error(e.getMessage(), e);
         }
-        return null;
-    }
 
-    private Boolean checkFileName(String fileName, UUID id) {
-
-        return id.toString().equals(fileName);
+        return new CollectionResultModel<>(exportDictionariesModels);
     }
 
     /*private ExportDictionariesModel getModel(List<ExportDictionariesModel> dataList) {
         var model = new ExportDictionariesModel();
-        model.setFromLanguage(dataList.get());
-        model.setToLanguage(dataList.get());
+        model.setFromLanguageUUID(dataList.get());
+        model.setFromLanguageName();
+        model.setToLanguageUUID();
+        model.setToLanguageName(dataList.get());
         model.setFullName(dataList.get());
         model.setEmail(dataList.get());
         model.setCreatedAt(dataList.get());
         model.setModifiedAt(dataList.get());
 
         return model;
+    }*/
+
+    /*private Boolean checkFileName(String fileName, UUID id) {
+
+        return id.toString().equals(fileName);
     }*/
 }

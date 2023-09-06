@@ -18,7 +18,7 @@ public class UserModel extends GeneralResultModel {
     @Schema(description = "Идентификатор", accessMode = Schema.AccessMode.READ_ONLY)
     private UUID userId;
 
-    @Schema(description = "Логин", example = "repeatalexander")
+    @Schema(description = "Логин", example = "boozy")
     private String login;
 
     @Schema(description = "Пароль", accessMode = Schema.AccessMode.READ_ONLY)
