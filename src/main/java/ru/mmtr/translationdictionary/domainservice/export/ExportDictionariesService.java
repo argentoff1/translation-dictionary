@@ -150,14 +150,15 @@ public class ExportDictionariesService {
     }
 
     // return type - CollectionResultModel, где каждый элемент - модель с данными
-    // Проверка названия файла до точки
     public CollectionResultModel<ExportDictionariesModel> getExportDictionary(UUID id) {
         if (!isValidUUID(String.valueOf(id))) {
             return new CollectionResultModel<>("CAN_NOT_UPDATE",
                     "Не удалось обновить данные. Поля должны быть корректно заполнены");
         }
 
-        File file = new File("./" + id + ".xlsx");
+        File file = new File("C:\\Users\\parinos.ma.kst\\" +
+                "IdeaProjects\\translation-dictionary\\src\\main\\resources\\export\\" + id + ".xlsx");
+        // if file not found проверка нужна
         if (file == null) {
             return new CollectionResultModel<>("CAN_NOT_FIND_FILE",
                     "Не удалось найти файл по данному идентификатору");
@@ -165,9 +166,12 @@ public class ExportDictionariesService {
 
         try (FileInputStream fileInputStream = new FileInputStream(file);
              Workbook workbook = WorkbookFactory.create(fileInputStream)) {
+            // Кривая проверка на корректность файла. Мб вообще не поможет
+            if (fileInputStream.readAllBytes() == null) {
+                return new CollectionResultModel<>("CAN_NOT_FIND_FILE",
+                        "Не удалось найти файл по данному идентификатору");
+            }
             Sheet sheet = workbook.getSheetAt(0);
-
-
 
             /*for (Row row : sheet) {
                 for (Cell cell : row) {
