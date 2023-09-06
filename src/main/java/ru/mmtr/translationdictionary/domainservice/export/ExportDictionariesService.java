@@ -1,9 +1,12 @@
 package ru.mmtr.translationdictionary.domainservice.export;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.usermodel.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import ru.mmtr.translationdictionary.domain.common.GUIDResultModel;
 import ru.mmtr.translationdictionary.domain.common.PageResultModel;
+import ru.mmtr.translationdictionary.domain.common.SuccessResultModel;
 import ru.mmtr.translationdictionary.domain.dictionary.DictionaryModel;
 import ru.mmtr.translationdictionary.domain.dictionary.DictionaryPageRequestModel;
 import ru.mmtr.translationdictionary.domain.export.ExportDictionariesModel;
@@ -14,8 +17,13 @@ import ru.mmtr.translationdictionary.domainservice.dictionary.DictionaryService;
 import ru.mmtr.translationdictionary.domainservice.language.LanguageService;
 import ru.mmtr.translationdictionary.domainservice.user.UserService;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static ru.mmtr.translationdictionary.domainservice.common.Validation.isValidUUID;
 
 @Service
 @Slf4j
@@ -24,6 +32,8 @@ public class ExportDictionariesService {
     private final LanguageService languageService;
     private final DictionaryService dictionaryService;
     private final UserService userService;
+    private UUID dictionaryExportFileUUID;
+    private String dictionaryExportFileName;
 
     public ExportDictionariesService(LanguageService languageService, DictionaryService dictionaryService, UserService userService) {
         this.languageService = languageService;
@@ -31,7 +41,7 @@ public class ExportDictionariesService {
         this.userService = userService;
     }
 
-    public ExportDictionariesModel exportDictionary() {
+    public GUIDResultModel exportDictionary() {
         var dictionaryCriteria = new DictionaryPageRequestModel();
         dictionaryCriteria.setPageNum(0);
         dictionaryCriteria.setPageSize(PAGE_SIZE);
@@ -100,7 +110,7 @@ public class ExportDictionariesService {
 
             // Засунуть мапы в модель
             for (var exportDictionariesModel : internalPage) {
-                var fromLanguageName =  fromLanguageNamesMap.get(exportDictionariesModel.getFromLanguageUUID());
+                var fromLanguageName = fromLanguageNamesMap.get(exportDictionariesModel.getFromLanguageUUID());
                 if (fromLanguageName != null) {
                     exportDictionariesModel.setFromLanguageName(fromLanguageName.getLanguageName());
                 }
@@ -119,23 +129,66 @@ public class ExportDictionariesService {
                 var userModifier = userModifiersMap.get(exportDictionariesModel.getModifiedUserId());
                 if (userModifier != null) {
                     exportDictionariesModel.setFullName(userModifier.getLastName() + " "
-                    + userModifier.getFirstName());
+                            + userModifier.getFirstName());
                 }
             }
 
             try {
-                WriteListToFile.writeExportListToFile("ExportData.xlsx", internalPage);
+                dictionaryExportFileUUID = UUID.randomUUID();
+                // Полный путь до директории
+                //WriteListToFile.writeExportListToFile("resources\\export\\" + dictionaryExportFileUUID + ".xlsx", internalPage);
+                WriteListToFile.writeExportListToFile("C:\\Users\\parinos.ma.kst\\IdeaProjects\\translation-dictionary\\src\\main\\resources\\export\\" + dictionaryExportFileUUID + ".xlsx", internalPage);
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
-                return new ExportDictionariesModel("CAN_NOT_EXPORT",
+                return new GUIDResultModel("CAN_NOT_EXPORT",
                         "Не удалось экспортировать данные");
             }
         } while (page.getResultList().size() == PAGE_SIZE);
 
-        return null;
-
         // Преобразование списка в модель для экспорта
-        //return getModel();
+        // GUID - название файла
+        return new GUIDResultModel(dictionaryExportFileUUID);
+    }
+
+    // Проверка названия файла до точки
+    public ExportDictionariesModel getExportDictionary(UUID id) {
+        if (!isValidUUID(String.valueOf(id))) {
+            return new ExportDictionariesModel("CAN_NOT_UPDATE",
+                    "Не удалось обновить данные. Поля должны быть корректно заполнены");
+        }
+
+        File file = new File("./" + id + ".xlsx");
+        if (file == null) {
+            return new ExportDictionariesModel("CAN_NOT_FIND_FILE",
+                    "Не удалось найти файл по данному идентификатору");
+        }
+
+        try (FileInputStream fileInputStream = new FileInputStream(file);
+             Workbook workbook = WorkbookFactory.create(fileInputStream)) {
+            Sheet sheet = workbook.getSheetAt(0);
+
+            for (Row row : sheet) {
+                for (Cell cell : row) {
+                    CellType cellType = cell.getCellType();
+                    if (cellType == CellType.STRING) {
+                        System.out.print(cell.getStringCellValue() + "\t");
+                    } else if (cellType == CellType.NUMERIC) {
+                        System.out.print(cell.getNumericCellValue() + "\t");
+                    } else if (cellType == CellType.BLANK) {
+                        System.out.print("\t");
+                    }
+                }
+                System.out.println();
+            }
+        } catch (IOException e) {
+            log.error(e.getMessage(), e);
+        }
+        return null;
+    }
+
+    private Boolean checkFileName(String fileName, UUID id) {
+
+        return id.toString().equals(fileName);
     }
 
     /*private ExportDictionariesModel getModel(List<ExportDictionariesModel> dataList) {

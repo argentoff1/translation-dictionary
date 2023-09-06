@@ -20,6 +20,7 @@ import ru.mmtr.translationdictionary.infrastructure.repositories.user.UserRole;
 @Configuration
 @EnableMethodSecurity
 public class SecurityConfiguration {
+    // Нужно убрать
     private static final String[] AUTH_WHITELIST = {
             "/api/users/login",
             "/api/users/getNewAccessToken",

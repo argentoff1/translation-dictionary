@@ -32,11 +32,20 @@ public class UserController {
 
     @GetMapping(value = "/exportDictionary")
     @Operation(
-            summary = "Экспорт словаря",
-            description = "Позволяет экспортировать данные из словаря"
+            summary = "Экспорт данных в Excel",
+            description = "Позволяет экспортировать данные в Excel"
     )
-    public ExportDictionariesModel exportDictionary() {
+    public GUIDResultModel exportDictionary() {
         return exportDictionariesService.exportDictionary();
+    }
+
+    @GetMapping(value = "/getExportDictionary/{id}")
+    @Operation(
+            summary = "Получение Excel файла с данными",
+            description = "Позволяет получить Excel файл, в который были записаны данные"
+    )
+    public ExportDictionariesModel getExportDictionary(@PathVariable @Parameter(description = "Идентификатор файла словаря") UUID id) {
+        return exportDictionariesService.getExportDictionary(id);
     }
 
     @PostMapping(value = "/login")
