@@ -1,61 +1,42 @@
 package ru.mmtr.translationdictionary;
 
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
 import io.ebean.Database;
 import io.ebean.DatabaseFactory;
-import io.ebean.EbeanServer;
-import io.ebean.EbeanServerFactory;
 import io.ebean.config.DatabaseConfig;
-import io.ebean.config.ServerConfig;
 import io.ebean.datasource.DataSourceConfig;
-import io.ebean.event.ServerConfigStartup;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class DatabaseConfiguration {
-    @Value("${postgres.sql.db-username}")
+    @Value("${spring.datasource.username}")
     private String username;
 
-    @Value("${postgres.sql.db-password}")
+    @Value("${spring.datasource.password}")
     private String password;
 
-    @Value("${postgres.sql.db-url}")
-    private String databaseUrl;
+    @Value("${spring.datasource.url}")
+    private String url;
 
-    @Value("${postgres.sql.driver}")
+    @Value("${spring.datasource.driver-class-name}")
     private String driverClassName;
 
-    public HikariDataSource getDataSourceConfig() {
-        HikariConfig hikariConfig = new HikariConfig();
-        hikariConfig.setDriverClassName(driverClassName);
-        hikariConfig.setUsername(username);
-        hikariConfig.setPassword(password);
-        hikariConfig.setJdbcUrl(databaseUrl);
-        hikariConfig.setJdbcUrl(databaseUrl);
+    public DataSourceConfig getDataSourceConfig() {
+        DataSourceConfig dataSourceConfig = new DataSourceConfig();
+        dataSourceConfig.setDriver(driverClassName);
+        dataSourceConfig.setUsername(username);
+        dataSourceConfig.setPassword(password);
+        dataSourceConfig.setUrl(url);
 
-        return new HikariDataSource(hikariConfig);
+        return dataSourceConfig;
     }
 
     @Bean
-    public DatabaseModel createDatabase() {
-        DatabaseModel databaseModel = new DatabaseModel();
-        ServerConfig serverConfig = new ServerConfig();
-        serverConfig.setDataSource(getDataSourceConfig());
-        serverConfig.setAllQuotedIdentifiers(true);
-        serverConfig.setExpressionNativeIlike(true);
-        serverConfig.addPackage("");
-        serverConfig.setName("server");
-        serverConfig.setDefaultServer(true);
-        serverConfig.setRegister(true);
-
-        EbeanServer server = EbeanServerFactory.create(serverConfig);
-        databaseModel.setDatabase(server);
-
-        return databaseModel;
-        /*databaseConfig.setDataSourceConfig(getDataSourceConfig());
-        return DatabaseFactory.create(databaseConfig);*/
+    public Database createDatabase() {
+        DatabaseConfig databaseConfig = new DatabaseConfig();
+        databaseConfig.setDataSourceConfig(getDataSourceConfig());
+        return DatabaseFactory.create(databaseConfig);
     }
 }

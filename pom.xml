@@ -48,22 +48,9 @@
 		<dependency>
 			<groupId>io.ebean</groupId>
 			<artifactId>ebean</artifactId>
-			<version>12.2.4</version>
+			<version>13.20.1</version>
 			<scope>provided</scope>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/io.avaje/avaje-inject -->
-		<dependency>
-			<groupId>io.avaje</groupId>
-			<artifactId>avaje-inject</artifactId>
-			<version>4.1</version>
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.avaje/avaje-classpath-scanner-api -->
-		<dependency>
-			<groupId>org.avaje</groupId>
-			<artifactId>avaje-classpath-scanner-api</artifactId>
-			<version>2.2</version>
-		</dependency>
-
 		<dependency>
 			<groupId>io.ebean</groupId>
 			<artifactId>ebean-migration</artifactId>
@@ -138,12 +125,6 @@
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi-ooxml</artifactId>
 			<version>4.1.2</version>
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/io.springfox/springfox-swagger2 -->
-		<dependency>
-			<groupId>io.springfox</groupId>
-			<artifactId>springfox-swagger2</artifactId>
-			<version>2.9.2</version>
 		</dependency>
 	</dependencies>
 	<build>

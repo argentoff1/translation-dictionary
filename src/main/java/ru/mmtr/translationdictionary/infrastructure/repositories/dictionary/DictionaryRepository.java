@@ -97,7 +97,6 @@ public class DictionaryRepository {
         return new StringResultModel(foundEntity.getTranslation());
     }
 
-    // -
     public GUIDResultModel save(DictionarySaveModel model) {
         DictionaryEntity entity = new DictionaryEntity();
         entity.setDictionaryId(UUID.randomUUID());
