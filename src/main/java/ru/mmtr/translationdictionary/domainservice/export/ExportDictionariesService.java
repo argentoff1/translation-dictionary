@@ -158,39 +158,9 @@ public class ExportDictionariesService {
         return new GUIDResultModel(dictionaryExportFileUUID);
     }
 
-    // return type - MultipartFile
+    // Заменить принты
     public MultipartFile getExportDictionary(UUID id) {
-        /*if (!isValidUUID(String.valueOf(id))) {
-            return new MultipartFileResultModel("CAN_NOT_UPDATE",
-                    "Не удалось обновить данные. Поля должны быть корректно заполнены");
-        }
-
-        /*String strJson = null;
-        ClassPathResource classPathResource = new ClassPathResource("json/data.json");
         try {
-            byte[] binaryData = FileCopyUtils.copyToByteArray(classPathResource.getInputStream());
-            strJson = new String(binaryData, StandardCharsets.UTF_8);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
-
-        try {
-            MultipartFile multipartFile = new MockMultipartFile("dfe0856e-a4ad-4229-a264-e540c1cef22a.xlsx",
-                    new FileInputStream(new File("C:\\Users\\parinos.ma.kst\\IdeaProjects\\" +
-                            "translation-dictionary\\src\\main\\resources\\export\\" + id + ".xlsx")));
-
-            MultipartFile multipartFile1 = convertFileToMultiPart(id);
-
-            return multipartFile1;
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private static MultipartFile convertFileToMultiPart(UUID id) {
-        try {
-            id = UUID.fromString("dfe0856e-a4ad-4229-a264-e540c1cef22a");
             File file = new File("C:\\Users\\parinos.ma.kst\\IdeaProjects\\" +
                     "translation-dictionary\\src\\main\\resources\\export\\" + id + ".xlsx");
             if (file.exists()) {
@@ -198,27 +168,17 @@ public class ExportDictionariesService {
             }
             FileInputStream input = new FileInputStream(file);
             MultipartFile multipartFile = new MockMultipartFile("C:/Users/parinos.ma.kst/IdeaProjects/" +
-                    "translation-dictionary/src/main/resources/export", file.getName(), "text/plain",
+                    "translation-dictionary/src/main/resources/export", file.getName(), "multipart/form-data",
                     IOUtils.toByteArray(input));
             System.out.println("multipartFile => " + multipartFile.isEmpty() + " :: "
                     + multipartFile.getOriginalFilename() + " :: " + multipartFile.getName() + " :: "
-                    + multipartFile.getSize() + " :: " + multipartFile.getBytes());
+                    + multipartFile.getSize() + " :: " + Arrays.toString(multipartFile.getBytes()));
 
             return multipartFile;
         } catch (IOException e) {
             System.out.println("Exception => " + e.getLocalizedMessage());
         }
+
         return null;
     }
-
-    // Андрей
-    /*public static MultipartFile createMultipartFileFromExcel(byte[] excelStream, String outputFileName) {
-        var contentType = MediaType.APPLICATION_OCTET_STREAM_VALUE;
-        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
-            return new MockMultipartFile(outputFileName, outputFileName, contentType, excelStream);
-        } catch (IOException e) {
-            log.error(e.getMessage(), e);
-        }
-        return null;
-    }*/
 }

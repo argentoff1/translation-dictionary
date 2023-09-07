@@ -4,8 +4,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.mmtr.translationdictionary.domain.common.GUIDResultModel;
 import ru.mmtr.translationdictionary.domainservice.export.ExportDictionariesService;
 
+import java.io.IOException;
 import java.util.UUID;
 
 /**
@@ -44,19 +46,26 @@ public class ExportController {
         return exportDictionariesService.exportDictionary();
     }
 
-    @GetMapping(value = "/getExportDictionary/{id}")
+    @GetMapping(value = "/getExportDictionary/{id}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @Operation(
             summary = "Получение Excel файла с данными",
             description = "Позволяет получить Excel файл, в который были записаны данные"
     )
-    public ResponseEntity<MultipartFile> getExportDictionary(@PathVariable @Parameter
+    public ResponseEntity<InputStreamResource> getExportDictionary(@PathVariable @Parameter
             (description = "Идентификатор файла словаря") UUID id) {
-        MultipartFile exportDictionary = exportDictionariesService.getExportDictionary(id);
+        MultipartFile multipartFile = exportDictionariesService.getExportDictionary(id);
 
-        var headers = new HttpHeaders();
-        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + "ffffff");
-        headers.add(HttpHeaders.CONTENT_TYPE, "multipart/form-data");
+        InputStreamResource inputStreamResource;
+        try {
+            inputStreamResource = new InputStreamResource(multipartFile.getInputStream());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
-        return new ResponseEntity(exportDictionary.getBytes(), headers, HttpStatus.OK);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + multipartFile.getName())
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .contentLength(multipartFile.getSize())
+                .body(inputStreamResource);
     }
 }

@@ -28,7 +28,7 @@ public class UserSessionRepository {
                 .findList();
 
         return new CollectionResultModel<>(
-                entities.stream().map(this::getModel).collect(Collectors.toList())
+                entities.stream().map(this::getSessionModel).collect(Collectors.toList())
         );
     }
 
@@ -62,7 +62,7 @@ public class UserSessionRepository {
 
         return new PageResultModel<>(
                 page.getTotalCount(),
-                page.getList().stream().map(this::getModel).collect(Collectors.toList())
+                page.getList().stream().map(this::getSessionModel).collect(Collectors.toList())
         );
     }
 
@@ -101,7 +101,7 @@ public class UserSessionRepository {
                     "Не удалось найти данные. Поля должны быть корректно заполненными");
         }
 
-        return getModel(foundEntity);
+        return getSessionModel(foundEntity);
     }
 
     public UserSessionModel getBySessionId(UUID id) {
@@ -116,14 +116,14 @@ public class UserSessionRepository {
                     "Не удалось найти данные. Поля должны быть корректно заполненными");
         }
 
-        return getModel(foundEntity);
+        return getSessionModel(foundEntity);
     }
 
     public UserSessionModel save(UserModel model) {
         var userSessionEntity = getUserEntity(model);
         DB.insert(userSessionEntity);
 
-        return getModel(userSessionEntity);
+        return getSessionModel(userSessionEntity);
     }
 
     public SuccessResultModel delete(UserModel model) {
@@ -146,7 +146,7 @@ public class UserSessionRepository {
         return new SuccessResultModel(true);
     }
 
-    private UserSessionModel getModel(UserSessionEntity entity) {
+    private UserSessionModel getSessionModel(UserSessionEntity entity) {
         if (entity == null) {
             return null;
         }
@@ -171,9 +171,9 @@ public class UserSessionRepository {
         var entity = new UserSessionEntity();
         entity.setSessionId(UUID.randomUUID());
         entity.setAccessToken(jwtProvider.generateAccessToken(user, entity.getSessionId()));
-        entity.setAccessTokenExpiredDate(LocalDateTime.now().plusMinutes(60));
+        entity.setAccessTokenExpiredDate(LocalDateTime.now().plusDays(1));
         entity.setRefreshToken(jwtProvider.generateRefreshToken(user, entity.getSessionId()));
-        entity.setRefreshTokenExpiredDate(LocalDateTime.now().plusDays(1));
+        entity.setRefreshTokenExpiredDate(LocalDateTime.now().plusDays(30));
         entity.setUserId(user.getUserId());
         entity.setTokenCreatedAt(LocalDateTime.now());
 
