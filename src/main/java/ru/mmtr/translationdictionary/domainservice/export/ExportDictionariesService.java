@@ -1,19 +1,13 @@
 package ru.mmtr.translationdictionary.domainservice.export;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.tomcat.util.http.fileupload.disk.DiskFileItem;
-import org.mockito.Mock;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.http.MediaType;
+import org.apache.poi.util.IOUtils;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
-import ru.mmtr.translationdictionary.domain.common.MultipartFileResultModel;
 import ru.mmtr.translationdictionary.domain.common.GUIDResultModel;
 import ru.mmtr.translationdictionary.domain.common.PageResultModel;
-import ru.mmtr.translationdictionary.domain.common.StringResultModel;
 import ru.mmtr.translationdictionary.domain.dictionary.DictionaryModel;
 import ru.mmtr.translationdictionary.domain.dictionary.DictionaryPageRequestModel;
 import ru.mmtr.translationdictionary.domain.export.ExportDictionariesModel;
@@ -24,12 +18,11 @@ import ru.mmtr.translationdictionary.domainservice.dictionary.DictionaryService;
 import ru.mmtr.translationdictionary.domainservice.language.LanguageService;
 import ru.mmtr.translationdictionary.domainservice.user.UserService;
 
-import java.io.*;
-import java.nio.charset.StandardCharsets;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static ru.mmtr.translationdictionary.domainservice.common.Validation.isValidUUID;
 
 @Service
 @Slf4j
@@ -46,8 +39,6 @@ public class ExportDictionariesService {
     }
 
     public GUIDResultModel exportDictionary() {
-        MultipartFile multipartFile = new MockMu();
-
         var dictionaryCriteria = new DictionaryPageRequestModel();
         dictionaryCriteria.setPageNum(0);
         Integer PAGE_SIZE = 100;
@@ -168,152 +159,66 @@ public class ExportDictionariesService {
     }
 
     // return type - MultipartFile
-    public MultipartFileResultModel getExportDictionary(UUID id) {
-        //byte[] result = new byte[];
-
-        if (!isValidUUID(String.valueOf(id))) {
+    public MultipartFile getExportDictionary(UUID id) {
+        /*if (!isValidUUID(String.valueOf(id))) {
             return new MultipartFileResultModel("CAN_NOT_UPDATE",
                     "Не удалось обновить данные. Поля должны быть корректно заполнены");
         }
 
-        String filePath = "C:\\Users\\parinos.ma.kst\\IdeaProjects\\" +
-                "translation-dictionary\\src\\main\\resources\\export\\";
-
+        /*String strJson = null;
+        ClassPathResource classPathResource = new ClassPathResource("json/data.json");
         try {
-            File file = new File(filePath + id + ".xlsx");
-
-            FileInputStream fileInputStream = new FileInputStream(file);
-
-            long fileSize = file.length();
-
-            byte[] fileBytes = new byte[(int) fileSize];
-
-            fileInputStream.read(fileBytes);
-
-            ByteArrayResource resource = new ByteArrayResource(fileBytes);
-
-            MultipartFile multipartFile = new MultipartFile() {
-                @Override
-                public String getName() {
-                    return file.getName();
-                }
-
-                @Override
-                public String getOriginalFilename() {
-                    return file.getName();
-                }
-
-                @Override
-                public String getContentType() {
-                    return MediaType.APPLICATION_OCTET_STREAM_VALUE;
-                }
-
-                @Override
-                public boolean isEmpty() {
-                    return fileBytes.length == 0;
-                }
-
-                @Override
-                public long getSize() {
-                    return fileSize;
-                }
-
-                @Override
-                public byte[] getBytes() throws IOException {
-                    return fileBytes;
-                }
-
-                @Override
-                public InputStream getInputStream() throws IOException {
-                    return new ByteArrayInputStream(fileBytes);
-                }
-
-                @Override
-                public void transferTo(File dest) throws IOException, IllegalStateException {
-                    try (OutputStream outputStream = new FileOutputStream(dest)) {
-                        outputStream.write(fileBytes);
-                    }
-                }
-            };
-
-            //String strJson = null;
-
-            //ClassPathResource classPathResource = new ClassPathResource(filePath + id + ".xlsx");
-            /*ClassPathResource classPathResource = new ClassPathResource("json/data.json");
-            try {
-                byte[] binaryData = FileCopyUtils.copyToByteArray(classPathResource.getInputStream());
-                strJson = new String(binaryData, StandardCharsets.UTF_8);
-            } catch (IOException exception) {
-                exception.printStackTrace();
-            }*/
-            //return new StringResultModel(strJson);
-            return new MultipartFileResultModel(multipartFile);
-
-        } catch (IOException e) {
-            return new MultipartFileResultModel("CAN_NOT_FIND_FILE",
-                    "Не удалось найти файл по данному идентификатору");
-        }
-
-
-        /*try (
-                FileInputStream fileInputStream = new FileInputStream(file);
-                Workbook workbook = WorkbookFactory.create(fileInputStream)) {
-            // Кривая проверка на корректность файла. Мб вообще не поможет
-            if (fileInputStream.readAllBytes() == null) {
-                return new MultipartFileResultModel("CAN_NOT_FIND_FILE",
-                        "Не удалось найти файл по данному идентификатору");
-            }
-            Sheet sheet = workbook.getSheetAt(0);
-
-            *//*for (Row row : sheet) {
-                for (Cell cell : row) {
-                    CellType cellType = cell.getCellType();
-                    if (cellType == CellType.STRING) {
-                        System.out.print(cell.getStringCellValue() + "\t");
-                    } else if (cellType == CellType.NUMERIC) {
-                        System.out.print(cell.getNumericCellValue() + "\t");
-                    } else if (cellType == CellType.BLANK) {
-                        System.out.print("\t");
-                    }
-                }
-                System.out.println();
-            }*//*
-        } catch (
-                IOException e) {
-            log.error(e.getMessage(), e);
-        }*/
-
-        //return new MultipartFileResultModel("asdasdsdad", "qwdqwd");
-    }
-
-    /*public MultipartFile getMultipartFile(MultipartFile multipartFile) {
-        try {
-            // Создаем временный файл
-            File tempFile = File.createTempFile("temp", ".xlsx");
-
-            // Получаем входной поток из MultipartFile
-            InputStream inputStream = multipartFile.getInputStream();
-
-            // Создаем выходной поток для записи содержимого во временный файл
-            OutputStream outputStream = new FileOutputStream(tempFile);
-
-            // Копируем содержимое из входного потока в выходной поток
-            byte[] buffer = new byte[1024];
-            int bytesRead;
-            while ((bytesRead = inputStream.read(buffer)) != -1) {
-                outputStream.write(buffer, 0, bytesRead);
-            }
-
-            // Закрываем потоки
-            outputStream.close();
-            inputStream.close();
-
-            // Возвращаем временный файл как MultipartFile
-            return new Mock(multipartFile.getName(), multipartFile.getOriginalFilename(), multipartFile.getContentType(), tempFile);
+            byte[] binaryData = FileCopyUtils.copyToByteArray(classPathResource.getInputStream());
+            strJson = new String(binaryData, StandardCharsets.UTF_8);
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
 
+        try {
+            MultipartFile multipartFile = new MockMultipartFile("dfe0856e-a4ad-4229-a264-e540c1cef22a.xlsx",
+                    new FileInputStream(new File("C:\\Users\\parinos.ma.kst\\IdeaProjects\\" +
+                            "translation-dictionary\\src\\main\\resources\\export\\" + id + ".xlsx")));
+
+            MultipartFile multipartFile1 = convertFileToMultiPart(id);
+
+            return multipartFile1;
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static MultipartFile convertFileToMultiPart(UUID id) {
+        try {
+            id = UUID.fromString("dfe0856e-a4ad-4229-a264-e540c1cef22a");
+            File file = new File("C:\\Users\\parinos.ma.kst\\IdeaProjects\\" +
+                    "translation-dictionary\\src\\main\\resources\\export\\" + id + ".xlsx");
+            if (file.exists()) {
+                System.out.println("File Exist => " + file.getName() + " :: " + file.getAbsolutePath());
+            }
+            FileInputStream input = new FileInputStream(file);
+            MultipartFile multipartFile = new MockMultipartFile("C:/Users/parinos.ma.kst/IdeaProjects/" +
+                    "translation-dictionary/src/main/resources/export", file.getName(), "text/plain",
+                    IOUtils.toByteArray(input));
+            System.out.println("multipartFile => " + multipartFile.isEmpty() + " :: "
+                    + multipartFile.getOriginalFilename() + " :: " + multipartFile.getName() + " :: "
+                    + multipartFile.getSize() + " :: " + multipartFile.getBytes());
+
+            return multipartFile;
+        } catch (IOException e) {
+            System.out.println("Exception => " + e.getLocalizedMessage());
+        }
+        return null;
+    }
+
+    // Андрей
+    /*public static MultipartFile createMultipartFileFromExcel(byte[] excelStream, String outputFileName) {
+        var contentType = MediaType.APPLICATION_OCTET_STREAM_VALUE;
+        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+            return new MockMultipartFile(outputFileName, outputFileName, contentType, excelStream);
+        } catch (IOException e) {
+            log.error(e.getMessage(), e);
+        }
         return null;
     }*/
 }

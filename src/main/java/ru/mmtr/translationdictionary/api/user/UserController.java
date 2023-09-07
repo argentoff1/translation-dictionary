@@ -11,7 +11,6 @@ import ru.mmtr.translationdictionary.domain.session.UserSessionModel;
 import ru.mmtr.translationdictionary.domain.session.UserSessionPageRequestModel;
 import ru.mmtr.translationdictionary.domain.user.*;
 import ru.mmtr.translationdictionary.domainservice.common.CommonUtils;
-import ru.mmtr.translationdictionary.domainservice.export.ExportDictionariesService;
 import ru.mmtr.translationdictionary.domainservice.user.UserService;
 
 import java.util.UUID;
@@ -22,30 +21,9 @@ import java.util.UUID;
 @SecurityRequirement(name = "JWT")
 public class UserController {
     private final UserService userService;
-    private final ExportDictionariesService exportDictionariesService;
 
-    public UserController(UserService userService, ExportDictionariesService exportDictionariesService) {
+    public UserController(UserService userService) {
         this.userService = userService;
-        this.exportDictionariesService = exportDictionariesService;
-    }
-
-    @GetMapping(value = "/exportDictionary")
-    @Operation(
-            summary = "Экспорт данных в Excel",
-            description = "Позволяет экспортировать данные в Excel"
-    )
-    public GUIDResultModel exportDictionary() {
-        return exportDictionariesService.exportDictionary();
-    }
-
-    @GetMapping(value = "/getExportDictionary/{id}")
-    @Operation(
-            summary = "Получение Excel файла с данными",
-            description = "Позволяет получить Excel файл, в который были записаны данные"
-    )
-    public MultipartFileResultModel getExportDictionary(@PathVariable @Parameter
-            (description = "Идентификатор файла словаря") UUID id) {
-        return exportDictionariesService.getExportDictionary(id);
     }
 
     @PostMapping(value = "/login")
