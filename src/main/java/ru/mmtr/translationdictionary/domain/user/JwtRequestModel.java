@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class JwtRequestModel {
-    @Parameter(description = "Логин", example = "alexx")
+    @Parameter(description = "Логин", example = "alex")
     private String login;
 
     @Parameter(description = "Пароль")

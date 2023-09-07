@@ -44,14 +44,14 @@ public class ExportDictionariesService {
         Integer PAGE_SIZE = 100;
         dictionaryCriteria.setPageSize(PAGE_SIZE);
         PageResultModel<DictionaryModel> page;
-        UUID dictionaryExportFileUUID;
+        UUID exportFileName = UUID.randomUUID();
 
         // Создание файла. Создание нужных колонок для данных
-        dictionaryExportFileUUID = UUID.randomUUID();
-
         var createdFile = WriteListToFile.createFile("C:\\Users\\parinos.ma.kst\\" +
                 "IdeaProjects\\" + "translation-dictionary\\src\\main\\resources\\export\\"
-                + dictionaryExportFileUUID + ".xlsx");
+                + exportFileName + ".xlsx");
+
+        WriteListToFile.workbookFill(exportDictionariesModels);
 
         // Обогащение пагинации данными из модели
         do {
@@ -143,11 +143,11 @@ public class ExportDictionariesService {
             }
 
             try {
-                dictionaryExportFileUUID = UUID.randomUUID();
+                exportFileName = UUID.randomUUID();
 
-                WriteListToFile.writeExportListToFile("C:\\Users\\parinos.ma.kst\\" +
-                        "IdeaProjects\\" + "translation-dictionary\\src\\main\\resources\\export\\"
-                        + dictionaryExportFileUUID + ".xlsx", exportDictionariesModels);
+                WriteListToFile.writeExportListToFile("C:\\Users\\Maxim Parinos\\IdeaProjects\\2023\\" +
+                        "translation-dictionary\\src\\main\\resources\\export\\"
+                        + exportFileName + ".xlsx", exportDictionariesModels);
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
                 return new GUIDResultModel("CAN_NOT_EXPORT",
@@ -155,28 +155,26 @@ public class ExportDictionariesService {
             }
         } while (page.getResultList().size() == PAGE_SIZE);
 
-        return new GUIDResultModel(dictionaryExportFileUUID);
+        return new GUIDResultModel(exportFileName);
     }
 
-    // Заменить принты
+    /*String pathToFileMMTR = "C:\\Users\\parinos.ma.kst\\" +
+            "IdeaProjects\\" + "translation-dictionary\\src\\main\\resources\\export\\";*/
+
     public MultipartFile getExportDictionary(UUID id) {
         try {
-            File file = new File("C:\\Users\\parinos.ma.kst\\IdeaProjects\\" +
+            File file = new File("C:\\Users\\Maxim Parinos\\IdeaProjects\\2023\\" +
                     "translation-dictionary\\src\\main\\resources\\export\\" + id + ".xlsx");
-            if (file.exists()) {
-                System.out.println("File Exist => " + file.getName() + " :: " + file.getAbsolutePath());
+            if (!file.exists()) {
+                log.error("Файла по указанному пути не существует");
             }
             FileInputStream input = new FileInputStream(file);
-            MultipartFile multipartFile = new MockMultipartFile("C:/Users/parinos.ma.kst/IdeaProjects/" +
-                    "translation-dictionary/src/main/resources/export", file.getName(), "multipart/form-data",
-                    IOUtils.toByteArray(input));
-            System.out.println("multipartFile => " + multipartFile.isEmpty() + " :: "
-                    + multipartFile.getOriginalFilename() + " :: " + multipartFile.getName() + " :: "
-                    + multipartFile.getSize() + " :: " + Arrays.toString(multipartFile.getBytes()));
 
-            return multipartFile;
+            return new MockMultipartFile("C:/Users/Maxim Parinos/IdeaProjects/2023" +
+                    "translation-dictionary/src/main/resources/export", file.getName(),
+                    "multipart/form-data", IOUtils.toByteArray(input));
         } catch (IOException e) {
-            System.out.println("Exception => " + e.getLocalizedMessage());
+            log.error(e.getMessage(), e);
         }
 
         return null;

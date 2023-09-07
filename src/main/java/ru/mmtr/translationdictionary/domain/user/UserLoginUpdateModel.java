@@ -12,6 +12,6 @@ public class UserLoginUpdateModel {
     @Parameter(description = "Идентификатор")
     private UUID id;
 
-    @Parameter(description = "Логин", example = "alexx")
+    @Parameter(description = "Логин", example = "alex")
     private String login;
 }

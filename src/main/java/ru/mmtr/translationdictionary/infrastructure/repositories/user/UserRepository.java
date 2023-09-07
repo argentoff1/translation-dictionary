@@ -169,6 +169,7 @@ public class UserRepository {
         entity.setEmail(model.getEmail());
         entity.setPhoneNumber(model.getPhoneNumber());
         entity.setCreatedAt(LocalDateTime.now());
+        entity.setModifiedAt(LocalDateTime.now());
         entity.setRoleName(UserRole.USER.getRoleName());
         DB.insert(entity);
 

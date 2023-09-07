@@ -7,19 +7,19 @@ import lombok.Setter;
 @Getter
 @Setter
 public class UserSaveModel {
-    @Parameter(description = "Логин", example = "alexx")
+    @Parameter(description = "Логин", example = "alex")
     private String login;
 
     @Parameter(description = "Пароль")
     private String password;
 
-    @Parameter(description = "Фамилия", example = "Alexandrov")
+    @Parameter(description = "Фамилия", example = "Aleksandrov")
     private String lastName;
 
     @Parameter(description = "Имя", example = "Alexander")
     private String firstName;
 
-    @Parameter(description = "Отчество", example = "Alexandrovich")
+    @Parameter(description = "Отчество", example = "Aleksandrovich")
     private String fatherName;
 
     @Parameter(description = "Электронная почта", example = "alexx@gmail.com")

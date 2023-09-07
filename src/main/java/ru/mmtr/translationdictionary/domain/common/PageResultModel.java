@@ -5,10 +5,10 @@ import lombok.*;
 
 import java.util.Collection;
 
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class PageResultModel<T> {
     @Schema(description = "Общее количество элементов", example = "100")
     private Integer totalCount;

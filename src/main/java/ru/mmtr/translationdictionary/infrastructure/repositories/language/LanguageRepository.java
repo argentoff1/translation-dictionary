@@ -101,14 +101,15 @@ public class LanguageRepository {
     }
 
     public GUIDResultModel save(LanguageSaveModel model) {
-        LanguageEntity languageEntity = new LanguageEntity();
-        languageEntity.setLanguageId(UUID.randomUUID());
-        languageEntity.setLanguageName(model.getLanguageName());
-        languageEntity.setCreatedAt(LocalDateTime.now());
-        languageEntity.setCreatedUserId(CommonUtils.getUserId());
-        DB.insert(languageEntity);
+        LanguageEntity entity = new LanguageEntity();
+        entity.setLanguageId(UUID.randomUUID());
+        entity.setLanguageName(model.getLanguageName());
+        entity.setCreatedAt(LocalDateTime.now());
+        entity.setCreatedUserId(CommonUtils.getUserId());
+        entity.setModifiedAt(LocalDateTime.now());
+        DB.insert(entity);
 
-        var resultModel = getModel(languageEntity);
+        var resultModel = getModel(entity);
 
         return new GUIDResultModel(resultModel.getLanguageId());
     }

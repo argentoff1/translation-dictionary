@@ -106,6 +106,7 @@ public class DictionaryRepository {
         entity.setToLanguage(model.getToLanguage());
         entity.setCreatedAt(LocalDateTime.now());
         entity.setCreatedUserId(CommonUtils.getUserId());
+        entity.setModifiedAt(LocalDateTime.now());
         DB.insert(entity);
 
         var resultModel = getModel(entity);

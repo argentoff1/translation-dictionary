@@ -12,10 +12,10 @@ public class UserUpdateModel {
     @Parameter(description = "Идентификатор")
     private UUID id;
 
-    @Parameter(description = "Логин", example = "alexx")
+    @Parameter(description = "Логин", example = "alex")
     private String login;
 
-    @Parameter(description = "Фамилия", example = "Alexandrov")
+    @Parameter(description = "Фамилия", example = "Aleksandrov")
     private String lastName;
 
     @Parameter(description = "Имя", example = "Alexander")

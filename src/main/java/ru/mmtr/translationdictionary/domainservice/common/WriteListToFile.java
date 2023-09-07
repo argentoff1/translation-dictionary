@@ -10,6 +10,7 @@ import ru.mmtr.translationdictionary.domain.export.ExportDictionariesModel;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
 import java.util.List;
@@ -46,8 +47,6 @@ public class WriteListToFile {
 
         ExportDictionariesModel exportDictionariesModel;
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
-
         Iterator<ExportDictionariesModel> iterator = modelList.iterator();
 
         exportDictionariesModel = iterator.next();
@@ -69,6 +68,14 @@ public class WriteListToFile {
         headerCell4.setCellValue("Изменил");
         Cell headerCell5 = headerRow.createCell(5);
         headerCell5.setCellValue("Дата изменения");
+    }
+
+    public static void closeFosThread(FileOutputStream fileOutputStream) {
+        try {
+            fileOutputStream.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static void writeExportListToFile(String fileName, List<ExportDictionariesModel> modelList) throws Exception {
