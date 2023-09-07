@@ -30,7 +30,7 @@ public class UserEntity {
     public static final String ROLE_NAME = "role_name";
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = USER_ID)
     private UUID userId;
 

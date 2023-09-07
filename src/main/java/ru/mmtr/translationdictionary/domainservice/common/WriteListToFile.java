@@ -1,18 +1,78 @@
 package ru.mmtr.translationdictionary.domainservice.common;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import ru.mmtr.translationdictionary.domain.common.MultipartFileResultModel;
 import ru.mmtr.translationdictionary.domain.export.ExportDictionariesModel;
 
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
 import java.util.List;
 
+@Slf4j
 public class WriteListToFile {
+    public static FileOutputStream createFile(String fileName/*, Workbook workbook*/) {
+        FileOutputStream fileOutputStream = null;
+        try {
+            fileOutputStream = new FileOutputStream(fileName);
+        } catch (FileNotFoundException e) {
+            log.error(e.getMessage(), e);
+        }
+
+        // Запись в самом цикле мб
+        /*try {
+            workbook.write(fileOutputStream);
+        } catch (IOException e) {
+            log.error(e.getMessage(), e);
+        }*/
+
+        // Возможно поток нужно закрывать
+        /*try {
+            fileOutputStream.close();
+        } catch (IOException e) {
+            log.error(e.getMessage(), e);
+        }*/
+
+        return fileOutputStream;
+    }
+
+    public static void workbookFill(List<ExportDictionariesModel> modelList) {
+        Workbook workbook = new XSSFWorkbook();
+
+        ExportDictionariesModel exportDictionariesModel;
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
+
+        Iterator<ExportDictionariesModel> iterator = modelList.iterator();
+
+        exportDictionariesModel = iterator.next();
+        Sheet sheet = workbook.createSheet(exportDictionariesModel.getFromLanguageName() + "-" +
+                exportDictionariesModel.getToLanguageName());
+
+        sheet.setDefaultColumnWidth(17);
+
+        Row headerRow = sheet.createRow(0);
+        Cell headerCell0 = headerRow.createCell(0);
+        headerCell0.setCellValue(exportDictionariesModel.getFromLanguageName());
+        Cell headerCell1 = headerRow.createCell(1);
+        headerCell1.setCellValue(exportDictionariesModel.getToLanguageName());
+        Cell headerCell2 = headerRow.createCell(2);
+        headerCell2.setCellValue("Добавил");
+        Cell headerCell3 = headerRow.createCell(3);
+        headerCell3.setCellValue("Дата добавления");
+        Cell headerCell4 = headerRow.createCell(4);
+        headerCell4.setCellValue("Изменил");
+        Cell headerCell5 = headerRow.createCell(5);
+        headerCell5.setCellValue("Дата изменения");
+    }
+
     public static void writeExportListToFile(String fileName, List<ExportDictionariesModel> modelList) throws Exception {
         Workbook workbook = new XSSFWorkbook();
 

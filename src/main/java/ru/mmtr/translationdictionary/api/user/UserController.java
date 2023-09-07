@@ -7,7 +7,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.mmtr.translationdictionary.domain.common.*;
-import ru.mmtr.translationdictionary.domain.export.ExportDictionariesModel;
 import ru.mmtr.translationdictionary.domain.session.UserSessionModel;
 import ru.mmtr.translationdictionary.domain.session.UserSessionPageRequestModel;
 import ru.mmtr.translationdictionary.domain.user.*;
@@ -44,7 +43,8 @@ public class UserController {
             summary = "Получение Excel файла с данными",
             description = "Позволяет получить Excel файл, в который были записаны данные"
     )
-    public CollectionResultModel<ExportDictionariesModel> getExportDictionary(@PathVariable @Parameter(description = "Идентификатор файла словаря") UUID id) {
+    public MultipartFileResultModel getExportDictionary(@PathVariable @Parameter
+            (description = "Идентификатор файла словаря") UUID id) {
         return exportDictionariesService.getExportDictionary(id);
     }
 
