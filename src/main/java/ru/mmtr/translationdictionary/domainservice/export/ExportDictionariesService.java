@@ -1,7 +1,9 @@
 package ru.mmtr.translationdictionary.domainservice.export;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.util.IOUtils;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -24,13 +26,14 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static ru.mmtr.translationdictionary.domainservice.common.Validation.isValidUUID;
+
 @Service
 @Slf4j
 public class ExportDictionariesService {
     private final LanguageService languageService;
     private final DictionaryService dictionaryService;
     private final UserService userService;
-    private List<ExportDictionariesModel> exportDictionariesModels;
 
     public ExportDictionariesService(LanguageService languageService, DictionaryService dictionaryService, UserService userService) {
         this.languageService = languageService;
@@ -41,23 +44,16 @@ public class ExportDictionariesService {
     public GUIDResultModel exportDictionary() {
         var dictionaryCriteria = new DictionaryPageRequestModel();
         dictionaryCriteria.setPageNum(0);
-        Integer PAGE_SIZE = 100;
+        int PAGE_SIZE = 100;
         dictionaryCriteria.setPageSize(PAGE_SIZE);
         PageResultModel<DictionaryModel> page;
-        UUID exportFileName = UUID.randomUUID();
-
-        // Создание файла. Создание нужных колонок для данных
-        var createdFile = WriteListToFile.createFile("C:\\Users\\parinos.ma.kst\\" +
-                "IdeaProjects\\" + "translation-dictionary\\src\\main\\resources\\export\\"
-                + exportFileName + ".xlsx");
-
-        WriteListToFile.workbookFill(exportDictionariesModels);
 
         // Обогащение пагинации данными из модели
+        List<ExportDictionariesModel> exportDictionariesModels;
+        // Прочитать про XSSFWorkbook и SXSSFWorkbook
+        Workbook workbook = new XSSFWorkbook();
         do {
             // Открытие файла, выбор нужной вкладки и класть страницу
-
-
             page = dictionaryService.getPage(dictionaryCriteria);
             dictionaryCriteria.setPageNum(dictionaryCriteria.getPageNum() + 1);
 
@@ -117,7 +113,7 @@ public class ExportDictionariesService {
                 userModifiersMap = userService.getByIds(userModifiersIds);
             }
 
-            // Засунуть Map в модель
+            // Положить Map в модель
             for (var exportDictionariesModel : exportDictionariesModels) {
                 var fromLanguageName = fromLanguageNamesMap.get(exportDictionariesModel.getFromLanguageUUID());
                 if (fromLanguageName != null) {
@@ -142,12 +138,10 @@ public class ExportDictionariesService {
                 }
             }
 
-            try {
-                exportFileName = UUID.randomUUID();
+            WriteListToFile.workbookCreateHeadersIfRequired(exportDictionariesModels, workbook);
 
-                WriteListToFile.writeExportListToFile("C:\\Users\\Maxim Parinos\\IdeaProjects\\2023\\" +
-                        "translation-dictionary\\src\\main\\resources\\export\\"
-                        + exportFileName + ".xlsx", exportDictionariesModels);
+            try {
+                WriteListToFile.fillWorkbook(exportDictionariesModels, workbook);
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
                 return new GUIDResultModel("CAN_NOT_EXPORT",
@@ -155,22 +149,23 @@ public class ExportDictionariesService {
             }
         } while (page.getResultList().size() == PAGE_SIZE);
 
-        return new GUIDResultModel(exportFileName);
+        return new GUIDResultModel(WriteListToFile.writeInFile(workbook));
     }
 
-    /*String pathToFileMMTR = "C:\\Users\\parinos.ma.kst\\" +
-            "IdeaProjects\\" + "translation-dictionary\\src\\main\\resources\\export\\";*/
-
     public MultipartFile getExportDictionary(UUID id) {
+        if (!isValidUUID(String.valueOf(id))) {
+            log.error("Не удалось найти данные. Поля должны быть корректно заполнены");
+        }
+
         try {
-            File file = new File("C:\\Users\\Maxim Parinos\\IdeaProjects\\2023\\" +
-                    "translation-dictionary\\src\\main\\resources\\export\\" + id + ".xlsx");
+            File file = new File("C:\\Users\\parinos.ma.kst\\IdeaProjects" +
+                    "\\translation-dictionary\\src\\main\\resources\\export\\" + id + ".xlsx");
             if (!file.exists()) {
                 log.error("Файла по указанному пути не существует");
             }
             FileInputStream input = new FileInputStream(file);
 
-            return new MockMultipartFile("C:/Users/Maxim Parinos/IdeaProjects/2023" +
+            return new MockMultipartFile("C:/Users/parinos.ma.kst/IdeaProjects/" +
                     "translation-dictionary/src/main/resources/export", file.getName(),
                     "multipart/form-data", IOUtils.toByteArray(input));
         } catch (IOException e) {

@@ -3,34 +3,25 @@ package ru.mmtr.translationdictionary.domainservice.common;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import ru.mmtr.translationdictionary.domain.export.ExportDictionariesModel;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
-import java.util.Iterator;
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 public class WriteListToFile {
-    public static FileOutputStream createFile(String fileName/*, Workbook workbook*/) {
+    public static FileOutputStream createFile(String fileName) {
         FileOutputStream fileOutputStream = null;
         try {
             fileOutputStream = new FileOutputStream(fileName);
         } catch (FileNotFoundException e) {
             log.error(e.getMessage(), e);
         }
-
-        // Запись в самом цикле мб
-        /*try {
-            workbook.write(fileOutputStream);
-        } catch (IOException e) {
-            log.error(e.getMessage(), e);
-        }*/
 
         // Возможно поток нужно закрывать
         /*try {
@@ -42,74 +33,47 @@ public class WriteListToFile {
         return fileOutputStream;
     }
 
-    public static void workbookFill(List<ExportDictionariesModel> modelList) {
-        Workbook workbook = new XSSFWorkbook();
+    public static void workbookCreateHeadersIfRequired(List<ExportDictionariesModel> modelList, Workbook workbook) {
+        //Sheet sheet = workbook.createSheet("Англо-русский");
+        for(var exportDictionariesModel : modelList) {
+            var sheetName = exportDictionariesModel.getFromLanguageName() + "-" +
+                    exportDictionariesModel.getToLanguageName();
+            var sheet = workbook.getSheet(sheetName);
 
-        ExportDictionariesModel exportDictionariesModel;
+            if (sheet == null) {
+                sheet = workbook.createSheet(sheetName);
 
-        Iterator<ExportDictionariesModel> iterator = modelList.iterator();
+                sheet.setDefaultColumnWidth(17);
 
-        exportDictionariesModel = iterator.next();
-        Sheet sheet = workbook.createSheet(exportDictionariesModel.getFromLanguageName() + "-" +
-                exportDictionariesModel.getToLanguageName());
-
-        sheet.setDefaultColumnWidth(17);
-
-        Row headerRow = sheet.createRow(0);
-        Cell headerCell0 = headerRow.createCell(0);
-        headerCell0.setCellValue(exportDictionariesModel.getFromLanguageName());
-        Cell headerCell1 = headerRow.createCell(1);
-        headerCell1.setCellValue(exportDictionariesModel.getToLanguageName());
-        Cell headerCell2 = headerRow.createCell(2);
-        headerCell2.setCellValue("Добавил");
-        Cell headerCell3 = headerRow.createCell(3);
-        headerCell3.setCellValue("Дата добавления");
-        Cell headerCell4 = headerRow.createCell(4);
-        headerCell4.setCellValue("Изменил");
-        Cell headerCell5 = headerRow.createCell(5);
-        headerCell5.setCellValue("Дата изменения");
-    }
-
-    public static void closeFosThread(FileOutputStream fileOutputStream) {
-        try {
-            fileOutputStream.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+                Row headerRow = sheet.createRow(0);
+                Cell headerCell0 = headerRow.createCell(0);
+                headerCell0.setCellValue(exportDictionariesModel.getFromLanguageName());
+                Cell headerCell1 = headerRow.createCell(1);
+                headerCell1.setCellValue(exportDictionariesModel.getToLanguageName());
+                Cell headerCell2 = headerRow.createCell(2);
+                headerCell2.setCellValue("Добавил");
+                Cell headerCell3 = headerRow.createCell(3);
+                headerCell3.setCellValue("Дата добавления");
+                Cell headerCell4 = headerRow.createCell(4);
+                headerCell4.setCellValue("Изменил");
+                Cell headerCell5 = headerRow.createCell(5);
+                headerCell5.setCellValue("Дата изменения");
+            }
         }
+
+        //return workbook;
     }
 
-    public static void writeExportListToFile(String fileName, List<ExportDictionariesModel> modelList) throws Exception {
-        Workbook workbook = new XSSFWorkbook();
-
-        ExportDictionariesModel exportDictionariesModel;
-
+    public static void fillWorkbook(List<ExportDictionariesModel> modelList, Workbook workbook) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
 
-        Iterator<ExportDictionariesModel> iterator = modelList.iterator();
-
-        exportDictionariesModel = iterator.next();
-        Sheet sheet = workbook.createSheet(exportDictionariesModel.getFromLanguageName() + "-" +
-                exportDictionariesModel.getToLanguageName());
-
-        sheet.setDefaultColumnWidth(17);
-
-        Row headerRow = sheet.createRow(0);
-        Cell headerCell0 = headerRow.createCell(0);
-        headerCell0.setCellValue(exportDictionariesModel.getFromLanguageName());
-        Cell headerCell1 = headerRow.createCell(1);
-        headerCell1.setCellValue(exportDictionariesModel.getToLanguageName());
-        Cell headerCell2 = headerRow.createCell(2);
-        headerCell2.setCellValue("Добавил");
-        Cell headerCell3 = headerRow.createCell(3);
-        headerCell3.setCellValue("Дата добавления");
-        Cell headerCell4 = headerRow.createCell(4);
-        headerCell4.setCellValue("Изменил");
-        Cell headerCell5 = headerRow.createCell(5);
-        headerCell5.setCellValue("Дата изменения");
-
         int rowIndex = 1;
-        while (iterator.hasNext()) {
-            exportDictionariesModel = iterator.next();
+        for (var exportDictionariesModel : modelList) {
+            var sheetName = exportDictionariesModel.getFromLanguageName() + "-" +
+                    exportDictionariesModel.getToLanguageName();
+
+            var sheet = workbook.getSheet(sheetName);
+
             Row row = sheet.createRow(rowIndex++);
 
             Cell cell0 = row.createCell(0);
@@ -138,9 +102,22 @@ public class WriteListToFile {
                 cell5.setCellValue(exportDictionariesModel.getModifiedAt().format(formatter));
             }
         }
+    }
 
-        FileOutputStream fos = new FileOutputStream(fileName);
-        workbook.write(fos);
-        fos.close();
+    public static UUID writeInFile(Workbook workbook) {
+        UUID exportFileName = UUID.randomUUID();
+
+        try {
+            FileOutputStream fileOutputStream = new FileOutputStream("C:\\Users\\parinos.ma.kst\\" +
+                    "IdeaProjects\\" + "translation-dictionary\\src\\main\\resources\\export\\"
+                    + exportFileName + ".xlsx");
+
+            workbook.write(fileOutputStream);
+            fileOutputStream.close();
+        } catch (IOException e) {
+            log.error(e.getMessage(), e);
+        }
+
+        return exportFileName;
     }
 }
