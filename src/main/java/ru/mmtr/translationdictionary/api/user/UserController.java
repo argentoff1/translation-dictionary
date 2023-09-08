@@ -7,8 +7,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.mmtr.translationdictionary.domain.common.*;
-import ru.mmtr.translationdictionary.domain.session.UserSessionModel;
-import ru.mmtr.translationdictionary.domain.session.UserSessionPageRequestModel;
 import ru.mmtr.translationdictionary.domain.user.*;
 import ru.mmtr.translationdictionary.domainservice.common.CommonUtils;
 import ru.mmtr.translationdictionary.domainservice.user.UserService;
@@ -63,15 +61,7 @@ public class UserController {
         return userService.showAllUsers();
     }
 
-    @GetMapping(value = "/showAllSessions")
-    @PreAuthorize("hasAuthority('ADMIN')")
-    @Operation(
-            summary = "Отображение всех сессий постранично",
-            description = "Позволяет отобразить все сессии постранично"
-    )
-    public CollectionResultModel<UserSessionModel> showAllSessions() {
-        return userService.showAllSessions();
-    }
+
 
     @PostMapping(value = "/getPageUsers")
     @PreAuthorize("hasAuthority('ADMIN')")
@@ -83,15 +73,6 @@ public class UserController {
         return userService.getPageUsers(criteria);
     }
 
-    @PostMapping(value = "/getPageSessions")
-    @PreAuthorize("hasAuthority('ADMIN')")
-    @Operation(
-            summary = "Отображение всех пользователей постранично",
-            description = "Позволяет отобразить всех пользователей постранично"
-    )
-    public PageResultModel<UserSessionModel> getPageSessions(@RequestBody UserSessionPageRequestModel criteria) {
-        return userService.getPageSessions(criteria);
-    }
 
     @GetMapping(value = "/getUserById/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
@@ -104,7 +85,7 @@ public class UserController {
     }
 
     @GetMapping(value = "/getUserByLogin/{login}")
-    @PreAuthorize("hasAuthority('USER')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(
             summary = "Получение пользователя",
             description = "Позволяет получить пользователя по логину"
@@ -113,18 +94,8 @@ public class UserController {
         return userService.getByLogin(login);
     }
 
-    @GetMapping(value = "/getSessionById/{id}")
-    @PreAuthorize("hasAuthority('ADMIN')")
-    @Operation(
-            summary = "Получение сессии",
-            description = "Позволяет получить одну сессию"
-    )
-    public UserSessionModel getSessionById(@PathVariable @Parameter(description = "Идентификатор") UUID id) {
-        return userService.getSessionById(id);
-    }
-
     @PostMapping(value = "/save")
-    @PreAuthorize("hasAuthority('USER')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(
             summary = "Регистрация",
             description = "Позволяет зарегистрировать пользователя"

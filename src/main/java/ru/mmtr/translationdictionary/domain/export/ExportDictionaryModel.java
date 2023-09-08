@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import ru.mmtr.translationdictionary.domain.common.GeneralResultModel;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -14,7 +13,7 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ExportDictionariesModel extends GeneralResultModel {
+public class ExportDictionaryModel {
     @Schema(description = "Наименование языка исходного слова", accessMode = Schema.AccessMode.READ_ONLY)
     private String fromLanguageName;
 
@@ -50,8 +49,4 @@ public class ExportDictionariesModel extends GeneralResultModel {
 
     @Schema(description = "Дата изменения пары слов")
     private LocalDateTime modifiedAt;
-
-    public ExportDictionariesModel(String errorCode, String errorMessage) {
-        super(errorCode, errorMessage);
-    }
 }

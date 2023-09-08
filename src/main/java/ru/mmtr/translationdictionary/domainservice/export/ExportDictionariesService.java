@@ -12,7 +12,7 @@ import ru.mmtr.translationdictionary.domain.common.GUIDResultModel;
 import ru.mmtr.translationdictionary.domain.common.PageResultModel;
 import ru.mmtr.translationdictionary.domain.dictionary.DictionaryModel;
 import ru.mmtr.translationdictionary.domain.dictionary.DictionaryPageRequestModel;
-import ru.mmtr.translationdictionary.domain.export.ExportDictionariesModel;
+import ru.mmtr.translationdictionary.domain.export.ExportDictionaryModel;
 import ru.mmtr.translationdictionary.domain.language.LanguageModel;
 import ru.mmtr.translationdictionary.domain.user.UserModel;
 import ru.mmtr.translationdictionary.domainservice.common.WriteListToFile;
@@ -26,14 +26,15 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static ru.mmtr.translationdictionary.domainservice.common.Validation.isValidUUID;
-
 @Service
 @Slf4j
 public class ExportDictionariesService {
     private final LanguageService languageService;
     private final DictionaryService dictionaryService;
     private final UserService userService;
+    private static final int PAGE_SIZE = 100;
+    public static final String DICTIONARIES_FILE_PATH = "C:\\Users\\parinos.ma.kst\\IdeaProjects\\" +
+            "translation-dictionary\\src\\main\\resources\\export\\dictionaries";
 
     public ExportDictionariesService(LanguageService languageService, DictionaryService dictionaryService, UserService userService) {
         this.languageService = languageService;
@@ -44,23 +45,19 @@ public class ExportDictionariesService {
     public GUIDResultModel exportDictionary() {
         var dictionaryCriteria = new DictionaryPageRequestModel();
         dictionaryCriteria.setPageNum(0);
-        int PAGE_SIZE = 100;
         dictionaryCriteria.setPageSize(PAGE_SIZE);
         PageResultModel<DictionaryModel> page;
 
         // Обогащение пагинации данными из модели
-        List<ExportDictionariesModel> exportDictionariesModels;
-        // Прочитать про XSSFWorkbook и SXSSFWorkbook
+        List<ExportDictionaryModel> exportDictionaryModels;
         Workbook workbook = new XSSFWorkbook();
         do {
-            // Открытие файла, выбор нужной вкладки и класть страницу
             page = dictionaryService.getPage(dictionaryCriteria);
             dictionaryCriteria.setPageNum(dictionaryCriteria.getPageNum() + 1);
 
             // Экспорт данных из пагинации в модель
-            exportDictionariesModels = page.getResultList().stream().map(dictionaryModel -> {
-
-                var exportDictionaryModel = new ExportDictionariesModel();
+            exportDictionaryModels = page.getResultList().stream().map(dictionaryModel -> {
+                var exportDictionaryModel = new ExportDictionaryModel();
                 // Переложить все поля в модель из dictionaryModel
                 exportDictionaryModel.setFromLanguageUUID(dictionaryModel.getFromLanguage());
                 exportDictionaryModel.setToLanguageUUID(dictionaryModel.getToLanguage());
@@ -74,24 +71,24 @@ public class ExportDictionariesService {
                 return exportDictionaryModel;
             }).toList();
 
-            var languageFromIds = exportDictionariesModels.stream()
-                    .map(ExportDictionariesModel::getFromLanguageUUID)
+            var languageFromIds = exportDictionaryModels.stream()
+                    .map(ExportDictionaryModel::getFromLanguageUUID)
                     .distinct().filter(Objects::nonNull)
                     .collect(Collectors.toList());
-            var languageToIds = exportDictionariesModels.stream()
-                    .map(ExportDictionariesModel::getToLanguageUUID)
+            var languageToIds = exportDictionaryModels.stream()
+                    .map(ExportDictionaryModel::getToLanguageUUID)
                     .distinct().filter(Objects::nonNull)
                     .collect(Collectors.toList());
-            var userCreatorsIds = exportDictionariesModels.stream()
-                    .map(ExportDictionariesModel::getCreatedUserId)
+            var userCreatorsIds = exportDictionaryModels.stream()
+                    .map(ExportDictionaryModel::getCreatedUserId)
                     .distinct().filter(Objects::nonNull)
                     .collect(Collectors.toList());
-            var userModifiersIds = exportDictionariesModels.stream()
-                    .map(ExportDictionariesModel::getModifiedUserId)
+            var userModifiersIds = exportDictionaryModels.stream()
+                    .map(ExportDictionaryModel::getModifiedUserId)
                     .distinct().filter(Objects::nonNull)
                     .collect(Collectors.toList());
 
-            // Вызывать метод из репозитория, который вернет модели. На вход список guid
+            // Вызывать метод из репозитория, который вернет модели. На вход список GUID
             // получить все остальные сущности, остальные ID
             Map<UUID, LanguageModel> fromLanguageNamesMap = new HashMap<>();
             if (!CollectionUtils.isEmpty(languageFromIds)) {
@@ -114,7 +111,7 @@ public class ExportDictionariesService {
             }
 
             // Положить Map в модель
-            for (var exportDictionariesModel : exportDictionariesModels) {
+            for (var exportDictionariesModel : exportDictionaryModels) {
                 var fromLanguageName = fromLanguageNamesMap.get(exportDictionariesModel.getFromLanguageUUID());
                 if (fromLanguageName != null) {
                     exportDictionariesModel.setFromLanguageName(fromLanguageName.getLanguageName());
@@ -138,10 +135,10 @@ public class ExportDictionariesService {
                 }
             }
 
-            WriteListToFile.workbookCreateHeadersIfRequired(exportDictionariesModels, workbook);
+            WriteListToFile.workbookDictionaryCreateHeadersIfRequired(exportDictionaryModels, workbook);
 
             try {
-                WriteListToFile.fillWorkbook(exportDictionariesModels, workbook);
+                WriteListToFile.fillDictionaryWorkbook(exportDictionaryModels, workbook);
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
                 return new GUIDResultModel("CAN_NOT_EXPORT",
@@ -149,17 +146,12 @@ public class ExportDictionariesService {
             }
         } while (page.getResultList().size() == PAGE_SIZE);
 
-        return new GUIDResultModel(WriteListToFile.writeInFile(workbook));
+        return new GUIDResultModel(WriteListToFile.writeInFile(DICTIONARIES_FILE_PATH, workbook));
     }
 
     public MultipartFile getExportDictionary(UUID id) {
-        if (!isValidUUID(String.valueOf(id))) {
-            log.error("Не удалось найти данные. Поля должны быть корректно заполнены");
-        }
-
         try {
-            File file = new File("C:\\Users\\parinos.ma.kst\\IdeaProjects" +
-                    "\\translation-dictionary\\src\\main\\resources\\export\\" + id + ".xlsx");
+            File file = new File(DICTIONARIES_FILE_PATH + id + ".xlsx");
             if (!file.exists()) {
                 log.error("Файла по указанному пути не существует");
             }
