@@ -15,62 +15,6 @@ import java.util.UUID;
 
 @Slf4j
 public class WriteListToFile {
-    /*public static void workbookCreateHeadersIfRequired(List<Object> modelList, Workbook workbook) {
-        if (modelList instanceof ExportLanguageModel) {
-            for (var exportDictionariesModel : modelList) {
-                var sheetName = "Языки";
-                var sheet = workbook.getSheet(sheetName);
-
-                if (sheet == null) {
-                    sheet = workbook.createSheet(sheetName);
-
-                    sheet.setDefaultColumnWidth(17);
-
-                    Row headerRow = sheet.createRow(0);
-                    Cell headerCell0 = headerRow.createCell(0);
-                    headerCell0.setCellValue("Идентификатор языка");
-                    Cell headerCell1 = headerRow.createCell(1);
-                    headerCell1.setCellValue("Язык");
-                    Cell headerCell2 = headerRow.createCell(2);
-                    headerCell2.setCellValue("Добавил");
-                    Cell headerCell3 = headerRow.createCell(3);
-                    headerCell3.setCellValue("Дата добавления");
-                    Cell headerCell4 = headerRow.createCell(4);
-                    headerCell4.setCellValue("Изменил");
-                    Cell headerCell5 = headerRow.createCell(5);
-                    headerCell5.setCellValue("Дата изменения");
-                }
-            }
-        } else if (modelList instanceof ExportDictionaryModel) {
-            List<ExportDictionaryModel> exportDictionariesModel = modelList;
-            for (var exportDictionariesModel : modelList) {
-                var sheetName = exportDictionariesModel.getFromLanguageName() + "-" +
-                        exportDictionariesModel.getToLanguageName();
-                var sheet = workbook.getSheet(sheetName);
-
-                if (sheet == null) {
-                    sheet = workbook.createSheet(sheetName);
-
-                    sheet.setDefaultColumnWidth(17);
-
-                    Row headerRow = sheet.createRow(0);
-                    Cell headerCell0 = headerRow.createCell(0);
-                    headerCell0.setCellValue(exportDictionariesModel.getFromLanguageName());
-                    Cell headerCell1 = headerRow.createCell(1);
-                    headerCell1.setCellValue(exportDictionariesModel.getToLanguageName());
-                    Cell headerCell2 = headerRow.createCell(2);
-                    headerCell2.setCellValue("Добавил");
-                    Cell headerCell3 = headerRow.createCell(3);
-                    headerCell3.setCellValue("Дата добавления");
-                    Cell headerCell4 = headerRow.createCell(4);
-                    headerCell4.setCellValue("Изменил");
-                    Cell headerCell5 = headerRow.createCell(5);
-                    headerCell5.setCellValue("Дата изменения");
-                }
-            }
-        }
-    }*/
-
     public static void workbookDictionaryCreateHeadersIfRequired(List<ExportDictionaryModel> modelList, Workbook workbook) {
         for (var exportDictionariesModel : modelList) {
             var sheetName = exportDictionariesModel.getFromLanguageName() + "-" +
