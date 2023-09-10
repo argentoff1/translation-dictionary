@@ -33,15 +33,6 @@ public class UserController {
         return userService.login(model);
     }
 
-    @PostMapping(value = "/getNewAccessToken")
-    @Operation(
-            summary = "Генерация нового access токена",
-            description = "Позволяет сгенерировать новый access токен"
-    )
-    public JwtResponseResultModel getNewAccessToken(@RequestBody RefreshJwtRequestModel model) {
-        return userService.getAccessToken(model.getRefreshToken());
-    }
-
     @GetMapping(value = "/refresh")
     @Operation(
             summary = "Генерация новых access и refresh токенов",
@@ -61,8 +52,6 @@ public class UserController {
         return userService.showAllUsers();
     }
 
-
-
     @PostMapping(value = "/getPageUsers")
     @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(
@@ -72,7 +61,6 @@ public class UserController {
     public PageResultModel<UserModel> getPageUsers(@RequestBody UserPageRequestModel criteria) {
         return userService.getPageUsers(criteria);
     }
-
 
     @GetMapping(value = "/getUserById/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")

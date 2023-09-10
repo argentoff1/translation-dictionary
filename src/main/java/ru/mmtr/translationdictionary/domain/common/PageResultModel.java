@@ -9,10 +9,16 @@ import java.util.Collection;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PageResultModel<T> {
+public class PageResultModel<T> extends GeneralResultModel{
     @Schema(description = "Общее количество элементов", example = "100")
     private Integer totalCount;
 
     @Schema(description = "Искомые данные")
     private Collection<T> resultList;
+
+    public PageResultModel(String errorCode, String errorMessage) {
+        super(errorCode, errorMessage);
+        totalCount = null;
+        resultList = null;
+    }
 }

@@ -72,11 +72,6 @@ public class DictionaryRepository {
                 .eq(DictionaryEntity.DICTIONARY_ID, id)
                 .findOne();
 
-        if (foundEntity == null) {
-            return new DictionaryModel("CAN_NOT_FIND",
-                    "Не удалось найти данные. Поля должны быть корректно заполненными");
-        }
-
         return getModel(foundEntity);
     }
 
@@ -136,17 +131,6 @@ public class DictionaryRepository {
     }
 
     public SuccessResultModel delete(UUID id) {
-        DictionaryEntity foundEntity = DB
-                .find(DictionaryEntity.class)
-                .where()
-                .eq(DictionaryEntity.DICTIONARY_ID, id)
-                .findOne();
-
-        if (foundEntity == null) {
-            return new SuccessResultModel("CAN_NOT_DELETE",
-                    "Не удалось удалить данные. Поля должны быть корректно заполненными");
-        }
-
         DB.find(DictionaryEntity.class)
                 .where()
                 .eq(DictionaryEntity.DICTIONARY_ID, id)

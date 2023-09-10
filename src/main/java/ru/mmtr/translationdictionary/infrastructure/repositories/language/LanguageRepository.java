@@ -92,11 +92,6 @@ public class LanguageRepository {
                 .eq(LanguageEntity.LANGUAGE_ID, id)
                 .findOne();
 
-        if (foundEntity == null) {
-            return new LanguageModel("CAN_NOT_FIND",
-                    "Не удалось найти данные. Поля должны быть корректно заполненными");
-        }
-
         return getModel(foundEntity);
     }
 
@@ -115,17 +110,6 @@ public class LanguageRepository {
     }
 
     public SuccessResultModel update(LanguageUpdateModel model) {
-        LanguageEntity foundEntity = DB
-                .find(LanguageEntity.class)
-                .where()
-                .eq(LanguageEntity.LANGUAGE_ID, model.getId())
-                .findOne();
-
-        if (foundEntity == null) {
-            return new SuccessResultModel("CAN_NOT_UPDATE",
-                    "Не удалось обновить данные. Поля должны быть корректно заполненными");
-        }
-
         var updateQuery = DB.update(LanguageEntity.class);
         if (StringUtils.isNotBlank(model.getLanguageName())) {
             updateQuery = updateQuery.set(LanguageEntity.LANGUAGE_NAME, model.getLanguageName());
@@ -142,17 +126,6 @@ public class LanguageRepository {
     }
 
     public SuccessResultModel delete(UUID id) {
-        LanguageEntity foundEntity = DB
-                .find(LanguageEntity.class)
-                .where()
-                .eq(LanguageEntity.LANGUAGE_ID, id)
-                .findOne();
-
-        if (foundEntity == null) {
-            return new SuccessResultModel("CAN_NOT_DELETE",
-                    "Не удалось удалить данные. Поля должны быть корректно заполненными");
-        }
-
         DB.find(LanguageEntity.class)
                 .where()
                 .eq(LanguageEntity.LANGUAGE_ID, id)

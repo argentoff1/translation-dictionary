@@ -5,7 +5,6 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import ru.mmtr.translationdictionary.domain.common.*;
 import ru.mmtr.translationdictionary.domain.session.UserSessionModel;
-import ru.mmtr.translationdictionary.domain.session.UserSessionPageRequestModel;
 import ru.mmtr.translationdictionary.domain.user.*;
 import ru.mmtr.translationdictionary.domainservice.common.CommonUtils;
 import ru.mmtr.translationdictionary.domainservice.common.Validation;
@@ -17,7 +16,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static ru.mmtr.translationdictionary.domainservice.common.Validation.isValidUUID;
 import static ru.mmtr.translationdictionary.domainservice.common.Validation.stringValidation;
 
 @Service
@@ -33,22 +31,22 @@ public class UserService {
     }
 
     public JwtResponseResultModel login(JwtRequestModel model) {
-        // Проверка логина
         var validationResult = stringValidation(model.getLogin(), 20);
         if (validationResult.getErrorCode() != null) {
-            return new JwtResponseResultModel("CAN_NOT_AUTHORIZE");
-        }
-        UserModel findUser = userRepository.getByLogin(model.getLogin());
-        if (findUser == null) {
-            return new JwtResponseResultModel("CAN_NOT_AUTHORIZE");
+            return new JwtResponseResultModel("CAN_NOT_AUTHORIZE." +
+                    " Некорректный логин");
         }
 
-        // Проверка на архивацию
+        var findUser = userRepository.getByLogin(model.getLogin());
+        if (findUser == null) {
+            return new JwtResponseResultModel("CAN_NOT_AUTHORIZE." +
+                    " Некорректный логин");
+        }
+
         if (!Validation.checkingForArchiving(findUser.getArchiveDate())) {
             return new JwtResponseResultModel("CAN_NOT_AUTHORIZE");
         }
 
-        // Проверка пароля
         validationResult = stringValidation(model.getPassword(), 100);
         if (validationResult.getErrorCode() != null) {
             return new JwtResponseResultModel("CAN_NOT_AUTHORIZE");
@@ -64,11 +62,20 @@ public class UserService {
         return new JwtResponseResultModel(session.getAccessToken(), session.getRefreshToken());
     }
 
-    // Вот тут проблема
     public JwtResponseResultModel refreshToken(String subject) {
         UserModel user = userRepository.getByLogin(subject);
 
+        if (user == null) {
+            return new JwtResponseResultModel("CAN_NOT_REFRESH_TOKEN. " +
+                    "Неверный логин");
+        }
+
         UserSessionModel session = userSessionService.getByUserId(user.getUserId());
+
+        if (session == null) {
+            return new JwtResponseResultModel("CA_NOT_REFRESH_TOKEN. " +
+                    "Не удалось найти сессию");
+        }
 
         if (jwtProvider.validateRefreshToken(session.getRefreshToken())) {
             final Claims claims = jwtProvider.getRefreshClaims(session.getRefreshToken());
@@ -86,64 +93,51 @@ public class UserService {
             return result;
         }
 
-        return new JwtResponseResultModel("CAN_NOT_GENERATE_TOKEN");
+        return new JwtResponseResultModel("CAN_NOT_GENERATE_TOKEN. " +
+                "Проверьте введенные данные еще раз");
     }
 
     public Map<UUID, UserModel> getByIds(List<UUID> idList) {
         return userRepository.getByIds(idList);
     }
 
-    public JwtResponseResultModel getAccessToken(String refreshToken) {
-        if (jwtProvider.validateRefreshToken(refreshToken)) {
-            final Claims claims = jwtProvider.getRefreshClaims(refreshToken);
-            final String login = claims.getSubject();
+    public CollectionResultModel<UserModel> showAllUsers() {
+        var result = userRepository.showAllUsers();
 
-            final UserModel user = userRepository.getByLogin(login);
-            final String accessToken = jwtProvider.generateAccessToken(user, CommonUtils.getSessionId());
-
-            return new JwtResponseResultModel(accessToken, null);
+        if (result == null) {
+            return new CollectionResultModel<>("CAN_NOT_FIND_USERS",
+                    "Не удалось найти список пользователей");
         }
 
-        return new JwtResponseResultModel("CAN_NOT_GENERATE_TOKEN");
-    }
-
-    public CollectionResultModel<UserModel> showAllUsers() {
-        return userRepository.showAllUsers();
-    }
-
-    public CollectionResultModel<UserSessionModel> showAllSessions() {
-        return userSessionService.showAll();
+        return result;
     }
 
     public PageResultModel<UserModel> getPageUsers(UserPageRequestModel criteria) {
-        return userRepository.getPage(criteria);
-    }
+        var result = userRepository.getPage(criteria);
 
-    public PageResultModel<UserSessionModel> getPageSessions(UserSessionPageRequestModel criteria) {
-        return userSessionService.getPage(criteria);
+        if (result == null) {
+            return new PageResultModel<>("CAN_NOT_RETURN_PAGE",
+                    "Не удалось вернуть страницу пользователей");
+        }
+
+        return result;
     }
 
     public UserModel getUserById(UUID id) {
-        if (!isValidUUID(String.valueOf(id))) {
-            return new UserModel("CAN_NOT_FIND",
-                    "Не удалось найти данные. Поля должны быть корректно заполнены");
+        var result = userRepository.getById(id);
+
+        if (result == null) {
+            return new UserModel("CA_NOT_FIND_USER",
+                    "Не удалось найти пользователя");
         }
 
-        return userRepository.getById(id);
-    }
-
-    public UserSessionModel getSessionById(UUID id) {
-        if (!isValidUUID(String.valueOf(id))) {
-            return new UserSessionModel("CAN_NOT_FIND",
-                    "Не удалось найти данные. Поля должны быть корректно заполнены");
-        }
-
-        return userSessionService.getBySessionId(id);
+        return result;
     }
 
     public UserModel getByLogin(String login) {
-        if (login == null) {
-            return new UserModel("CA_NOT_FIND",
+        var validationResult = stringValidation(login, 20);
+        if (validationResult.getErrorCode() != null) {
+            return new UserModel("CAN_NOT_FIND",
                     "Невозможно найти пользователя по указанному логину");
         }
 
@@ -152,61 +146,48 @@ public class UserService {
 
     public GUIDResultModel save(UserSaveModel model) {
         var validationResult = stringValidation(model.getLogin(), 20);
-
         if (validationResult.getErrorCode() != null) {
             return new GUIDResultModel("CAN_NOT_SAVE",
-                    "Не удалось сохранить данные. Поля должны быть корректно заполненными");
+                    "Не удалось сохранить данные. Логин введен некорректно");
         }
 
         validationResult = stringValidation(model.getPassword(), 100);
-
         if (validationResult.getErrorCode() != null) {
             return new GUIDResultModel("CAN_NOT_SAVE",
-                    "Не удалось сохранить данные. Поля должны быть заполненными");
+                    "Не удалось сохранить данные. Пароль введен некорректно");
         }
 
         validationResult = stringValidation(model.getLastName(), 30);
-
         if (validationResult.getErrorCode() != null) {
             return new GUIDResultModel("CAN_NOT_SAVE",
-                    "Не удалось сохранить данные. " +
-                            "Поля должны быть корректно заполненными");
+                    "Не удалось сохранить данные. Фамилия введена некорректно");
         }
 
         validationResult = stringValidation(model.getFirstName(), 20);
-
         if (validationResult.getErrorCode() != null) {
             return new GUIDResultModel("CAN_NOT_SAVE",
-                    "Не удалось сохранить данные. " +
-                            "Поля должны быть корректно заполненными");
+                    "Не удалось сохранить данные. Имя введено некорректно");
         }
 
         validationResult = stringValidation(model.getFatherName(), 50);
-
         if (validationResult.getErrorCode() != null) {
             return new GUIDResultModel("CAN_NOT_SAVE",
-                    "Не удалось сохранить данные. " +
-                            "Поля должны быть корректно заполненными");
+                    "Не удалось сохранить данные. Отчество введено некорректно");
         }
 
         validationResult = stringValidation(model.getEmail(), 320);
-
         if (validationResult.getErrorCode() != null) {
             return new GUIDResultModel("CAN_NOT_SAVE",
-                    "Не удалось сохранить данные. " +
-                            "Поля должны быть корректно заполненными");
+                    "Не удалось сохранить данные. Электронная почта введена некорректно");
         }
 
         validationResult = stringValidation(model.getPhoneNumber(), 30);
-
         if (validationResult.getErrorCode() != null) {
             return new GUIDResultModel("CAN_NOT_SAVE",
-                    "Не удалось сохранить данные. " +
-                            "Поля должны быть корректно заполненными");
+                    "Не удалось сохранить данные. Номер телефона введен некорректно");
         }
 
         var result = userRepository.save(model);
-
         if (result == null) {
             return new GUIDResultModel("CAN_NOT_SAVE",
                     "Не удалось сохранить данные. Поля должны быть корректно заполненными");
@@ -265,13 +246,11 @@ public class UserService {
 
     public SuccessResultModel updateLogin(UserLoginUpdateModel model) {
         var validationResult = stringValidation(model.getLogin(), 20);
-
         if (validationResult.getErrorCode() != null) {
             return validationResult;
         }
 
         var result = userRepository.updateLogin(model);
-
         if (result == null) {
             return new SuccessResultModel("CAN_NOT_SAVE",
                     "Не удалось сохранить данные. Поля должны быть корректно заполненными");
@@ -282,13 +261,11 @@ public class UserService {
 
     public SuccessResultModel updatePassword(UserPasswordUpdateModel model) {
         var validationResult = stringValidation(model.getPassword(), 100);
-
         if (validationResult.getErrorCode() != null) {
             return validationResult;
         }
 
         var result = userRepository.updatePassword(model);
-
         if (result == null) {
             return new SuccessResultModel("CAN_NOT_SAVE",
                     "Не удалось сохранить данные. Поля должны быть корректно заполненными");

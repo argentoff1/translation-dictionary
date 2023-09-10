@@ -1,11 +1,11 @@
 package ru.mmtr.translationdictionary.domainservice.dictionary;
 
+import org.apache.poi.hpsf.GUID;
 import org.springframework.stereotype.Service;
 import ru.mmtr.translationdictionary.domain.common.*;
 import ru.mmtr.translationdictionary.domain.dictionary.*;
 import ru.mmtr.translationdictionary.infrastructure.repositories.dictionary.DictionaryRepository;
 
-import static ru.mmtr.translationdictionary.domainservice.common.Validation.isValidUUID;
 import static ru.mmtr.translationdictionary.domainservice.common.Validation.stringValidation;
 
 import java.util.UUID;
@@ -19,25 +19,40 @@ public class DictionaryService {
     }
 
     public CollectionResultModel<DictionaryModel> showAll() {
-        return dictionaryRepository.showAll();
+        var result = dictionaryRepository.showAll();
+
+        if (result == null) {
+            return new CollectionResultModel<>("CAN_NOT_SHOW_DICTIONARIES",
+                    "Не удалось вывести всех словарей");
+        }
+
+        return result;
     }
 
     public PageResultModel<DictionaryModel> getPage(DictionaryPageRequestModel criteria) {
-        return dictionaryRepository.getPage(criteria);
+        var result = dictionaryRepository.getPage(criteria);
+
+        if (result == null) {
+            return new PageResultModel<>("CAN_NOT_SHOW_DICTIONARIES",
+                    "Не удалось вывести страницу словарей");
+        }
+
+        return result;
     }
 
     public DictionaryModel getById(UUID id) {
-        if (!isValidUUID(String.valueOf(id))) {
-            return new DictionaryModel("CAN_NOT_FIND",
-                    "Не удалось найти словарь");
+        var result = dictionaryRepository.getById(id);
+
+        if (result == null) {
+            return new DictionaryModel("CAN_NOT_FIND_DICTIONARY",
+                    "Не удалось найти словарь по введенному идентификатору");
         }
 
-        return dictionaryRepository.getById(id);
+        return result;
     }
 
     public StringResultModel getTranslatedWord(DictionaryTranslateModel model) {
         var validationResult = stringValidation(model.getWord(), 100);
-
         if (validationResult.getErrorCode() != null) {
             return new StringResultModel("CAN_NOT_FIND",
                     "Не удалось найти данные. Поля должны быть корректно заполненными");
@@ -69,29 +84,28 @@ public class DictionaryService {
                     "Не удалось найти данные. Поля должны быть корректно заполненными");
         }
 
-        return dictionaryRepository.save(model);
+        var result = dictionaryRepository.save(model);
+
+        if (result == null) {
+            return new GUIDResultModel("CAN_NOT_SAVE",
+                    "Не удалось сохранить данные. Поля должны быть заполненными");
+        }
+
+        return result;
     }
 
     public SuccessResultModel update(DictionaryUpdateModel model) {
-        if (!isValidUUID(String.valueOf(model.getId()))) {
-            return new SuccessResultModel("CAN_NOT_UPDATE",
-                    "Не удалось обновить данные. Поля должны быть корректно заполнены");
-        }
-
         var validationResult = stringValidation(model.getWord(), 100);
-
         if (validationResult.getErrorCode() != null) {
             return validationResult;
         }
 
         validationResult = stringValidation(model.getTranslation(), 100);
-
         if (validationResult.getErrorCode() != null) {
             return validationResult;
         }
 
         var repositoryResult = dictionaryRepository.update(model);
-
         if (repositoryResult == null) {
             return new SuccessResultModel("CAN_NOT_UPDATE",
                     "Не удалось сохранить данные. Поля должны быть корректно заполненными");
@@ -101,12 +115,12 @@ public class DictionaryService {
     }
 
     public SuccessResultModel delete(UUID id) {
-        if (!isValidUUID(String.valueOf(id))) {
-            return new SuccessResultModel("CAN_NOT_UPDATE",
-                    "Не удалось обновить данные. Поля должны быть корректно заполнены");
-        }
+        var deleteQuery =  dictionaryRepository.delete(id);
 
-        dictionaryRepository.delete(id);
+        if (deleteQuery == null) {
+            return new SuccessResultModel("CAN_NOT_DELETE",
+                    "Не удалось удалить словарь по введенному идентификатору");
+        }
 
         return new SuccessResultModel(true);
     }

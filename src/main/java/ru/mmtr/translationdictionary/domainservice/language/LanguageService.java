@@ -14,12 +14,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static ru.mmtr.translationdictionary.domainservice.common.Validation.isValidUUID;
 import static ru.mmtr.translationdictionary.domainservice.common.Validation.stringValidation;
 
 @Slf4j
 @Service
-@Validated
 public class LanguageService {
     private final LanguageRepository languageRepository;
 
@@ -28,7 +26,14 @@ public class LanguageService {
     }
 
     public CollectionResultModel<LanguageModel> showAll() {
-        return languageRepository.showAll();
+        var result = languageRepository.showAll();
+
+        if (result == null) {
+            return new CollectionResultModel<>("CAN_NOT_SHOW_LANGUAGES",
+                    "Не удалось вывести список всех языков");
+        }
+
+        return result;
     }
 
     public Map<UUID, LanguageModel> getByIds(List<UUID> idList) {
@@ -36,54 +41,64 @@ public class LanguageService {
     }
 
     public PageResultModel<LanguageModel> getPage(LanguagePageRequestModel criteria) {
-        return languageRepository.getPage(criteria);
+        var result = languageRepository.getPage(criteria);
+
+        if (result == null) {
+            return new PageResultModel<>("CAN_NOT_SHOW_LANGUAGES",
+                    "Не удалось вывести страницу языков");
+        }
+
+        return result;
     }
 
     public LanguageModel getById(UUID id) {
-        if (!isValidUUID(String.valueOf(id))) {
-            return new LanguageModel("CAN_NOT_UPDATE",
-                    "Не удалось обновить данные. Поля должны быть корректно заполнены");
+        var result = languageRepository.getById(id);
+
+        if (result == null) {
+            return new LanguageModel("CAN_NOT_FIND_LANGUAGE",
+                    "Не удалось найти язык по введенному идентификатору");
         }
 
-        return languageRepository.getById(id);
+        return result;
     }
 
     public GUIDResultModel save(LanguageSaveModel model) {
         var validationResult = stringValidation(model.getLanguageName(), 15);
-
         if (validationResult.getErrorCode() != null) {
             return new GUIDResultModel("CAN_NOT_SAVE",
-                    "Не удалось сохранить данные. " +
-                            "Поля должны быть корректно заполненными");
+                    "Не удалось сохранить данные. Наименование языка должно быть корректно заполненным");
         }
 
-        return languageRepository.save(model);
+        var result = languageRepository.save(model);
+        if (result == null) {
+            return new GUIDResultModel("CAN_NOT_SAVE_LANGUAGE",
+                    "Не удалось сохранить язык");
+        }
+
+        return result;
     }
 
     public SuccessResultModel update(LanguageUpdateModel model) {
-        if (!isValidUUID(String.valueOf(model.getId()))) {
-            return new SuccessResultModel("CAN_NOT_UPDATE",
-                    "Не удалось обновить данные. Поля должны быть корректно заполнены");
-        }
-
         var validationResult = stringValidation(model.getLanguageName(), 15);
-
         if (validationResult.getErrorCode() != null) {
             return validationResult;
         }
 
-        languageRepository.update(model);
+        var updateQuery = languageRepository.update(model);
+        if (updateQuery == null) {
+            return new SuccessResultModel("CAN_NOT_UPDATE_LANGUAGE",
+                    "Не удалось обновить язык. Данные должны быть корректно заполнены");
+        }
 
         return new SuccessResultModel(true);
     }
 
     public SuccessResultModel delete(UUID id) {
-        if (!isValidUUID(String.valueOf(id))) {
-            return new SuccessResultModel("CAN_NOT_UPDATE",
-                    "Не удалось обновить данные. Поля должны быть корректно заполнены");
+        var deleteQuery = languageRepository.delete(id);
+        if (deleteQuery == null) {
+            return new SuccessResultModel("CAN_NOT_DELETE_LANGUAGE",
+                    "Не удалось удалить язык. Данные должны быть корректно заполнены");
         }
-
-        languageRepository.delete(id);
 
         return new SuccessResultModel(true);
     }

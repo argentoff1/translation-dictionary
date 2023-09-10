@@ -21,22 +21,10 @@ import java.util.stream.Collectors;
 @Repository
 public class UserRepository {
     public JwtResponseResultModel login(JwtRequestModel model) {
-        var foundUserEntity = DB.find(UserEntity.class)
+        DB.find(UserEntity.class)
                 .where()
                 .eq(UserEntity.LOGIN, model.getLogin())
                 .findOne();
-
-        if (foundUserEntity == null) {
-            return new JwtResponseResultModel("CAN_NOT_AUTHORIZE");
-        }
-
-        if (!Validation.checkingForArchiving(foundUserEntity.getArchiveDate())) {
-            return new JwtResponseResultModel("CAN_NOT_AUTHORIZE");
-        }
-
-        if (!BCrypt.checkpw(model.getPassword(), foundUserEntity.getPassword())) {
-            return new JwtResponseResultModel("CAN_NOT_AUTHORIZE");
-        }
 
         return new JwtResponseResultModel(null, null);
     }
@@ -84,7 +72,7 @@ public class UserRepository {
     }
 
     private ExpressionList<UserEntity> applyFilters(ExpressionList<UserEntity> expression,
-                                                         UserPageRequestModel criteria) {
+                                                    UserPageRequestModel criteria) {
         if (criteria.getLoginFilter() != null) {
             expression = expression.ilike(UserEntity.LOGIN, "%" + criteria.getLoginFilter() + "%");
         }
@@ -135,11 +123,6 @@ public class UserRepository {
                 .eq(UserEntity.USER_ID, id)
                 .findOne();
 
-        if (foundEntity == null) {
-            return new UserModel("CAN_NOT_FIND",
-                    "Не удалось найти данные. Поля должны быть корректно заполненными");
-        }
-
         return getModel(foundEntity);
     }
 
@@ -149,11 +132,6 @@ public class UserRepository {
                 .where()
                 .eq(UserEntity.LOGIN, login)
                 .findOne();
-
-        if (foundEntity == null) {
-            return new UserModel("CAN_NOT_FIND",
-                    "Не удалось найти данные. Поля должны быть корректно заполненными");
-        }
 
         return getModel(foundEntity);
     }
@@ -282,17 +260,6 @@ public class UserRepository {
     }
 
     public SuccessResultModel archiveById(UUID id) {
-        UserEntity foundEntity = DB
-                .find(UserEntity.class)
-                .where()
-                .eq(UserEntity.USER_ID, id)
-                .findOne();
-
-        if (foundEntity == null) {
-            return new SuccessResultModel("CAN_NOT_UPDATE",
-                    "Не удалось сохранить данные. Поля должны быть корректно заполненными");
-        }
-
         DB.update(UserEntity.class)
                 .set(UserEntity.ARCHIVE_DATE, LocalDateTime.now())
                 .where()
@@ -303,17 +270,6 @@ public class UserRepository {
     }
 
     public SuccessResultModel unarchiveById(UUID id) {
-        UserEntity foundEntity = DB
-                .find(UserEntity.class)
-                .where()
-                .eq(UserEntity.USER_ID, id)
-                .findOne();
-
-        if (foundEntity == null) {
-            return new SuccessResultModel("CAN_NOT_UPDATE",
-                    "Не удалось сохранить данные. Поля должны быть корректно заполненными");
-        }
-
         DB.find(UserEntity.class)
                 .where()
                 .eq(UserEntity.USER_ID, id)

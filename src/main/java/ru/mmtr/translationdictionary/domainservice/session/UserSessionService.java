@@ -11,8 +11,6 @@ import ru.mmtr.translationdictionary.infrastructure.repositories.session.UserSes
 
 import java.util.UUID;
 
-import static ru.mmtr.translationdictionary.domainservice.common.Validation.isValidUUID;
-
 @Service
 public class UserSessionService {
     private final UserSessionRepository userSessionRepository;
@@ -21,30 +19,26 @@ public class UserSessionService {
         this.userSessionRepository = userSessionRepository;
     }
 
-    public CollectionResultModel<UserSessionModel> showAll() {
-        return userSessionRepository.showAll();
-    }
-
     public PageResultModel<UserSessionModel> getPage(UserSessionPageRequestModel criteria) {
-        return userSessionRepository.getPageSessions(criteria);
+        var result = userSessionRepository.getPageSessions(criteria);
+
+        if (result == null) {
+            return new PageResultModel<>("CAN_NOT_FIND_SESSIONS",
+                    "Не удалось найти список сессий");
+        }
+
+        return result;
     }
 
     public UserSessionModel getByUserId(UUID id) {
-        if (!isValidUUID(String.valueOf(id))) {
-            return new UserSessionModel("CAN_NOT_FIND",
-                    "Не удалось найти данные. Поля должны быть корректно заполнены");
+        var result = userSessionRepository.getByUserId(id);
+
+        if (result == null) {
+            return new UserSessionModel("CAN_NOT_FIND_SESSION",
+                    "Не удалось найти сессию по введенному идентификатору");
         }
 
-        return userSessionRepository.getByUserId(id);
-    }
-
-    public UserSessionModel getBySessionId(UUID id) {
-        if (!isValidUUID(String.valueOf(id))) {
-            return new UserSessionModel("CAN_NOT_FIND",
-                    "Не удалось найти данные. Поля должны быть корректно заполнены");
-        }
-
-        return userSessionRepository.getBySessionId(id);
+        return result;
     }
 
     public UserSessionModel save(UserModel model) {
@@ -58,7 +52,6 @@ public class UserSessionService {
         return result;
     }
 
-    // void - так как return value метода нигде не используется
     public void updateTokens(UserModel user, String accessToken, String refreshToken) {
         var result = userSessionRepository.updateTokens(user, accessToken, refreshToken);
 
@@ -74,7 +67,7 @@ public class UserSessionService {
     public SuccessResultModel delete(UserModel model) {
         var result = userSessionRepository.delete(model);
 
-        if (result == null) {
+        if (result.getErrorCode() != null) {
             return new SuccessResultModel("CAN_NOT_DELETE",
                     "Не удалось удалить данные. Поля должны быть корректно заполненными");
         }

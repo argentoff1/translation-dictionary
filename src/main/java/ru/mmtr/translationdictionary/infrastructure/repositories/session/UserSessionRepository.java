@@ -33,18 +33,13 @@ public class UserSessionRepository {
     }
 
     public SuccessResultModel updateTokens(UserModel user, String accessToken, String refreshToken) {
-        var updateQuery = DB
+        DB
                 .update(UserSessionEntity.class)
                 .set(UserSessionEntity.ACCESS_TOKEN, accessToken)
                 .set(UserSessionEntity.REFRESH_TOKEN, refreshToken)
                 .where()
                 .eq(UserSessionEntity.USER_ID, user.getUserId())
                 .update();
-
-        if (updateQuery == 0) {
-            return new SuccessResultModel("CAN_NOT_UPDATE_TOKENS",
-                    "Не удалось обновить токены");
-        }
 
         return new SuccessResultModel(true);
     }
@@ -96,11 +91,6 @@ public class UserSessionRepository {
                 .eq(UserSessionEntity.USER_ID, id)
                 .findOne();
 
-        if (foundEntity == null) {
-            return new UserSessionModel("CAN_NOT_FIND",
-                    "Не удалось найти данные. Поля должны быть корректно заполненными");
-        }
-
         return getSessionModel(foundEntity);
     }
 
@@ -127,17 +117,6 @@ public class UserSessionRepository {
     }
 
     public SuccessResultModel delete(UserModel model) {
-        UserSessionEntity foundEntity = DB
-                .find(UserSessionEntity.class)
-                .where()
-                .eq(UserSessionEntity.USER_ID, model.getUserId())
-                .findOne();
-
-        if (foundEntity == null) {
-            return new SuccessResultModel("CAN_NOT_DELETE",
-                    "Не удалось удалить данные. Поля должны быть корректно заполненными");
-        }
-
         DB.find(UserSessionEntity.class)
                 .where()
                 .eq(UserSessionEntity.USER_ID, model.getUserId())

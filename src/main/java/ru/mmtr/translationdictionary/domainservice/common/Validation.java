@@ -26,12 +26,6 @@ public class Validation {
         return new SuccessResultModel(true);
     }
 
-    public static Boolean isValidUUID(String uuid) {
-        String uuidRegex = "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$";
-        Pattern pattern = Pattern.compile(uuidRegex, Pattern.CASE_INSENSITIVE);
-        return pattern.matcher(uuid).matches();
-    }
-
     public static Boolean checkingForArchiving(LocalDateTime archiveDate) {
         return archiveDate == null;
     }
