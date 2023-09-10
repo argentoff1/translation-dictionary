@@ -1,10 +1,9 @@
-package ru.mmtr.translationdictionary.domainservice.export;
+package ru.mmtr.translationdictionary.domain.export;
 
-import org.springframework.stereotype.Service;
 import ru.mmtr.translationdictionary.domain.common.GUIDResultModel;
+import ru.mmtr.translationdictionary.domainservice.export.ExportMethods;
 
-@Service
-public class FileStorageService implements ExportMethods{
+public class GeneralExportModel implements ExportMethods {
     @Override
     public GUIDResultModel createExport() {
         return null;
