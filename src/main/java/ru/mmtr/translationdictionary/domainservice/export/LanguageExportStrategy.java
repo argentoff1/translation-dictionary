@@ -1,16 +1,13 @@
 package ru.mmtr.translationdictionary.domainservice.export;
 
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.util.IOUtils;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.multipart.MultipartFile;
-import ru.mmtr.translationdictionary.domain.common.GUIDResultModel;
 import ru.mmtr.translationdictionary.domain.common.PageResultModel;
+import ru.mmtr.translationdictionary.domain.export.ExportCreateModel;
 import ru.mmtr.translationdictionary.domain.export.ExportLanguageModel;
+import ru.mmtr.translationdictionary.domain.export.ExportType;
 import ru.mmtr.translationdictionary.domain.language.LanguageModel;
 import ru.mmtr.translationdictionary.domain.language.LanguagePageRequestModel;
 import ru.mmtr.translationdictionary.domain.user.UserModel;
@@ -18,9 +15,6 @@ import ru.mmtr.translationdictionary.domainservice.common.WriteListToFile;
 import ru.mmtr.translationdictionary.domainservice.language.LanguageService;
 import ru.mmtr.translationdictionary.domainservice.user.UserService;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -33,21 +27,18 @@ import java.util.stream.Collectors;
  */
 
 @Slf4j
-@NoArgsConstructor(force = true)
-public class ExportLanguageStrategy extends FileStorageService implements ExportMethods {
+public class LanguageExportStrategy implements ExportStrategy {
     private final LanguageService languageService;
     private final UserService userService;
     private static final int PAGE_SIZE = 100;
-    public static final String LANGUAGES_FILE_PATH = "C:\\Users\\parinos.ma.kst\\IdeaProjects\\" +
-            "translation-dictionary\\src\\main\\resources\\export\\";
 
-    public ExportLanguageStrategy(LanguageService languageService, UserService userService) {
+    public LanguageExportStrategy(LanguageService languageService, UserService userService) {
         this.languageService = languageService;
         this.userService = userService;
     }
 
     @Override
-    public GUIDResultModel createExport() {
+    public Workbook createExport(ExportCreateModel model) {
         var languageCriteria = new LanguagePageRequestModel();
         languageCriteria.setPageNum(0);
         languageCriteria.setPageSize(PAGE_SIZE);
@@ -106,40 +97,20 @@ public class ExportLanguageStrategy extends FileStorageService implements Export
                 }
             }
 
-            WriteListToFile.workbookLanguageCreateHeadersIfRequired(exportLanguageModels, workbook);
+            WriteListToFile.workbookLanguageCreateHeadersIfRequired(workbook);
 
             try {
                 WriteListToFile.fillLanguageWorkbook(exportLanguageModels, workbook);
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
-                return new GUIDResultModel("CAN_NOT_EXPORT",
-                        "Не удалось экспортировать данные");
             }
         } while (page.getResultList().size() == PAGE_SIZE);
 
-        return new GUIDResultModel(WriteListToFile.writeInFile(LANGUAGES_FILE_PATH, workbook));
+        return workbook;
     }
 
     @Override
     public ExportType getType() {
         return ExportType.LANGUAGE;
-    }
-
-    public MultipartFile getFile(UUID id) {
-        try {
-            File file = new File(LANGUAGES_FILE_PATH + id + ".xlsx");
-            if (!file.exists()) {
-                log.error("Файла по указанному пути не существует");
-            }
-            FileInputStream input = new FileInputStream(file);
-
-            return new MockMultipartFile("C:/Users/parinos.ma.kst/IdeaProjects/" +
-                    "translation-dictionary/src/main/resources/export", file.getName(),
-                    "multipart/form-data", IOUtils.toByteArray(input));
-        } catch (IOException e) {
-            log.error(e.getMessage(), e);
-        }
-
-        return null;
     }
 }

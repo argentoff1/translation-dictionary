@@ -1,18 +1,15 @@
 package ru.mmtr.translationdictionary.domainservice.export;
 
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.util.IOUtils;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.multipart.MultipartFile;
-import ru.mmtr.translationdictionary.domain.common.GUIDResultModel;
 import ru.mmtr.translationdictionary.domain.common.PageResultModel;
 import ru.mmtr.translationdictionary.domain.dictionary.DictionaryModel;
 import ru.mmtr.translationdictionary.domain.dictionary.DictionaryPageRequestModel;
+import ru.mmtr.translationdictionary.domain.export.ExportCreateModel;
 import ru.mmtr.translationdictionary.domain.export.ExportDictionaryModel;
+import ru.mmtr.translationdictionary.domain.export.ExportType;
 import ru.mmtr.translationdictionary.domain.language.LanguageModel;
 import ru.mmtr.translationdictionary.domain.user.UserModel;
 import ru.mmtr.translationdictionary.domainservice.common.WriteListToFile;
@@ -20,9 +17,6 @@ import ru.mmtr.translationdictionary.domainservice.dictionary.DictionaryService;
 import ru.mmtr.translationdictionary.domainservice.language.LanguageService;
 import ru.mmtr.translationdictionary.domainservice.user.UserService;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -35,23 +29,20 @@ import java.util.stream.Collectors;
  */
 
 @Slf4j
-@NoArgsConstructor(force = true)
-public class ExportDictionaryStrategy extends FileStorageService implements ExportMethods {
+public class DictionaryExportStrategy implements ExportStrategy {
     private final LanguageService languageService;
     private final DictionaryService dictionaryService;
     private final UserService userService;
     private static final int PAGE_SIZE = 100;
-    public static final String DICTIONARIES_FILE_PATH = "C:\\Users\\parinos.ma.kst\\IdeaProjects\\" +
-            "translation-dictionary\\src\\main\\resources\\export\\";
 
-    public ExportDictionaryStrategy(LanguageService languageService, DictionaryService dictionaryService, UserService userService) {
+    public DictionaryExportStrategy(LanguageService languageService, DictionaryService dictionaryService, UserService userService) {
         this.languageService = languageService;
         this.dictionaryService = dictionaryService;
         this.userService = userService;
     }
 
     @Override
-    public GUIDResultModel createExport() {
+    public Workbook createExport(ExportCreateModel model) {
         var dictionaryCriteria = new DictionaryPageRequestModel();
         dictionaryCriteria.setPageNum(0);
         dictionaryCriteria.setPageSize(PAGE_SIZE);
@@ -150,34 +141,14 @@ public class ExportDictionaryStrategy extends FileStorageService implements Expo
                 WriteListToFile.fillDictionaryWorkbook(exportDictionaryModels, workbook);
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
-                return new GUIDResultModel("CAN_NOT_EXPORT",
-                        "Не удалось экспортировать данные");
             }
         } while (page.getResultList().size() == PAGE_SIZE);
 
-        return new GUIDResultModel(WriteListToFile.writeInFile(DICTIONARIES_FILE_PATH, workbook));
+        return workbook;
     }
 
     @Override
     public ExportType getType() {
         return ExportType.DICTIONARY;
-    }
-
-    public MultipartFile getFile(UUID id) {
-        try {
-            File file = new File(DICTIONARIES_FILE_PATH + id + ".xlsx");
-            if (!file.exists()) {
-                log.error("Файла по указанному пути не существует");
-            }
-            FileInputStream input = new FileInputStream(file);
-
-            return new MockMultipartFile("C:/Users/parinos.ma.kst/IdeaProjects/" +
-                    "translation-dictionary/src/main/resources/export", file.getName(),
-                    "multipart/form-data", IOUtils.toByteArray(input));
-        } catch (IOException e) {
-            log.error(e.getMessage(), e);
-        }
-
-        return null;
     }
 }

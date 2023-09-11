@@ -1,6 +1,7 @@
 package ru.mmtr.translationdictionary.domainservice.common;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import ru.mmtr.translationdictionary.infrastructure.security.JwtAuthentication;
 
@@ -8,16 +9,15 @@ import java.util.UUID;
 
 @Slf4j
 public class CommonUtils {
-
     public static JwtAuthentication getAuthInfo() {
-        return (JwtAuthentication) SecurityContextHolder.getContext().getAuthentication();
+        return (JwtAuthentication) getAuthentication();
     }
 
     public static String getRole() {
         var user = new JwtAuthentication();
 
         try {
-            user = (JwtAuthentication) SecurityContextHolder.getContext().getAuthentication().getCredentials();
+            user = (JwtAuthentication) getAuthentication().getCredentials();
         } catch (NullPointerException e) {
             log.error(e.getMessage(), e);
         }
@@ -29,7 +29,7 @@ public class CommonUtils {
         var user = new JwtAuthentication();
 
         try {
-            user = (JwtAuthentication) SecurityContextHolder.getContext().getAuthentication().getCredentials();
+            user = (JwtAuthentication) getAuthentication().getCredentials();
         } catch (NullPointerException e) {
             log.error(e.getMessage(), e);
         }
@@ -41,7 +41,7 @@ public class CommonUtils {
         var user = new JwtAuthentication();
 
         try {
-            user = (JwtAuthentication) SecurityContextHolder.getContext().getAuthentication().getCredentials();
+            user = (JwtAuthentication) getAuthentication().getCredentials();
         } catch (NullPointerException e) {
             log.error(e.getMessage(), e);
         }
@@ -53,7 +53,7 @@ public class CommonUtils {
         var user = new JwtAuthentication();
 
         try {
-            user = (JwtAuthentication) SecurityContextHolder.getContext().getAuthentication();
+            user = (JwtAuthentication) getAuthentication();
 
             Object principal = user.getPrincipal();
 
@@ -71,11 +71,15 @@ public class CommonUtils {
         var user = new JwtAuthentication();
 
         try {
-            user = (JwtAuthentication) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            user = (JwtAuthentication) getAuthentication().getPrincipal();
         } catch (NullPointerException e) {
             log.error(e.getMessage(), e);
         }
 
         return user.getLogin();
+    }
+
+    private static Authentication getAuthentication() {
+        return SecurityContextHolder.getContext().getAuthentication();
     }
 }

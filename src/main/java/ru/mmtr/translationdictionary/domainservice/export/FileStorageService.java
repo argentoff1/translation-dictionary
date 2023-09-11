@@ -1,38 +1,36 @@
 package ru.mmtr.translationdictionary.domainservice.export;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.util.IOUtils;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.mmtr.translationdictionary.domain.common.GUIDResultModel;
+import ru.mmtr.translationdictionary.domainservice.common.WriteListToFile;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.UUID;
 
+/**
+ * \* Created with IntelliJ IDEA.
+ * \* User: parinos.ma.kst
+ * \* Date: 9/11/2023
+ * \* Description:
+ * \  Сервис для хранения и получения файла экспорта
+ */
+
 @Service
 @Slf4j
 public class FileStorageService {
-    /*private LanguageService languageService = null;
-    private DictionaryService dictionaryService = null;
-    private UserService userService = null;*/
     private static final String FILE_PATH = "C:\\Users\\parinos.ma.kst\\IdeaProjects\\" +
             "translation-dictionary\\src\\main\\resources\\export\\";
 
-    ExportMethods exportMethods;
-
-    public void setExportMethods(ExportMethods exportMethods) {
-        this.exportMethods = exportMethods;
-    }
-
-    public GUIDResultModel createExport() {
-        return exportMethods.createExport();
-    }
-
-    public ExportType getType() {
-        return exportMethods.getType();
+    public GUIDResultModel createFile(Workbook workbook) {
+        return new GUIDResultModel(WriteListToFile.writeInFile(FILE_PATH, workbook));
     }
 
     public MultipartFile getFile(UUID id) {
@@ -53,13 +51,14 @@ public class FileStorageService {
         return null;
     }
 
-    /*public FileStorageService(LanguageService languageService, DictionaryService dictionaryService, UserService userService) {
-        this.languageService = languageService;
-        this.dictionaryService = dictionaryService;
-        this.userService = userService;
+    public InputStreamResource getInputStreamResource(MultipartFile multipartFile) {
+        InputStreamResource inputStreamResource;
+        try {
+            inputStreamResource = new InputStreamResource(multipartFile.getInputStream());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return inputStreamResource;
     }
-
-    ExportLanguageStrategy exportLanguage = new ExportLanguageStrategy(languageService, userService);
-
-    ExportDictionaryStrategy exportDictionary = new ExportDictionaryStrategy(languageService, dictionaryService, userService);*/
 }

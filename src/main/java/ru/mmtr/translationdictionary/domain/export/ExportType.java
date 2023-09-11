@@ -1,12 +1,10 @@
-package ru.mmtr.translationdictionary.domainservice.export;
+package ru.mmtr.translationdictionary.domain.export;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-@JsonFormat
 public enum ExportType {
     DICTIONARY("dictionary"),
     LANGUAGE("language");

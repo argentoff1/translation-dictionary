@@ -3,7 +3,6 @@ package ru.mmtr.translationdictionary.infrastructure.repositories.user;
 import io.ebean.DB;
 import io.ebean.ExpressionList;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
 import ru.mmtr.translationdictionary.domain.common.*;
@@ -21,10 +20,18 @@ import java.util.stream.Collectors;
 @Repository
 public class UserRepository {
     public JwtResponseResultModel login(JwtRequestModel model) {
-        DB.find(UserEntity.class)
+        var foundEntity = DB.find(UserEntity.class)
                 .where()
                 .eq(UserEntity.LOGIN, model.getLogin())
                 .findOne();
+
+        if (foundEntity == null) {
+            return new JwtResponseResultModel("Невозможно войти в систему. Пользователь не найден");
+        }
+
+        if (!Validation.checkingForArchiving(foundEntity.getArchiveDate())) {
+            return new JwtResponseResultModel("Невозможно войти в систему. Пользователь архивирован");
+        }
 
         return new JwtResponseResultModel(null, null);
     }
@@ -157,21 +164,6 @@ public class UserRepository {
     }
 
     public SuccessResultModel updateUser(UserUpdateModel model) {
-        UserEntity foundEntity = DB
-                .find(UserEntity.class)
-                .where()
-                .eq(UserEntity.USER_ID, model.getId())
-                .findOne();
-
-        if (foundEntity == null) {
-            return new SuccessResultModel("CAN_NOT_FIND",
-                    "Не удалось найти данные. Поля должны быть корректно заполненными");
-        }
-
-        if (!Validation.checkingForArchiving(foundEntity.getArchiveDate())) {
-            return new SuccessResultModel("CAN_NOT_AUTHORIZE", "sad");
-        }
-
         var updateQuery = DB.update(UserEntity.class);
 
         if (StringUtils.isNotBlank(model.getLogin())) {
@@ -208,21 +200,6 @@ public class UserRepository {
     }
 
     public SuccessResultModel updateLogin(UserLoginUpdateModel model) {
-        UserEntity foundEntity = DB
-                .find(UserEntity.class)
-                .where()
-                .eq(UserEntity.USER_ID, model.getId())
-                .findOne();
-
-        if (foundEntity == null) {
-            return new SuccessResultModel("CAN_NOT_FIND",
-                    "Не удалось найти данные. Поля должны быть корректно заполненными");
-        }
-
-        if (!Validation.checkingForArchiving(foundEntity.getArchiveDate())) {
-            return new SuccessResultModel("CAN_NOT_AUTHORIZE", "sad");
-        }
-
         DB.update(UserEntity.class)
                 .set(UserEntity.LOGIN, model.getLogin())
                 .set(UserEntity.MODIFIED_AT, LocalDateTime.now())
@@ -234,21 +211,6 @@ public class UserRepository {
     }
 
     public SuccessResultModel updatePassword(UserPasswordUpdateModel model) {
-        UserEntity foundEntity = DB
-                .find(UserEntity.class)
-                .where()
-                .eq(UserEntity.USER_ID, model.getId())
-                .findOne();
-
-        if (foundEntity == null) {
-            return new SuccessResultModel("CAN_NOT_FIND",
-                    "Не удалось найти данные. Поля должны быть корректно заполненными");
-        }
-
-        if (!Validation.checkingForArchiving(foundEntity.getArchiveDate())) {
-            return new SuccessResultModel("CAN_NOT_AUTHORIZE", "sad");
-        }
-
         DB.update(UserEntity.class)
                 .set(UserEntity.PASSWORD, hashPassword(model.getPassword()))
                 .set(UserEntity.MODIFIED_AT, LocalDateTime.now())
@@ -281,20 +243,10 @@ public class UserRepository {
     }
 
     public SuccessResultModel logout() {
-        var foundUserEntity = DB.find(UserEntity.class)
+        DB.find(UserEntity.class)
                 .where()
                 .eq(UserEntity.LOGIN, CommonUtils.getSubject())
                 .findOne();
-
-        if (foundUserEntity == null) {
-            return new SuccessResultModel("CAN_NOT_AUTHORIZE",
-                    "Невозможно выйти из системы");
-        }
-
-        if (!Validation.checkingForArchiving(foundUserEntity.getArchiveDate())) {
-            return new SuccessResultModel("CAN_NOT_AUTHORIZE",
-                    "Невозможно выйти из системы");
-        }
 
         return new SuccessResultModel(true);
     }

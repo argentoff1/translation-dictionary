@@ -85,8 +85,7 @@ public class WriteListToFile {
         }
     }
 
-    public static void workbookLanguageCreateHeadersIfRequired
-            (List<ExportLanguageModel> modelList, Workbook workbook) {
+    public static void workbookLanguageCreateHeadersIfRequired(Workbook workbook) {
         var sheetName = "Языки";
         var sheet = workbook.getSheet(sheetName);
 
@@ -148,7 +147,6 @@ public class WriteListToFile {
             } else {
                 cell5.setCellValue(exportDictionariesModel.getModifiedAt().format(formatter));
             }
-
         }
     }
 

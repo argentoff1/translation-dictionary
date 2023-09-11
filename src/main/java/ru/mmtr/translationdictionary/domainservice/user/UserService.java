@@ -33,26 +33,29 @@ public class UserService {
     public JwtResponseResultModel login(JwtRequestModel model) {
         var validationResult = stringValidation(model.getLogin(), 20);
         if (validationResult.getErrorCode() != null) {
-            return new JwtResponseResultModel("CAN_NOT_AUTHORIZE." +
-                    " Некорректный логин");
+            return new JwtResponseResultModel("Не удалось войти в систему. " +
+                    "Логин введен некорректно");
         }
 
         var findUser = userRepository.getByLogin(model.getLogin());
         if (findUser == null) {
-            return new JwtResponseResultModel("CAN_NOT_AUTHORIZE." +
-                    " Некорректный логин");
+            return new JwtResponseResultModel("CAN_NOT_AUTHORIZE. " +
+                    "Неверный логин");
         }
 
         if (!Validation.checkingForArchiving(findUser.getArchiveDate())) {
-            return new JwtResponseResultModel("CAN_NOT_AUTHORIZE");
+            return new JwtResponseResultModel("Не удалось войти в систему. " +
+                    "Пользователь не найден");
         }
 
         validationResult = stringValidation(model.getPassword(), 100);
         if (validationResult.getErrorCode() != null) {
-            return new JwtResponseResultModel("CAN_NOT_AUTHORIZE");
+            return new JwtResponseResultModel("Не удалось войти в систему. " +
+                    "Пароль введен некорректно");
         }
         if (!BCrypt.checkpw(model.getPassword(), findUser.getPassword())) {
-            return new JwtResponseResultModel("CAN_NOT_AUTHORIZE");
+            return new JwtResponseResultModel("Не удалось войти в систему. " +
+                    "Неверный пароль");
         }
 
         userRepository.login(model);
@@ -86,7 +89,7 @@ public class UserService {
         UserSessionModel session = userSessionService.getByUserId(user.getUserId());
 
         if (session == null) {
-            return new JwtResponseResultModel("CA_NOT_REFRESH_TOKEN. " +
+            return new JwtResponseResultModel("CAТ_NOT_REFRESH_TOKEN. " +
                     "Не удалось найти сессию");
         }
 
@@ -106,7 +109,7 @@ public class UserService {
             return result;
         }
 
-        return new JwtResponseResultModel("CAN_NOT_GENERATE_TOKEN. " +
+        return new JwtResponseResultModel("CAТ_NOT_REFRESH_TOKEN. " +
                 "Проверьте введенные данные еще раз");
     }
 

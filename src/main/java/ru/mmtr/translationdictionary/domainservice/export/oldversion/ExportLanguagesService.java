@@ -104,7 +104,7 @@ public class ExportLanguagesService {
                 }
             }
 
-            WriteListToFile.workbookLanguageCreateHeadersIfRequired(exportLanguageModels, workbook);
+            WriteListToFile.workbookLanguageCreateHeadersIfRequired(workbook);
 
             try {
                 WriteListToFile.fillLanguageWorkbook(exportLanguageModels, workbook);
