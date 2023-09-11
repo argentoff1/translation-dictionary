@@ -1,4 +1,4 @@
-package ru.mmtr.translationdictionary.domainservice.export;
+package ru.mmtr.translationdictionary.infrastructure;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -25,7 +25,7 @@ import java.util.UUID;
 
 @Service
 @Slf4j
-public class FileStorageService {
+public class FileStoreService {
     private static final String FILE_PATH = "C:\\Users\\parinos.ma.kst\\IdeaProjects\\" +
             "translation-dictionary\\src\\main\\resources\\export\\";
 

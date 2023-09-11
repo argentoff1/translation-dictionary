@@ -5,8 +5,6 @@ import ru.mmtr.translationdictionary.domain.export.ExportCreateModel;
 import ru.mmtr.translationdictionary.domain.export.ExportType;
 
 public interface ExportStrategy {
-    // String or Enum
     Workbook createExport(ExportCreateModel model);
-
     ExportType getType();
 }
