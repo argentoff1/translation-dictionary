@@ -1,11 +1,11 @@
 package ru.mmtr.translationdictionary.domainservice.export;
 
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.util.IOUtils;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 import ru.mmtr.translationdictionary.domain.common.GUIDResultModel;
@@ -27,25 +27,27 @@ import java.util.stream.Collectors;
 /**
  * \* Created with IntelliJ IDEA.
  * \* User: parinos.ma.kst
- * \* Date: 9/8/2023
+ * \* Date: 9/11/2023
  * \* Description:
- * \
+ * \  Реализация методов для языков
  */
-@Service
+
 @Slf4j
-public class ExportLanguagesService {
+@NoArgsConstructor(force = true)
+public class ExportLanguageStrategy extends FileStorageService implements ExportMethods {
     private final LanguageService languageService;
     private final UserService userService;
     private static final int PAGE_SIZE = 100;
     public static final String LANGUAGES_FILE_PATH = "C:\\Users\\parinos.ma.kst\\IdeaProjects\\" +
-            "translation-dictionary\\src\\main\\resources\\export\\languages";
+            "translation-dictionary\\src\\main\\resources\\export\\";
 
-    public ExportLanguagesService(LanguageService languageService, UserService userService) {
+    public ExportLanguageStrategy(LanguageService languageService, UserService userService) {
         this.languageService = languageService;
         this.userService = userService;
     }
 
-    public GUIDResultModel exportLanguage() {
+    @Override
+    public GUIDResultModel createExport() {
         var languageCriteria = new LanguagePageRequestModel();
         languageCriteria.setPageNum(0);
         languageCriteria.setPageSize(PAGE_SIZE);
@@ -118,7 +120,12 @@ public class ExportLanguagesService {
         return new GUIDResultModel(WriteListToFile.writeInFile(LANGUAGES_FILE_PATH, workbook));
     }
 
-    public MultipartFile getExportLanguage(UUID id) {
+    @Override
+    public ExportType getType() {
+        return ExportType.LANGUAGE;
+    }
+
+    public MultipartFile getFile(UUID id) {
         try {
             File file = new File(LANGUAGES_FILE_PATH + id + ".xlsx");
             if (!file.exists()) {

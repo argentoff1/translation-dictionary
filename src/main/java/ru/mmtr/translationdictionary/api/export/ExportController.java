@@ -11,9 +11,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.mmtr.translationdictionary.domain.common.GUIDResultModel;
-import ru.mmtr.translationdictionary.domain.export.CreateExportModel;
-import ru.mmtr.translationdictionary.domainservice.export.ExportDictionariesService;
-import ru.mmtr.translationdictionary.domainservice.export.ExportLanguagesService;
+import ru.mmtr.translationdictionary.domainservice.export.ExportDictionaryStrategy;
+import ru.mmtr.translationdictionary.domainservice.export.ExportLanguageStrategy;
+import ru.mmtr.translationdictionary.domainservice.export.oldversion.ExportDictionariesService;
+import ru.mmtr.translationdictionary.domainservice.export.oldversion.ExportLanguagesService;
+import ru.mmtr.translationdictionary.domainservice.export.ExportType;
 import ru.mmtr.translationdictionary.domainservice.export.FileStorageService;
 
 import java.io.IOException;
@@ -24,7 +26,7 @@ import java.util.UUID;
 @Tag(name = "Экспорт", description = "Контроллер для экспорта данных в Excel")
 @SecurityRequirement(name = "JWT")
 public class ExportController {
-    private final FileStorageService fileStorageService;
+    private FileStorageService fileStorageService;
     private final ExportDictionariesService exportDictionariesService;
     private final ExportLanguagesService exportLanguagesService;
 
@@ -39,19 +41,29 @@ public class ExportController {
             summary = "Экспорт данных в Excel",
             description = "Позволяет экспортировать данные в Excel"
     )
-    // Enum or String for parameter
-    public GUIDResultModel createExport(@RequestBody CreateExportModel model) {
-        return null;
+    // RequestBody - "ExportType: 0 || 1"
+    public GUIDResultModel createExport(@RequestBody ExportType exportType) {
+        switch (exportType) {
+            case LANGUAGE -> fileStorageService = new ExportLanguageStrategy();
+            case DICTIONARY -> fileStorageService = new ExportDictionaryStrategy();
+            default -> {
+                return new GUIDResultModel("CAN_NOT_EXPORT",
+                        "Введенный объект невозможно экспортировать");
+            }
+        }
+
+        return fileStorageService.createExport();
     }
 
-    @GetMapping(value = "/getExportedFile")
+    // +
+    @GetMapping(value = "/getFile/{id}")
     @Operation(
             summary = "Получение Excel файла с данными",
             description = "Позволяет получить Excel файл, в который были записаны данные"
     )
-    public ResponseEntity<InputStreamResource> getExportedFile(@PathVariable @Parameter
+    public ResponseEntity<InputStreamResource> getFile(@PathVariable @Parameter
             (description = "Идентификатор файла словаря") UUID id) {
-        MultipartFile multipartFile = null;
+        MultipartFile multipartFile = fileStorageService.getFile(id);
 
         // Service
         InputStreamResource inputStreamResource;
@@ -67,8 +79,6 @@ public class ExportController {
                 .contentLength(multipartFile.getSize())
                 .body(inputStreamResource);
     }
-
-
 
 
 

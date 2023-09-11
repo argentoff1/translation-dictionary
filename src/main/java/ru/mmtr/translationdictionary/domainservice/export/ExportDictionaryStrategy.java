@@ -1,11 +1,11 @@
 package ru.mmtr.translationdictionary.domainservice.export;
 
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.util.IOUtils;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 import ru.mmtr.translationdictionary.domain.common.GUIDResultModel;
@@ -26,23 +26,32 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Service
+/**
+ * \* Created with IntelliJ IDEA.
+ * \* User: parinos.ma.kst
+ * \* Date: 9/11/2023
+ * \* Description:
+ * \  Реализация методов для словарей
+ */
+
 @Slf4j
-public class ExportDictionariesService {
+@NoArgsConstructor(force = true)
+public class ExportDictionaryStrategy extends FileStorageService implements ExportMethods {
     private final LanguageService languageService;
     private final DictionaryService dictionaryService;
     private final UserService userService;
     private static final int PAGE_SIZE = 100;
     public static final String DICTIONARIES_FILE_PATH = "C:\\Users\\parinos.ma.kst\\IdeaProjects\\" +
-            "translation-dictionary\\src\\main\\resources\\export\\dictionaries";
+            "translation-dictionary\\src\\main\\resources\\export\\";
 
-    public ExportDictionariesService(LanguageService languageService, DictionaryService dictionaryService, UserService userService) {
+    public ExportDictionaryStrategy(LanguageService languageService, DictionaryService dictionaryService, UserService userService) {
         this.languageService = languageService;
         this.dictionaryService = dictionaryService;
         this.userService = userService;
     }
 
-    public GUIDResultModel exportDictionary() {
+    @Override
+    public GUIDResultModel createExport() {
         var dictionaryCriteria = new DictionaryPageRequestModel();
         dictionaryCriteria.setPageNum(0);
         dictionaryCriteria.setPageSize(PAGE_SIZE);
@@ -149,7 +158,12 @@ public class ExportDictionariesService {
         return new GUIDResultModel(WriteListToFile.writeInFile(DICTIONARIES_FILE_PATH, workbook));
     }
 
-    public MultipartFile getExportDictionary(UUID id) {
+    @Override
+    public ExportType getType() {
+        return ExportType.DICTIONARY;
+    }
+
+    public MultipartFile getFile(UUID id) {
         try {
             File file = new File(DICTIONARIES_FILE_PATH + id + ".xlsx");
             if (!file.exists()) {
