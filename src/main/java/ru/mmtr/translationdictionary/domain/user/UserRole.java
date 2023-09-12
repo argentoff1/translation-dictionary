@@ -1,4 +1,4 @@
-package ru.mmtr.translationdictionary.infrastructure.repositories.user;
+package ru.mmtr.translationdictionary.domain.user;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

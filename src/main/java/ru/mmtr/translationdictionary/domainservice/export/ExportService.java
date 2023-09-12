@@ -1,17 +1,16 @@
 package ru.mmtr.translationdictionary.domainservice.export;
 
-import org.apache.poi.ss.usermodel.Workbook;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import ru.mmtr.translationdictionary.domain.common.GUIDResultModel;
 import ru.mmtr.translationdictionary.domain.export.ExportCreateModel;
 import ru.mmtr.translationdictionary.domain.export.ExportType;
-import ru.mmtr.translationdictionary.domainservice.dictionary.DictionaryService;
-import ru.mmtr.translationdictionary.domainservice.export.impl.DictionaryExportStrategy;
-import ru.mmtr.translationdictionary.domainservice.export.impl.LanguageExportStrategy;
-import ru.mmtr.translationdictionary.domainservice.language.LanguageService;
-import ru.mmtr.translationdictionary.domainservice.user.UserService;
+import ru.mmtr.translationdictionary.infrastructure.FileStoreService;
 
-import java.util.Arrays;
+import java.util.Collection;
 import java.util.Map;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -25,28 +24,25 @@ import java.util.stream.Collectors;
 
 @Service
 public class ExportService {
+    private final FileStoreService fileStoreService;
     private final Map<ExportType, ExportStrategy> strategies;
 
-    // Стрим сформировать ......toMap по getType(::getType)
-    public ExportService(LanguageService languageService, DictionaryService dictionaryService,
-                         UserService userService) {
-        strategies = Arrays.stream(ExportType.values())
-                .collect(Collectors.toMap(
-                        Function.identity(),
-                        exportType -> {
-                            if (exportType == ExportType.LANGUAGE) {
-                                return new LanguageExportStrategy(languageService, userService);
-                            } else if (exportType == ExportType.DICTIONARY) {
-                                return new DictionaryExportStrategy(languageService, dictionaryService, userService);
-                            } else {
-                                throw new IllegalArgumentException("Unknown export type: " + exportType);
-                            }
-                        }
-                ));
-        //strategies.stream().collect(Collectors.toMap(x -> x.getModelName()))
+    public ExportService(FileStoreService fileStoreService, Collection<ExportStrategy> exportStrategies) {
+        this.fileStoreService = fileStoreService;
+        strategies = exportStrategies.stream().collect(Collectors.toMap(ExportStrategy::getType, Function.identity()));
     }
 
-    public Workbook createExport(ExportCreateModel model) {
-        return strategies.get(model.getExportType()).createExport(model);
+    public GUIDResultModel createExport(ExportCreateModel model) {
+        var createdWorkBook = strategies.get(model.getExportType()).createExport(model);
+
+        return fileStoreService.createFile(createdWorkBook);
+    }
+
+    public MultipartFile getFile(UUID id) {
+        return fileStoreService.getFile(id);
+    }
+
+    public InputStreamResource getInputStreamResource(MultipartFile multipartFile) {
+        return fileStoreService.getInputStreamResource(multipartFile);
     }
 }

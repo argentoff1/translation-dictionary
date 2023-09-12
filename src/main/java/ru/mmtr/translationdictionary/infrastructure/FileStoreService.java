@@ -23,8 +23,8 @@ import java.util.UUID;
  * \  Сервис для хранения и получения файла экспорта
  */
 
-@Service
 @Slf4j
+@Service
 public class FileStoreService {
     private static final String FILE_PATH = "C:\\Users\\parinos.ma.kst\\IdeaProjects\\" +
             "translation-dictionary\\src\\main\\resources\\export\\";

@@ -1,6 +1,5 @@
 package ru.mmtr.translationdictionary.domainservice.language;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.mmtr.translationdictionary.domain.common.*;
 import ru.mmtr.translationdictionary.domain.language.LanguageModel;
@@ -15,7 +14,6 @@ import java.util.UUID;
 
 import static ru.mmtr.translationdictionary.domainservice.common.Validation.stringValidation;
 
-@Slf4j
 @Service
 public class LanguageService {
     private final LanguageRepository languageRepository;

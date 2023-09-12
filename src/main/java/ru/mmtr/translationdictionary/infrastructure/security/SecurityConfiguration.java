@@ -15,7 +15,7 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
-import ru.mmtr.translationdictionary.infrastructure.repositories.user.UserRole;
+import ru.mmtr.translationdictionary.domain.user.UserRole;
 
 @Configuration
 @EnableMethodSecurity

@@ -8,7 +8,6 @@ import ru.mmtr.translationdictionary.infrastructure.security.JwtProvider;
 import ru.mmtr.translationdictionary.domain.common.*;
 import ru.mmtr.translationdictionary.domain.session.UserSessionModel;
 import ru.mmtr.translationdictionary.domain.session.UserSessionPageRequestModel;
-import ru.mmtr.translationdictionary.domain.user.UserModel;
 
 import java.time.LocalDateTime;
 import java.util.UUID;

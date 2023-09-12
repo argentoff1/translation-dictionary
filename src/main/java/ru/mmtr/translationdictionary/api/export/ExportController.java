@@ -13,7 +13,6 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.mmtr.translationdictionary.domain.common.GUIDResultModel;
 import ru.mmtr.translationdictionary.domain.export.ExportCreateModel;
 import ru.mmtr.translationdictionary.domainservice.export.ExportService;
-import ru.mmtr.translationdictionary.infrastructure.FileStoreService;
 
 import java.util.UUID;
 
@@ -23,11 +22,9 @@ import java.util.UUID;
 @SecurityRequirement(name = "JWT")
 public class ExportController {
     private final ExportService exportService;
-    private final FileStoreService fileStoreService;
 
-    public ExportController(ExportService exportService, FileStoreService fileStoreService) {
+    public ExportController(ExportService exportService) {
         this.exportService = exportService;
-        this.fileStoreService = fileStoreService;
     }
 
     @PostMapping(value = "/createExport")
@@ -36,9 +33,7 @@ public class ExportController {
             description = "Позволяет экспортировать данные в Excel"
     )
     public GUIDResultModel createExport(@RequestBody ExportCreateModel model) {
-        var createdWorkbook = exportService.createExport(model);
-
-        return fileStoreService.createFile(createdWorkbook);
+        return exportService.createExport(model);
     }
 
     @GetMapping(value = "/getFile/{id}")
@@ -48,12 +43,12 @@ public class ExportController {
     )
     public ResponseEntity<InputStreamResource> getFile(@PathVariable @Parameter
             (description = "Идентификатор файла словаря") UUID id) {
-        MultipartFile multipartFile = fileStoreService.getFile(id);
+        MultipartFile multipartFile = exportService.getFile(id);
 
-        var inputStreamResource = fileStoreService.getInputStreamResource(multipartFile);
+        var inputStreamResource = exportService.getInputStreamResource(multipartFile);
 
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + multipartFile.getName())
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + multipartFile.getOriginalFilename())
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .contentLength(multipartFile.getSize())
                 .body(inputStreamResource);

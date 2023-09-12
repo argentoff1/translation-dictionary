@@ -3,6 +3,7 @@ package ru.mmtr.translationdictionary.domainservice.export.impl;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import ru.mmtr.translationdictionary.domain.common.PageResultModel;
 import ru.mmtr.translationdictionary.domain.export.ExportCreateModel;
@@ -28,6 +29,7 @@ import java.util.stream.Collectors;
  */
 
 @Slf4j
+@Service
 public class LanguageExportStrategy implements ExportStrategy {
     private final LanguageService languageService;
     private final UserService userService;

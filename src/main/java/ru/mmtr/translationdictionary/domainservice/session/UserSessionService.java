@@ -6,7 +6,6 @@ import ru.mmtr.translationdictionary.domain.common.SuccessResultModel;
 import ru.mmtr.translationdictionary.domain.session.UserSessionModel;
 import ru.mmtr.translationdictionary.domain.session.UserSessionPageRequestModel;
 import ru.mmtr.translationdictionary.domain.user.UserLoginLogoutModel;
-import ru.mmtr.translationdictionary.domain.user.UserModel;
 import ru.mmtr.translationdictionary.infrastructure.repositories.session.UserSessionRepository;
 
 import java.util.UUID;
