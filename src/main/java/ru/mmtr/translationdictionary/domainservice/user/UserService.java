@@ -66,7 +66,7 @@ public class UserService {
     }
 
     public JwtResponseResultModel refreshToken(String subject) {
-        UserModel user = userRepository.getByLogin(subject);
+        var user = userRepository.getByLogin(subject);
 
         if (user == null) {
             return new JwtResponseResultModel("CAN_NOT_REFRESH_TOKEN. " +
@@ -137,10 +137,10 @@ public class UserService {
         return result;
     }
 
-    public UserModel getByLogin(String login) {
+    public UserLoginLogoutModel getByLogin(String login) {
         var validationResult = stringValidation(login, 20);
         if (validationResult.getErrorCode() != null) {
-            return new UserModel("CAN_NOT_FIND_USER",
+            return new UserLoginLogoutModel("CAN_NOT_FIND_USER",
                     "Невозможно найти пользователя по указанному логину");
         }
 

@@ -4,7 +4,6 @@ import org.apache.commons.lang3.StringUtils;
 import ru.mmtr.translationdictionary.domain.common.SuccessResultModel;
 
 import java.time.LocalDateTime;
-import java.util.regex.Pattern;
 
 public class Validation {
     public static SuccessResultModel stringValidation(String str, int limitChars) {

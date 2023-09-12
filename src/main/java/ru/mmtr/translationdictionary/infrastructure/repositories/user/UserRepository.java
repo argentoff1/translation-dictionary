@@ -133,14 +133,14 @@ public class UserRepository {
         return getModel(foundEntity);
     }
 
-    public UserModel getByLogin(String login) {
+    public UserLoginLogoutModel getByLogin(String login) {
         UserEntity foundEntity = DB
                 .find(UserEntity.class)
                 .where()
                 .eq(UserEntity.LOGIN, login)
                 .findOne();
 
-        return getModel(foundEntity);
+        return getLoginLogoutModel(foundEntity);
     }
 
     public GUIDResultModel save(UserSaveModel model) {
@@ -265,6 +265,22 @@ public class UserRepository {
         model.setFatherName(entity.getFatherName());
         model.setEmail(entity.getEmail());
         model.setPhoneNumber(entity.getPhoneNumber());
+        model.setCreatedAt(entity.getCreatedAt());
+        model.setModifiedAt(entity.getModifiedAt());
+        model.setArchiveDate(entity.getArchiveDate());
+        model.setRoleName(UserRole.USER.getRoleName());
+
+        return model;
+    }
+
+    private UserLoginLogoutModel getLoginLogoutModel(UserEntity entity) {
+        if (entity == null) {
+            return null;
+        }
+
+        var model = new UserLoginLogoutModel();
+        model.setUserId(entity.getUserId());
+        model.setLogin(entity.getLogin());
         model.setCreatedAt(entity.getCreatedAt());
         model.setModifiedAt(entity.getModifiedAt());
         model.setArchiveDate(entity.getArchiveDate());

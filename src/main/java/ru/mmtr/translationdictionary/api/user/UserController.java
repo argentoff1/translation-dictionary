@@ -72,13 +72,13 @@ public class UserController {
         return userService.getUserById(id);
     }
 
-    @GetMapping(value = "/getUserByLogin/{login}")
+    @GetMapping(value = "/getByLogin/{login}")
     @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(
             summary = "Получение пользователя",
             description = "Позволяет получить пользователя по логину"
     )
-    public UserModel getUserByLogin(@PathVariable @Parameter(description = "Логин") String login) {
+    public UserLoginLogoutModel getByLogin(@PathVariable @Parameter(description = "Логин") String login) {
         return userService.getByLogin(login);
     }
 

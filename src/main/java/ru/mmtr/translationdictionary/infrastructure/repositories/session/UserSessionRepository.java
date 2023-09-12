@@ -3,6 +3,7 @@ package ru.mmtr.translationdictionary.infrastructure.repositories.session;
 import io.ebean.DB;
 import io.ebean.ExpressionList;
 import org.springframework.stereotype.Repository;
+import ru.mmtr.translationdictionary.domain.user.UserLoginLogoutModel;
 import ru.mmtr.translationdictionary.infrastructure.security.JwtProvider;
 import ru.mmtr.translationdictionary.domain.common.*;
 import ru.mmtr.translationdictionary.domain.session.UserSessionModel;
@@ -21,7 +22,7 @@ public class UserSessionRepository {
         this.jwtProvider = jwtProvider;
     }
 
-    public SuccessResultModel updateTokens(UserModel user, String accessToken, String refreshToken) {
+    public SuccessResultModel updateTokens(UserLoginLogoutModel user, String accessToken, String refreshToken) {
         DB
                 .update(UserSessionEntity.class)
                 .set(UserSessionEntity.ACCESS_TOKEN, accessToken)
@@ -86,14 +87,14 @@ public class UserSessionRepository {
         return getSessionModel(foundEntity);
     }
 
-    public UserSessionModel save(UserModel model) {
+    public UserSessionModel save(UserLoginLogoutModel model) {
         var userSessionEntity = getUserEntity(model);
         DB.insert(userSessionEntity);
 
         return getSessionModel(userSessionEntity);
     }
 
-    public SuccessResultModel delete(UserModel model) {
+    public SuccessResultModel delete(UserLoginLogoutModel model) {
         DB.find(UserSessionEntity.class)
                 .where()
                 .eq(UserSessionEntity.USER_ID, model.getUserId())
@@ -119,7 +120,7 @@ public class UserSessionRepository {
         return model;
     }
 
-    private UserSessionEntity getUserEntity(UserModel user) {
+    private UserSessionEntity getUserEntity(UserLoginLogoutModel user) {
         if (user == null) {
             return null;
         }

@@ -5,6 +5,7 @@ import ru.mmtr.translationdictionary.domain.common.PageResultModel;
 import ru.mmtr.translationdictionary.domain.common.SuccessResultModel;
 import ru.mmtr.translationdictionary.domain.session.UserSessionModel;
 import ru.mmtr.translationdictionary.domain.session.UserSessionPageRequestModel;
+import ru.mmtr.translationdictionary.domain.user.UserLoginLogoutModel;
 import ru.mmtr.translationdictionary.domain.user.UserModel;
 import ru.mmtr.translationdictionary.infrastructure.repositories.session.UserSessionRepository;
 
@@ -40,7 +41,7 @@ public class UserSessionService {
         return result;
     }
 
-    public UserSessionModel save(UserModel model) {
+    public UserSessionModel save(UserLoginLogoutModel model) {
         var result = userSessionRepository.save(model);
 
         if (result == null) {
@@ -51,7 +52,7 @@ public class UserSessionService {
         return result;
     }
 
-    public void updateTokens(UserModel user, String accessToken, String refreshToken) {
+    public void updateTokens(UserLoginLogoutModel user, String accessToken, String refreshToken) {
         var result = userSessionRepository.updateTokens(user, accessToken, refreshToken);
 
         if (result == null) {
@@ -63,7 +64,7 @@ public class UserSessionService {
         new SuccessResultModel(true);
     }
 
-    public SuccessResultModel delete(UserModel model) {
+    public SuccessResultModel delete(UserLoginLogoutModel model) {
         var result = userSessionRepository.delete(model);
 
         if (result.getErrorCode() != null) {

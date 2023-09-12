@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import ru.mmtr.translationdictionary.domain.user.UserLoginLogoutModel;
 import ru.mmtr.translationdictionary.domain.user.UserModel;
 
 import javax.crypto.SecretKey;
@@ -31,7 +32,7 @@ public class JwtProvider {
         this.jwtRefreshSecret = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtRefreshSecret));
     }
 
-    public String generateAccessToken(@NonNull UserModel user, UUID sessionId) {
+    public String generateAccessToken(@NonNull UserLoginLogoutModel user, UUID sessionId) {
         final LocalDateTime now = LocalDateTime.now();
         final Instant accessExpirationInstant = now.plusDays(1).atZone(ZoneId.systemDefault()).toInstant();
         final Date accessExpiration = Date.from(accessExpirationInstant);
@@ -48,7 +49,7 @@ public class JwtProvider {
                 .compact();
     }
 
-    public String generateRefreshToken(@NonNull UserModel user, UUID sessionId) {
+    public String generateRefreshToken(@NonNull UserLoginLogoutModel user, UUID sessionId) {
         final LocalDateTime now = LocalDateTime.now();
         final Instant refreshExpirationInstant = now.plusDays(30).atZone(ZoneId.systemDefault()).toInstant();
         final Date refreshExpiration = Date.from(refreshExpirationInstant);
