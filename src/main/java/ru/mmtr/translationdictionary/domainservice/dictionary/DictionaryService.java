@@ -1,6 +1,5 @@
 package ru.mmtr.translationdictionary.domainservice.dictionary;
 
-import org.apache.poi.hpsf.GUID;
 import org.springframework.stereotype.Service;
 import ru.mmtr.translationdictionary.domain.common.*;
 import ru.mmtr.translationdictionary.domain.dictionary.*;
@@ -20,10 +19,9 @@ public class DictionaryService {
 
     public CollectionResultModel<DictionaryModel> showAll() {
         var result = dictionaryRepository.showAll();
-
         if (result == null) {
             return new CollectionResultModel<>("CAN_NOT_SHOW_DICTIONARIES",
-                    "Не удалось вывести всех словарей");
+                    "Не удалось вывести список всех словарей");
         }
 
         return result;
@@ -31,9 +29,8 @@ public class DictionaryService {
 
     public PageResultModel<DictionaryModel> getPage(DictionaryPageRequestModel criteria) {
         var result = dictionaryRepository.getPage(criteria);
-
         if (result == null) {
-            return new PageResultModel<>("CAN_NOT_SHOW_DICTIONARIES",
+            return new PageResultModel<>("CAN_NOT_RETURN_PAGE_OF_DICTIONARIES",
                     "Не удалось вывести страницу словарей");
         }
 
@@ -42,7 +39,6 @@ public class DictionaryService {
 
     public DictionaryModel getById(UUID id) {
         var result = dictionaryRepository.getById(id);
-
         if (result == null) {
             return new DictionaryModel("CAN_NOT_FIND_DICTIONARY",
                     "Не удалось найти словарь по введенному идентификатору");
@@ -54,12 +50,12 @@ public class DictionaryService {
     public StringResultModel getTranslatedWord(DictionaryTranslateModel model) {
         var validationResult = stringValidation(model.getWord(), 100);
         if (validationResult.getErrorCode() != null) {
-            return new StringResultModel("CAN_NOT_FIND",
+            return new StringResultModel("CAN_NOT_FIND_TRANSLATION",
                     "Не удалось найти данные. Поля должны быть корректно заполненными");
         }
 
         if (model.getFromLanguage() == null || model.getToLanguage() == null) {
-            return new StringResultModel("CAN_NOT_FIND",
+            return new StringResultModel("CAN_NOT_FIND_TRANSLATION",
                     "Не удалось найти данные. Поля должны быть корректно заполненными");
         }
 
@@ -69,25 +65,24 @@ public class DictionaryService {
     public GUIDResultModel save(DictionarySaveModel model) {
         var validationResult = stringValidation(model.getWord(), 100);
         if (validationResult.getErrorCode() != null) {
-            return new GUIDResultModel("CAN_NOT_SAVE",
+            return new GUIDResultModel("CAN_NOT_SAVE_DICTIONARY",
                     "Не удалось сохранить данные. Поля должны быть заполненными");
         }
 
         validationResult = stringValidation(model.getTranslation(), 100);
         if (validationResult.getErrorCode() != null) {
-            return new GUIDResultModel("CAN_NOT_SAVE",
+            return new GUIDResultModel("CAN_NOT_SAVE_DICTIONARY",
                     "Не удалось сохранить данные. Поля должны быть заполненными");
         }
 
         if (model.getFromLanguage() == null || model.getToLanguage() == null) {
-            return new GUIDResultModel("CAN_NOT_FIND",
-                    "Не удалось найти данные. Поля должны быть корректно заполненными");
+            return new GUIDResultModel("CAN_NOT_SAVE_DICTIONARY",
+                    "Не удалось сохранить данные. Поля должны быть корректно заполненными");
         }
 
         var result = dictionaryRepository.save(model);
-
         if (result == null) {
-            return new GUIDResultModel("CAN_NOT_SAVE",
+            return new GUIDResultModel("CAN_NOT_SAVE_DICTIONARY",
                     "Не удалось сохранить данные. Поля должны быть заполненными");
         }
 
@@ -107,8 +102,8 @@ public class DictionaryService {
 
         var repositoryResult = dictionaryRepository.update(model);
         if (repositoryResult == null) {
-            return new SuccessResultModel("CAN_NOT_UPDATE",
-                    "Не удалось сохранить данные. Поля должны быть корректно заполненными");
+            return new SuccessResultModel("CAN_NOT_UPDATE_DICTIONARY",
+                    "Не удалось обновить данные. Поля должны быть корректно заполненными");
         }
 
         return new SuccessResultModel(true);
@@ -116,9 +111,8 @@ public class DictionaryService {
 
     public SuccessResultModel delete(UUID id) {
         var deleteQuery =  dictionaryRepository.delete(id);
-
         if (deleteQuery == null) {
-            return new SuccessResultModel("CAN_NOT_DELETE",
+            return new SuccessResultModel("CAN_NOT_DELETE_DICTIONARY",
                     "Не удалось удалить словарь по введенному идентификатору");
         }
 

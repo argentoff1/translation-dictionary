@@ -2,7 +2,6 @@ package ru.mmtr.translationdictionary.domainservice.language;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.annotation.Validated;
 import ru.mmtr.translationdictionary.domain.common.*;
 import ru.mmtr.translationdictionary.domain.language.LanguageModel;
 import ru.mmtr.translationdictionary.domain.language.LanguagePageRequestModel;
@@ -27,7 +26,6 @@ public class LanguageService {
 
     public CollectionResultModel<LanguageModel> showAll() {
         var result = languageRepository.showAll();
-
         if (result == null) {
             return new CollectionResultModel<>("CAN_NOT_SHOW_LANGUAGES",
                     "Не удалось вывести список всех языков");
@@ -42,9 +40,8 @@ public class LanguageService {
 
     public PageResultModel<LanguageModel> getPage(LanguagePageRequestModel criteria) {
         var result = languageRepository.getPage(criteria);
-
         if (result == null) {
-            return new PageResultModel<>("CAN_NOT_SHOW_LANGUAGES",
+            return new PageResultModel<>("CAN_NOT_RETURN_PAGE_OF_LANGUAGES",
                     "Не удалось вывести страницу языков");
         }
 
@@ -53,7 +50,6 @@ public class LanguageService {
 
     public LanguageModel getById(UUID id) {
         var result = languageRepository.getById(id);
-
         if (result == null) {
             return new LanguageModel("CAN_NOT_FIND_LANGUAGE",
                     "Не удалось найти язык по введенному идентификатору");
@@ -65,7 +61,7 @@ public class LanguageService {
     public GUIDResultModel save(LanguageSaveModel model) {
         var validationResult = stringValidation(model.getLanguageName(), 15);
         if (validationResult.getErrorCode() != null) {
-            return new GUIDResultModel("CAN_NOT_SAVE",
+            return new GUIDResultModel("CAN_NOT_SAVE_LANGUAGE",
                     "Не удалось сохранить данные. Наименование языка должно быть корректно заполненным");
         }
 

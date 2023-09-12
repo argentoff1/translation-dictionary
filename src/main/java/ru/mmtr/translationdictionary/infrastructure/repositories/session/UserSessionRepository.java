@@ -22,16 +22,6 @@ public class UserSessionRepository {
         this.jwtProvider = jwtProvider;
     }
 
-    public CollectionResultModel<UserSessionModel> showAll() {
-        List<UserSessionEntity> entities = DB
-                .find(UserSessionEntity.class)
-                .findList();
-
-        return new CollectionResultModel<>(
-                entities.stream().map(this::getSessionModel).collect(Collectors.toList())
-        );
-    }
-
     public SuccessResultModel updateTokens(UserModel user, String accessToken, String refreshToken) {
         DB
                 .update(UserSessionEntity.class)
@@ -90,21 +80,6 @@ public class UserSessionRepository {
                 .where()
                 .eq(UserSessionEntity.USER_ID, id)
                 .findOne();
-
-        return getSessionModel(foundEntity);
-    }
-
-    public UserSessionModel getBySessionId(UUID id) {
-        UserSessionEntity foundEntity = DB
-                .find(UserSessionEntity.class)
-                .where()
-                .eq(UserSessionEntity.SESSION_ID, id)
-                .findOne();
-
-        if (foundEntity == null) {
-            return new UserSessionModel("CAN_NOT_FIND",
-                    "Не удалось найти данные. Поля должны быть корректно заполненными");
-        }
 
         return getSessionModel(foundEntity);
     }

@@ -17,7 +17,7 @@ import java.util.UUID;
 public class WriteListToFile {
     public static void workbookDictionaryCreateHeadersIfRequired(List<ExportDictionaryModel> modelList, Workbook workbook) {
         for (var exportDictionariesModel : modelList) {
-            var sheetName = exportDictionariesModel.getFromLanguageName() + "-" +
+            String sheetName = exportDictionariesModel.getFromLanguageName() + "-" +
                     exportDictionariesModel.getToLanguageName();
             var sheet = workbook.getSheet(sheetName);
 
@@ -86,7 +86,7 @@ public class WriteListToFile {
     }
 
     public static void workbookLanguageCreateHeadersIfRequired(Workbook workbook) {
-        var sheetName = "Языки";
+        String sheetName = "Языки";
         var sheet = workbook.getSheet(sheetName);
 
         if (sheet == null) {
@@ -114,7 +114,7 @@ public class WriteListToFile {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
 
         for (var exportDictionariesModel : modelList) {
-            var sheetName = "Языки";
+            String sheetName = "Языки";
 
             var sheet = workbook.getSheet(sheetName);
 

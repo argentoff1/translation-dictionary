@@ -33,7 +33,7 @@ public class UserService {
     public JwtResponseResultModel login(JwtRequestModel model) {
         var validationResult = stringValidation(model.getLogin(), 20);
         if (validationResult.getErrorCode() != null) {
-            return new JwtResponseResultModel("Не удалось войти в систему. " +
+            return new JwtResponseResultModel("CAN_NOT_AUTHORIZE. " +
                     "Логин введен некорректно");
         }
 
@@ -132,7 +132,7 @@ public class UserService {
         var result = userRepository.getPage(criteria);
 
         if (result == null) {
-            return new PageResultModel<>("CAN_NOT_RETURN_PAGE",
+            return new PageResultModel<>("CAN_NOT_RETURN_PAGE_OF_USERS",
                     "Не удалось вернуть страницу пользователей");
         }
 
@@ -143,7 +143,7 @@ public class UserService {
         var result = userRepository.getById(id);
 
         if (result == null) {
-            return new UserModel("CA_NOT_FIND_USER",
+            return new UserModel("CAN_NOT_FIND_USER",
                     "Не удалось найти пользователя");
         }
 
@@ -153,7 +153,7 @@ public class UserService {
     public UserModel getByLogin(String login) {
         var validationResult = stringValidation(login, 20);
         if (validationResult.getErrorCode() != null) {
-            return new UserModel("CAN_NOT_FIND",
+            return new UserModel("CAN_NOT_FIND_USER",
                     "Невозможно найти пользователя по указанному логину");
         }
 
@@ -163,49 +163,49 @@ public class UserService {
     public GUIDResultModel save(UserSaveModel model) {
         var validationResult = stringValidation(model.getLogin(), 20);
         if (validationResult.getErrorCode() != null) {
-            return new GUIDResultModel("CAN_NOT_SAVE",
+            return new GUIDResultModel("CAN_NOT_SAVE_USER",
                     "Не удалось сохранить данные. Логин введен некорректно");
         }
 
         validationResult = stringValidation(model.getPassword(), 100);
         if (validationResult.getErrorCode() != null) {
-            return new GUIDResultModel("CAN_NOT_SAVE",
+            return new GUIDResultModel("CAN_NOT_SAVE_USER",
                     "Не удалось сохранить данные. Пароль введен некорректно");
         }
 
         validationResult = stringValidation(model.getLastName(), 30);
         if (validationResult.getErrorCode() != null) {
-            return new GUIDResultModel("CAN_NOT_SAVE",
+            return new GUIDResultModel("CAN_NOT_SAVE_USER",
                     "Не удалось сохранить данные. Фамилия введена некорректно");
         }
 
         validationResult = stringValidation(model.getFirstName(), 20);
         if (validationResult.getErrorCode() != null) {
-            return new GUIDResultModel("CAN_NOT_SAVE",
+            return new GUIDResultModel("CAN_NOT_SAVE_USER",
                     "Не удалось сохранить данные. Имя введено некорректно");
         }
 
         validationResult = stringValidation(model.getFatherName(), 50);
         if (validationResult.getErrorCode() != null) {
-            return new GUIDResultModel("CAN_NOT_SAVE",
+            return new GUIDResultModel("CAN_NOT_SAVE_USER",
                     "Не удалось сохранить данные. Отчество введено некорректно");
         }
 
         validationResult = stringValidation(model.getEmail(), 320);
         if (validationResult.getErrorCode() != null) {
-            return new GUIDResultModel("CAN_NOT_SAVE",
+            return new GUIDResultModel("CAN_NOT_SAVE_USER",
                     "Не удалось сохранить данные. Электронная почта введена некорректно");
         }
 
         validationResult = stringValidation(model.getPhoneNumber(), 30);
         if (validationResult.getErrorCode() != null) {
-            return new GUIDResultModel("CAN_NOT_SAVE",
+            return new GUIDResultModel("CAN_NOT_SAVE_USER",
                     "Не удалось сохранить данные. Номер телефона введен некорректно");
         }
 
         var result = userRepository.save(model);
         if (result == null) {
-            return new GUIDResultModel("CAN_NOT_SAVE",
+            return new GUIDResultModel("CAN_NOT_SAVE_USER",
                     "Не удалось сохранить данные. Поля должны быть корректно заполненными");
         }
 
@@ -252,7 +252,7 @@ public class UserService {
         var result = userRepository.updateUser(model);
 
         if (result == null) {
-            return new SuccessResultModel("CAN_NOT_SAVE",
+            return new SuccessResultModel("CAN_NOT_UPDATE_USER",
                     "Не удалось сохранить данные. " +
                             "Поля должны быть корректно заполненными");
         }
@@ -268,7 +268,7 @@ public class UserService {
 
         var result = userRepository.updateLogin(model);
         if (result == null) {
-            return new SuccessResultModel("CAN_NOT_SAVE",
+            return new SuccessResultModel("CAN_NOT_UPDATE_USER",
                     "Не удалось сохранить данные. Поля должны быть корректно заполненными");
         }
 
@@ -283,7 +283,7 @@ public class UserService {
 
         var result = userRepository.updatePassword(model);
         if (result == null) {
-            return new SuccessResultModel("CAN_NOT_SAVE",
+            return new SuccessResultModel("CAN_NOT_UPDATE_USER",
                     "Не удалось сохранить данные. Поля должны быть корректно заполненными");
         }
 
@@ -294,7 +294,7 @@ public class UserService {
         var repositoryResult = userRepository.archiveById(id);
 
         if (repositoryResult.getErrorCode() != null) {
-            return new SuccessResultModel("CAN_NOT_UPDATE",
+            return new SuccessResultModel("CAN_NOT_ARCHIVE_USER",
                     "Не удалось сохранить данные. Поля должны быть корректно заполненными");
         }
 
@@ -305,7 +305,7 @@ public class UserService {
         var repositoryResult = userRepository.unarchiveById(id);
 
         if (repositoryResult.getErrorCode() != null) {
-            return new SuccessResultModel("CAN_NOT_UPDATE",
+            return new SuccessResultModel("CAN_NOT_UNARCHIVE_USER",
                     "Не удалось сохранить данные. Поля должны быть корректно заполненными");
         }
 

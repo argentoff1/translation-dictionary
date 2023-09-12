@@ -1,7 +1,6 @@
 package ru.mmtr.translationdictionary.domainservice.session;
 
 import org.springframework.stereotype.Service;
-import ru.mmtr.translationdictionary.domain.common.CollectionResultModel;
 import ru.mmtr.translationdictionary.domain.common.PageResultModel;
 import ru.mmtr.translationdictionary.domain.common.SuccessResultModel;
 import ru.mmtr.translationdictionary.domain.session.UserSessionModel;
