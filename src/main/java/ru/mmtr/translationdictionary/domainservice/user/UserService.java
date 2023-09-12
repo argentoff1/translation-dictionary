@@ -65,19 +65,6 @@ public class UserService {
         return new JwtResponseResultModel(session.getAccessToken(), session.getRefreshToken());
     }
 
-    public JwtResponseResultModel getAccessToken(String refreshToken) {
-        if (jwtProvider.validateRefreshToken(refreshToken)) {
-            final Claims claims = jwtProvider.getRefreshClaims(refreshToken);
-            final String login = claims.getSubject();
-
-            final UserModel user = userRepository.getByLogin(login);
-            final String accessToken = jwtProvider.generateAccessToken(user, CommonUtils.getSessionId());
-
-            return new JwtResponseResultModel(accessToken, null);
-        }
-        return new JwtResponseResultModel("CAN_NOT_GENERATE_TOKEN");
-    }
-
     public JwtResponseResultModel refreshToken(String subject) {
         UserModel user = userRepository.getByLogin(subject);
 

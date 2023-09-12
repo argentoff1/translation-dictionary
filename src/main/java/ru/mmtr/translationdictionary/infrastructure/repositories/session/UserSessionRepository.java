@@ -10,7 +10,6 @@ import ru.mmtr.translationdictionary.domain.session.UserSessionPageRequestModel;
 import ru.mmtr.translationdictionary.domain.user.UserModel;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -27,6 +26,9 @@ public class UserSessionRepository {
                 .update(UserSessionEntity.class)
                 .set(UserSessionEntity.ACCESS_TOKEN, accessToken)
                 .set(UserSessionEntity.REFRESH_TOKEN, refreshToken)
+                .set(UserSessionEntity.TOKEN_CREATED_AT, LocalDateTime.now())
+                .set(UserSessionEntity.ACCESS_TOKEN_EXPIRED_DATE, LocalDateTime.now().plusDays(1))
+                .set(UserSessionEntity.REFRESH_TOKEN_EXPIRED_DATE, LocalDateTime.now().plusDays(30))
                 .where()
                 .eq(UserSessionEntity.USER_ID, user.getUserId())
                 .update();

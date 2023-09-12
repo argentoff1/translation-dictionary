@@ -33,15 +33,6 @@ public class UserController {
         return userService.login(model);
     }
 
-    @PostMapping(value = "/getNewAccessToken")
-    @Operation(
-            summary = "Генерация нового access токена",
-            description = "Позволяет сгенерировать новый access токен"
-    )
-    public JwtResponseResultModel getNewAccessToken(@RequestBody RefreshJwtRequestModel model) {
-        return userService.getAccessToken(model.getRefreshToken());
-    }
-
     @GetMapping(value = "/refresh")
     @Operation(
             summary = "Генерация новых access и refresh токенов",
