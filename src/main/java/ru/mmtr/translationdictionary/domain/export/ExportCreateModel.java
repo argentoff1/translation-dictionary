@@ -16,4 +16,6 @@ import lombok.Setter;
 public class ExportCreateModel {
     @Parameter(description = "Тип сущности для экспорта")
     private ExportType exportType;
+
+    // Фильтры по дате и т.д.
 }
