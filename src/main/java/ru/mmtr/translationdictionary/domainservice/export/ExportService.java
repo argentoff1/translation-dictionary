@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
  * \* User: parinos.ma.kst
  * \* Date: 9/11/2023
  * \* Description:
- * \  Сервис для создания файла экспорта
+ * \  Сервис для взаимодействия с файлами экспорта
  */
 
 @Service

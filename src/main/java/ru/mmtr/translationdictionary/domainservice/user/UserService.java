@@ -73,7 +73,7 @@ public class UserService {
                     "Неверный логин");
         }
 
-        UserSessionModel session = userSessionService.getByUserId(user.getUserId());
+        var session = userSessionService.getByUserId(user.getUserId());
 
         if (session == null) {
             return new JwtResponseResultModel("CAТ_NOT_REFRESH_TOKEN. " +
