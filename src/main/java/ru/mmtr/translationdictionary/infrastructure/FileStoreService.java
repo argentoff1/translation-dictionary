@@ -15,19 +15,13 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.UUID;
 
-/**
- * \* Created with IntelliJ IDEA.
- * \* User: parinos.ma.kst
- * \* Date: 9/11/2023
- * \* Description:
- * \  Сервис для хранения и получения файлов экспорта
- */
-
 @Slf4j
 @Service
 public class FileStoreService {
-    private static final String FILE_PATH = "C:\\Users\\parinos.ma.kst\\IdeaProjects\\" +
-            "translation-dictionary\\src\\main\\resources\\export\\";
+    private static final String FILE_PATH = "C:\\Users\\Maxim Parinos\\IdeaProjects\\2023" +
+            "\\translation-dictionary\\src\\main\\resources\\export\\";
+    /*private static final String FILE_PATH = "C:\\Users\\parinos.ma.kst\\IdeaProjects\\" +
+            "translation-dictionary\\src\\main\\resources\\export\\";*/
 
     public GUIDResultModel createFile(Workbook workbook) {
         return new GUIDResultModel(WriteListToFile.writeInFile(FILE_PATH, workbook));
@@ -41,7 +35,7 @@ public class FileStoreService {
             }
             FileInputStream input = new FileInputStream(file);
 
-            return new MockMultipartFile("C:/Users/parinos.ma.kst/IdeaProjects/" +
+            return new MockMultipartFile("C:/Users/Maxim Parinos/IdeaProjects/2023" +
                     "translation-dictionary/src/main/resources/export/", file.getName(),
                     "multipart/form-data", IOUtils.toByteArray(input));
         } catch (IOException e) {

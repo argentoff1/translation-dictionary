@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum ExportType {
     DICTIONARY("dictionary"),
-    LANGUAGE("language");
-
+    LANGUAGE("language"),
+    USER("user");
     private final String modelName;
 }

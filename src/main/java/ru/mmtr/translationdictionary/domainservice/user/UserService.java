@@ -115,7 +115,7 @@ public class UserService {
         return result;
     }
 
-    public PageResultModel<UserModel> getPageUsers(UserPageRequestModel criteria) {
+    public PageResultModel<UserModel> getPage(UserPageRequestModel criteria) {
         var result = userRepository.getPage(criteria);
 
         if (result == null) {

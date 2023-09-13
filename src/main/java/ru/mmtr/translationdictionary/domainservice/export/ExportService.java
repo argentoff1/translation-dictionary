@@ -28,8 +28,6 @@ import java.util.stream.Collectors;
 public class ExportService {
     private final FileStoreService fileStoreService;
 
-    @Autowired
-    private Test test;
     private final Map<ExportType, ExportStrategy> strategies;
 
     public ExportService(FileStoreService fileStoreService, Collection<ExportStrategy> exportStrategies) {
@@ -39,7 +37,7 @@ public class ExportService {
 
     public GUIDResultModel createExport(ExportCreateModel model) {
         var createdWorkBook = strategies.get(model.getExportType()).createExport(model);
-        test.test();;
+
         return fileStoreService.createFile(createdWorkBook);
     }
 

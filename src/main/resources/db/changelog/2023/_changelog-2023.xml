@@ -39,4 +39,7 @@
 
     <include file="db/changelog/2023/29082023-add-changeset-columns-for-export-in-dictionaries-and-languages.xml"/>
     <include file="db/changelog/2023/29082023-add-changeset-foreign-keys-for-export-in-dictionaries-and-languages.xml"/>
+
+    <include file="db/changelog/2023/13092023-create-changeset-table-export.xml"/>
+    <include file="db/changelog/2023/13092023-add-changeset-foreign-key-for-export.xml"/>
 </databaseChangeLog>

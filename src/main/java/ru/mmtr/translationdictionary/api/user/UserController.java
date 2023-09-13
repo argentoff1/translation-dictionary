@@ -59,7 +59,7 @@ public class UserController {
             description = "Позволяет отобразить всех пользователей постранично"
     )
     public PageResultModel<UserModel> getPageUsers(@RequestBody UserPageRequestModel criteria) {
-        return userService.getPageUsers(criteria);
+        return userService.getPage(criteria);
     }
 
     @GetMapping(value = "/getUserById/{id}")

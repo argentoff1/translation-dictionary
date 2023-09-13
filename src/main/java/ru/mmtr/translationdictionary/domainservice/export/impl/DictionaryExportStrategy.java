@@ -22,14 +22,6 @@ import ru.mmtr.translationdictionary.domainservice.user.UserService;
 import java.util.*;
 import java.util.stream.Collectors;
 
-/**
- * \* Created with IntelliJ IDEA.
- * \* User: parinos.ma.kst
- * \* Date: 9/11/2023
- * \* Description:
- * \  Реализация методов для словарей
- */
-
 @Slf4j
 @Service
 public class DictionaryExportStrategy implements ExportStrategy {
