@@ -26,7 +26,7 @@ public class ExportModel extends GeneralResultModel {
     private JsonNode createModel;
 
     @Schema(description = "Идентификатор создателя экспорта")
-    private UUID createdUserId;
+    private UUID userCreatedId;
 
     @Schema(description = "Дата создания")
     private LocalDateTime createdAt;

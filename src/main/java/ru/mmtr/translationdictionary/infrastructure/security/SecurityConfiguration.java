@@ -3,6 +3,7 @@ package ru.mmtr.translationdictionary.infrastructure.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.authentication.configuration.EnableGlobalAuthentication;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -19,12 +20,12 @@ import ru.mmtr.translationdictionary.domain.user.UserRole;
 
 @Configuration
 @EnableMethodSecurity
+@EnableGlobalAuthentication()
 public class SecurityConfiguration {
     // Нужно убрать
     private static final String[] AUTH_WHITELIST = {
             "/api/users/login",
-            "/api/users/getNewAccessToken",
-            "/api/users/getNewRefreshToken",
+            "/api/users/refresh",
             "/v2/api-docs",
             "/swagger-resources",
             "/swagger-resources/**",
