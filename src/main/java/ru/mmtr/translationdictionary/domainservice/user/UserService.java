@@ -1,6 +1,9 @@
 package ru.mmtr.translationdictionary.domainservice.user;
 
 import io.jsonwebtoken.Claims;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import ru.mmtr.translationdictionary.domain.common.*;
@@ -12,6 +15,7 @@ import ru.mmtr.translationdictionary.domainservice.session.UserSessionService;
 import ru.mmtr.translationdictionary.infrastructure.repositories.user.UserRepository;
 import ru.mmtr.translationdictionary.infrastructure.security.JwtProvider;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -19,7 +23,7 @@ import java.util.UUID;
 import static ru.mmtr.translationdictionary.domainservice.common.Validation.stringValidation;
 
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final UserSessionService userSessionService;
     private final JwtProvider jwtProvider;
@@ -316,5 +320,19 @@ public class UserService {
         userSessionService.delete(findUser);
 
         return userRepository.logout();
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        UserModel user = userRepository.findUserByLogin(username);
+        if (user == null) {
+            throw new UsernameNotFoundException("User not found: " + username);
+        }
+
+        return org.springframework.security.core.userdetails.User.builder()
+                .username(user.getLogin())
+                .password(user.getPassword())
+                .authorities(Collections.emptyList())
+                .build();
     }
 }

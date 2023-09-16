@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.security.PermitAll;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.mmtr.translationdictionary.domain.common.*;
@@ -17,6 +18,7 @@ import java.util.UUID;
 @RequestMapping(value = "/api/users")
 @Tag(name = "Пользователь", description = "Позволяет взаимодействовать с пользователями")
 @SecurityRequirement(name = "JWT")
+@PermitAll
 public class UserController {
     private final UserService userService;
 

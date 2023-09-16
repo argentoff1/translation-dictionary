@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Repository
@@ -287,6 +288,11 @@ public class UserRepository {
         model.setRoleName(UserRole.USER.getRoleName());
 
         return model;
+    }
+
+    public UserModel findUserByLogin(String login) {
+        var user = DB.find(UserEntity.class).where().eq(UserEntity.LOGIN, login).findOne();
+        return getModel(user);
     }
 
     public static String hashPassword(String password) {

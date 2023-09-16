@@ -3,25 +3,27 @@ package ru.mmtr.translationdictionary.infrastructure.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.EnableGlobalAuthentication;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
-import ru.mmtr.translationdictionary.domain.user.UserRole;
+import ru.mmtr.translationdictionary.domainservice.user.UserService;
 
 @Configuration
 @EnableMethodSecurity
 @EnableGlobalAuthentication()
 public class SecurityConfiguration {
+    private final UserService userService;
+
     // Нужно убрать
     private static final String[] AUTH_WHITELIST = {
             "/api/users/login",
@@ -39,6 +41,10 @@ public class SecurityConfiguration {
 
     private JwtFilter jwtFilter;
 
+    public SecurityConfiguration(UserService userService) {
+        this.userService = userService;
+    }
+
     @Autowired
     public void setJwtFilter(JwtFilter jwtFilter) {
         this.jwtFilter = jwtFilter;
@@ -46,7 +52,16 @@ public class SecurityConfiguration {
 
     @Bean
     protected SecurityFilterChain configure(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.cors(AbstractHttpConfigurer::disable);
+        httpSecurity.csrf(csrf -> csrf.disable())
+                .authorizeRequests(req -> req
+                        .anyRequest().permitAll()
+                )
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .exceptionHandling(e -> e.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+        return httpSecurity.build();
+
+        /*httpSecurity.cors(AbstractHttpConfigurer::disable);
         httpSecurity.csrf(AbstractHttpConfigurer::disable);
         httpSecurity.formLogin(AbstractHttpConfigurer::disable);
 
@@ -66,10 +81,19 @@ public class SecurityConfiguration {
                 .addFilterAfter(jwtFilter, UsernamePasswordAuthenticationFilter.class)
         );
 
-        return httpSecurity.build();
+        return httpSecurity.build();*/
+
     }
 
     @Bean
+    public DaoAuthenticationProvider daoAuthenticationProvider() {
+        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
+        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
+        daoAuthenticationProvider.setUserDetailsService(userService);
+        return daoAuthenticationProvider;
+    }
+
+    /*@Bean
     public InMemoryUserDetailsManager userDetailsService() {
         UserDetails admin = User.builder()
                 .username("admin")
@@ -82,7 +106,7 @@ public class SecurityConfiguration {
                 .roles(UserRole.USER.getRoleName())
                 .build();
         return new InMemoryUserDetailsManager(admin, user);
-    }
+    }*/
 
     @Bean
     public PasswordEncoder passwordEncoder() {
